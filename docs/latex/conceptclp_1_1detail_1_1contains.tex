@@ -1,0 +1,30 @@
+\doxysection{clp\+::detail\+::contains Concept Reference}
+\hypertarget{conceptclp_1_1detail_1_1contains}{}\label{conceptclp_1_1detail_1_1contains}\index{clp::detail::contains@{clp::detail::contains}}
+
+
+Concept to check if a type is one of the specified types.  
+
+
+
+
+{\ttfamily \#include $<$cl\+\_\+parser.\+hpp$>$}
+
+\doxysubsection{Concept definition}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class\ }T,\ \textcolor{keyword}{class\ }...\ Args>}
+\DoxyCodeLine{\textcolor{keyword}{concept\ }\mbox{\hyperlink{conceptclp_1_1detail_1_1contains}{clp::detail::contains}}\ =\ \ (std::is\_same\_v<T,\ Args>\ ||\ ...)}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Detailed Description}
+Concept to check if a type is one of the specified types. 
+
+This concept checks if a given type T is the same as any of the types specified in Args. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type to be checked against Args. \\
+\hline
+{\em Args} & Variadic template arguments representing types to check against. \\
+\hline
+\end{DoxyTemplParams}

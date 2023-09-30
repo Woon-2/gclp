@@ -1,0 +1,160 @@
+\doxysection{clp\+::basic\+\_\+cl\+\_\+parser\texorpdfstring{$<$}{<} CharT, Traits, Params \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classclp_1_1basic__cl__parser}{}\label{classclp_1_1basic__cl__parser}\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a0e81ecc41eb7c38d0c8336ea30bb4448}\label{classclp_1_1basic__cl__parser_a0e81ecc41eb7c38d0c8336ea30bb4448} 
+using {\bfseries char\+\_\+type} = CharT
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a2bd2e357f004b05122caf8f7672e746e}\label{classclp_1_1basic__cl__parser_a2bd2e357f004b05122caf8f7672e746e} 
+using {\bfseries traits\+\_\+type} = Traits
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a2fbf5dc7b17a95c92ce380a2c1d8e2cf}\label{classclp_1_1basic__cl__parser_a2fbf5dc7b17a95c92ce380a2c1d8e2cf} 
+using {\bfseries string\+\_\+type} = std\+::basic\+\_\+string$<$ char\+\_\+type, traits\+\_\+type $>$
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a71e4190a30a99d123651fcc1de2ea071}\label{classclp_1_1basic__cl__parser_a71e4190a30a99d123651fcc1de2ea071} 
+using {\bfseries string\+\_\+view\+\_\+type} = std\+::basic\+\_\+string\+\_\+view$<$ char\+\_\+type, traits\+\_\+type $>$
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_aea3f0946c294092bc72438829655713a}\label{classclp_1_1basic__cl__parser_aea3f0946c294092bc72438829655713a} 
+using {\bfseries result\+\_\+tuple\+\_\+type} = std\+::tuple$<$ typename Params\+::value\+\_\+type... $>$
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a261c5fd1eedd271f7e22e7bd42b99387}\label{classclp_1_1basic__cl__parser_a261c5fd1eedd271f7e22e7bd42b99387} 
+using {\bfseries param\+\_\+tuple\+\_\+type} = std\+::tuple$<$ Params... $>$
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a7baa4558be6c5ea07b4f1b3361ffaf6f}\label{classclp_1_1basic__cl__parser_a7baa4558be6c5ea07b4f1b3361ffaf6f} 
+using {\bfseries index\+\_\+type} = int
+\item 
+\Hypertarget{classclp_1_1basic__cl__parser_a5d57ec832a417e43536ebe1ec4cf72f9}\label{classclp_1_1basic__cl__parser_a5d57ec832a417e43536ebe1ec4cf72f9} 
+using {\bfseries stream\+\_\+type} = std\+::basic\+\_\+stringstream$<$ char\+\_\+type, traits\+\_\+type $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__parser_abca911d94ab2419686c4c23c50873f56}{basic\+\_\+cl\+\_\+parser}} (string\+\_\+view\+\_\+type identifier, Params... params)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__parser}{basic\+\_\+cl\+\_\+parser} object with the provided identifier and parameters. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser_a9515bec7f758d475b127e985bcd3689e}{error}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the error code representing the parsing status. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser_a255d10b2510f36c3dbdeae6d351c1637}{error\+\_\+message}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the error message associated with the parsing error. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classclp_1_1basic__cl__parser_a466fffb5c30e0062a0e6b0cba29bbb0e}{clear}} ()
+\begin{DoxyCompactList}\small\item\em Clears the parsing error status and streams for re-\/parsing. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class Int\+Type , class Str\+Arr\+Type $>$ }\\auto \mbox{\hyperlink{classclp_1_1basic__cl__parser_a6e219ddf6d427bc96c597080fab8ef04}{parse}} (Int\+Type argc, Str\+Arr\+Type argv) -\/$>$ result\+\_\+tuple\+\_\+type
+\begin{DoxyCompactList}\small\item\em Parses command-\/line arguments provided as an array of strings. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser_af98fd777c727b2c2fca6e3bcca0c1d23}{parse}} (string\+\_\+view\+\_\+type command\+\_\+line) -\/$>$ result\+\_\+tuple\+\_\+type
+\begin{DoxyCompactList}\small\item\em Parses command-\/line arguments provided as a single string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classclp_1_1basic__cl__parser_abca911d94ab2419686c4c23c50873f56}\label{classclp_1_1basic__cl__parser_abca911d94ab2419686c4c23c50873f56} 
+\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}!basic\_cl\_parser@{basic\_cl\_parser}}
+\index{basic\_cl\_parser@{basic\_cl\_parser}!clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection{\texorpdfstring{basic\_cl\_parser()}{basic\_cl\_parser()}}
+{\footnotesize\ttfamily template$<$clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$, class ... Params$>$ \\
+\mbox{\hyperlink{classclp_1_1basic__cl__parser}{clp\+::basic\+\_\+cl\+\_\+parser}}$<$ CharT, Traits, Params $>$\+::basic\+\_\+cl\+\_\+parser (\begin{DoxyParamCaption}\item[{string\+\_\+view\+\_\+type}]{identifier,  }\item[{Params...}]{params }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a \doxylink{classclp_1_1basic__cl__parser}{basic\+\_\+cl\+\_\+parser} object with the provided identifier and parameters. 
+
+Initializes a \doxylink{classclp_1_1basic__cl__parser}{basic\+\_\+cl\+\_\+parser} object with the specified identifier and parameters. 
+\begin{DoxyParams}{Parameters}
+{\em identifier} & The identifier used to recognize the command-\/line arguments. \\
+\hline
+{\em params} & The parameters representing the command-\/line arguments to be parsed. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classclp_1_1basic__cl__parser_a466fffb5c30e0062a0e6b0cba29bbb0e}\label{classclp_1_1basic__cl__parser_a466fffb5c30e0062a0e6b0cba29bbb0e} 
+\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}!clear@{clear}}
+\index{clear@{clear}!clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily template$<$clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$, class ... Params$>$ \\
+void \mbox{\hyperlink{classclp_1_1basic__cl__parser}{clp\+::basic\+\_\+cl\+\_\+parser}}$<$ CharT, Traits, Params $>$\+::clear (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Clears the parsing error status and streams for re-\/parsing. 
+
+This function clears the parsing error status and streams, allowing the parser to be used again for parsing. \Hypertarget{classclp_1_1basic__cl__parser_a9515bec7f758d475b127e985bcd3689e}\label{classclp_1_1basic__cl__parser_a9515bec7f758d475b127e985bcd3689e} 
+\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}!error@{error}}
+\index{error@{error}!clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection{\texorpdfstring{error()}{error()}}
+{\footnotesize\ttfamily template$<$clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$, class ... Params$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser}{clp\+::basic\+\_\+cl\+\_\+parser}}$<$ CharT, Traits, Params $>$\+::error (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Retrieves the error code representing the parsing status. 
+
+This function returns the error code representing the parsing status. \begin{DoxyReturn}{Returns}
+The error code indicating the parsing status. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__parser_a255d10b2510f36c3dbdeae6d351c1637}\label{classclp_1_1basic__cl__parser_a255d10b2510f36c3dbdeae6d351c1637} 
+\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}!error\_message@{error\_message}}
+\index{error\_message@{error\_message}!clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection{\texorpdfstring{error\_message()}{error\_message()}}
+{\footnotesize\ttfamily template$<$clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$, class ... Params$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser}{clp\+::basic\+\_\+cl\+\_\+parser}}$<$ CharT, Traits, Params $>$\+::error\+\_\+message (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Retrieves the error message associated with the parsing error. 
+
+This function returns the error message associated with the parsing error. \begin{DoxyReturn}{Returns}
+The error message describing the parsing error. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__parser_a6e219ddf6d427bc96c597080fab8ef04}\label{classclp_1_1basic__cl__parser_a6e219ddf6d427bc96c597080fab8ef04} 
+\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}!parse@{parse}}
+\index{parse@{parse}!clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection{\texorpdfstring{parse()}{parse()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$, class ... Params$>$ \\
+template$<$class Int\+Type , class Str\+Arr\+Type $>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser}{clp\+::basic\+\_\+cl\+\_\+parser}}$<$ CharT, Traits, Params $>$\+::parse (\begin{DoxyParamCaption}\item[{Int\+Type}]{argc,  }\item[{Str\+Arr\+Type}]{argv }\end{DoxyParamCaption}) -\/$>$ result\+\_\+tuple\+\_\+type \hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Parses command-\/line arguments provided as an array of strings. 
+
+Parses the command-\/line arguments provided as an array of strings, represented by argc and argv, and returns a tuple containing the parsed values. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Int\+Type} & The integral type for argc. \\
+\hline
+{\em Str\+Arr\+Type} & The array type for argv. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line argument strings. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A tuple containing the parsed values. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__parser_af98fd777c727b2c2fca6e3bcca0c1d23}\label{classclp_1_1basic__cl__parser_af98fd777c727b2c2fca6e3bcca0c1d23} 
+\index{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}!parse@{parse}}
+\index{parse@{parse}!clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$@{clp::basic\_cl\_parser$<$ CharT, Traits, Params $>$}}
+\doxysubsubsection{\texorpdfstring{parse()}{parse()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$, class ... Params$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__parser}{clp\+::basic\+\_\+cl\+\_\+parser}}$<$ CharT, Traits, Params $>$\+::parse (\begin{DoxyParamCaption}\item[{string\+\_\+view\+\_\+type}]{command\+\_\+line }\end{DoxyParamCaption}) -\/$>$ result\+\_\+tuple\+\_\+type \hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Parses command-\/line arguments provided as a single string. 
+
+Parses the command-\/line arguments provided as a single string and returns a tuple containing the parsed values. 
+\begin{DoxyParams}{Parameters}
+{\em command\+\_\+line} & The command-\/line arguments as a single string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A tuple containing the parsed values. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+cl\+\_\+parser.\+hpp\end{DoxyCompactItemize}

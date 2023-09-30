@@ -1,0 +1,510 @@
+\doxysection{clp\+::basic\+\_\+cl\+\_\+param\texorpdfstring{$<$}{<} ValT, CharT, Traits \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classclp_1_1basic__cl__param}{}\label{classclp_1_1basic__cl__param}\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+
+
+Represents a basic command-\/line parameter with specified key characters and brief description.  
+
+
+
+
+{\ttfamily \#include $<$cl\+\_\+parser.\+hpp$>$}
+
+Inheritance diagram for clp\+::basic\+\_\+cl\+\_\+param\texorpdfstring{$<$}{<} ValT, CharT, Traits \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classclp_1_1basic__cl__param}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classclp_1_1basic__cl__param_a019c654cf7c602073fedf8c375a524d9}\label{classclp_1_1basic__cl__param_a019c654cf7c602073fedf8c375a524d9} 
+using {\bfseries value\+\_\+type} = ValT
+\item 
+\Hypertarget{classclp_1_1basic__cl__param_af9832c09345e47dc4274acdea9243eda}\label{classclp_1_1basic__cl__param_af9832c09345e47dc4274acdea9243eda} 
+using {\bfseries char\+\_\+type} = CharT
+\item 
+\Hypertarget{classclp_1_1basic__cl__param_acf6b2e0553887ad2c5b52c5f7bb40a95}\label{classclp_1_1basic__cl__param_acf6b2e0553887ad2c5b52c5f7bb40a95} 
+using {\bfseries traits\+\_\+type} = Traits
+\item 
+\Hypertarget{classclp_1_1basic__cl__param_a4ea4ac7607ade652927017c1dd19707b}\label{classclp_1_1basic__cl__param_a4ea4ac7607ade652927017c1dd19707b} 
+using {\bfseries string\+\_\+view\+\_\+type} = std\+::basic\+\_\+string\+\_\+view$<$ char\+\_\+type, traits\+\_\+type $>$
+\item 
+\Hypertarget{classclp_1_1basic__cl__param_aa4ec3f245abf52f65cb61113df0ee1b4}\label{classclp_1_1basic__cl__param_aa4ec3f245abf52f65cb61113df0ee1b4} 
+{\footnotesize template$<$class T $>$ }\\using {\bfseries key\+\_\+container} = std\+::vector$<$ T $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__param_a3cb011394791a9922c8eb48f53f3de92}{basic\+\_\+cl\+\_\+param}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters and brief description. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__param_a1b12e04bc01129589ac456a36a13bdf7}{basic\+\_\+cl\+\_\+param}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, const value\+\_\+type \&defval, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters, brief description, and default value. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__param_adba55867bc535d4349ebb6ac652144ff}{basic\+\_\+cl\+\_\+param}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, value\+\_\+type \&\&defval, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters, brief description, and default value. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_ab6b2f8247e12d5345d8bdced88fd3536}{has\+\_\+value}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Checks if the parameter has a value (either assigned or default). \end{DoxyCompactList}\item 
+auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_affb49461dbc6192725226773a8a92923}{value}} () noexcept
+\begin{DoxyCompactList}\small\item\em Returns a reference to the parameter value or default value. \end{DoxyCompactList}\item 
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_aa227f987178d3b59fed9c0370fdda526}{value}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns a const reference to the parameter value or default value. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a03e656ccd3f67a44e05993d101a88401}{contains}} (char\+\_\+type key\+\_\+char) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified single-\/character key. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a7b4f18d11302cba88c5f918b49324f09}{contains}} (string\+\_\+view\+\_\+type key\+\_\+string) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified string key. \end{DoxyCompactList}\item 
+{\footnotesize template$<$std\+::input\+\_\+iterator It$>$ \newline
+requires requires(It a, It b) \{ string\+\_\+view\+\_\+type(a, b); \}}\\auto \mbox{\hyperlink{classclp_1_1basic__cl__param_ade883a8afa950fa0cf87ba915cf804ab}{contains}} (It first, It last) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified key range. \end{DoxyCompactList}\item 
+{\footnotesize template$<$std\+::ranges\+::range R$>$ \newline
+requires std\+::convertible\+\_\+to$<$R, string\+\_\+view\+\_\+type$>$}\\auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a93cffab4f0445839472e5d9d17e68399}{contains}} (R \&\&r) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified key range from a range object. \end{DoxyCompactList}\item 
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns a const reference to the list of single-\/character keys associated with the parameter. \end{DoxyCompactList}\item 
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns a const reference to the list of string keys associated with the parameter. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a6b394d78a4ce886465fd4699d8354eb8}{has\+\_\+brief\+\_\+message}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Checks if the parameter has a brief description message. \end{DoxyCompactList}\item 
+const auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a8ee4dfb67b3d1a82707183b445ca2623}{brief\+\_\+message}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns the brief description message associated with the parameter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class In\+Compatible $>$ \newline
+requires detail\+::not\+\_\+convertible\+\_\+to$<$ std\+::remove\+\_\+cvref\+\_\+t$<$In\+Compatible$>$, value\+\_\+type $>$}\\auto \mbox{\hyperlink{classclp_1_1basic__cl__param_aae4eb9da0e6b9705b5514ec68ebc2107}{assign}} (In\+Compatible \&\&arg)
+\begin{DoxyCompactList}\small\item\em Assigns a value to the parameter, marking the parameter as failed if the assignment is not possible. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a5a0a67083f1deab01860558ba5a80658}{assign}} (const value\+\_\+type \&val)
+\begin{DoxyCompactList}\small\item\em Assigns a const reference value to the parameter if no previous failures occurred. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_aff887b8d25f8219175bce2eaaac4b38b}{assign}} (value\+\_\+type \&\&val)
+\begin{DoxyCompactList}\small\item\em Assigns an rvalue reference value to the parameter if no previous failures occurred. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a3577f83129307898adeab0cfb8729400}{fail}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Checks if the parameter has encountered a failure during assignment. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classclp_1_1basic__cl__param_a2744714bd581a0bdda2641968326a039}{clear}} () noexcept
+\begin{DoxyCompactList}\small\item\em Resets the failure status of the parameter. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+ostream\+\_\+type \& \mbox{\hyperlink{classclp_1_1basic__cl__param_a46ad7b8384094c00b65e5bcea7b1b688}{operator$<$$<$}} (ostream\+\_\+type \&os, const \mbox{\hyperlink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param}} \&p)
+\begin{DoxyCompactList}\small\item\em Outputs the parameter value or default value to the output stream. \end{DoxyCompactList}\item 
+istream\+\_\+type \& \mbox{\hyperlink{classclp_1_1basic__cl__param_a259ae2ad6d61a5004994c18d3722dc12}{operator$>$$>$}} (istream\+\_\+type \&is, \mbox{\hyperlink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param}} \&p)
+\begin{DoxyCompactList}\small\item\em Reads a parameter value from the input stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class ValT, clp\+\_\+char CharT = char, class Traits = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$\newline
+class clp\+::basic\+\_\+cl\+\_\+param$<$ Val\+T, Char\+T, Traits $>$}
+Represents a basic command-\/line parameter with specified key characters and brief description. 
+
+This class provides functionality to handle command-\/line parameters with specific key characters and brief descriptions. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em ValT} & The type of the parameter value. \\
+\hline
+{\em CharT} & The character type used for keys (default is char). \\
+\hline
+{\em Traits} & The character traits type (default is std\+::char\+\_\+traits$<$\+Char\+T$>$). \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classclp_1_1basic__cl__param_a3cb011394791a9922c8eb48f53f3de92}\label{classclp_1_1basic__cl__param_a3cb011394791a9922c8eb48f53f3de92} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!basic\_cl\_param@{basic\_cl\_param}}
+\index{basic\_cl\_param@{basic\_cl\_param}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{basic\_cl\_param()}{basic\_cl\_param()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+\mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::basic\+\_\+cl\+\_\+param (\begin{DoxyParamCaption}\item[{std\+::initializer\+\_\+list$<$ char\+\_\+type $>$}]{key\+\_\+chars,  }\item[{std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$}]{key\+\_\+strs,  }\item[{string\+\_\+view\+\_\+type}]{brief }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters and brief description. 
+
+Initializes a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with the specified key characters, key strings, and brief description. 
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+chars} & An std\+::intializer\+\_\+list of single-\/character keys associated with the parameter. \\
+\hline
+{\em key\+\_\+strs} & An std\+::intializer\+\_\+list of string keys associated with the parameter. \\
+\hline
+{\em brief} & A brief description of the parameter. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classclp_1_1basic__cl__param_a1b12e04bc01129589ac456a36a13bdf7}\label{classclp_1_1basic__cl__param_a1b12e04bc01129589ac456a36a13bdf7} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!basic\_cl\_param@{basic\_cl\_param}}
+\index{basic\_cl\_param@{basic\_cl\_param}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{basic\_cl\_param()}{basic\_cl\_param()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+\mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::basic\+\_\+cl\+\_\+param (\begin{DoxyParamCaption}\item[{std\+::initializer\+\_\+list$<$ char\+\_\+type $>$}]{key\+\_\+chars,  }\item[{std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$}]{key\+\_\+strs,  }\item[{const value\+\_\+type \&}]{defval,  }\item[{string\+\_\+view\+\_\+type}]{brief }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters, brief description, and default value. 
+
+Initializes a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with the specified key characters, key strings, brief description, and default value. 
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+chars} & An std\+::intializer\+\_\+list of single-\/character keys associated with the parameter. \\
+\hline
+{\em key\+\_\+strs} & An std\+::intializer\+\_\+list of string keys associated with the parameter. \\
+\hline
+{\em defval} & The default value of the parameter. \\
+\hline
+{\em brief} & A brief description of the parameter. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classclp_1_1basic__cl__param_adba55867bc535d4349ebb6ac652144ff}\label{classclp_1_1basic__cl__param_adba55867bc535d4349ebb6ac652144ff} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!basic\_cl\_param@{basic\_cl\_param}}
+\index{basic\_cl\_param@{basic\_cl\_param}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{basic\_cl\_param()}{basic\_cl\_param()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+\mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::basic\+\_\+cl\+\_\+param (\begin{DoxyParamCaption}\item[{std\+::initializer\+\_\+list$<$ char\+\_\+type $>$}]{key\+\_\+chars,  }\item[{std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$}]{key\+\_\+strs,  }\item[{value\+\_\+type \&\&}]{defval,  }\item[{string\+\_\+view\+\_\+type}]{brief }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters, brief description, and default value. 
+
+Initializes a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with the specified key characters, key strings, brief description, and default value. 
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+chars} & An std\+::intializer\+\_\+list of single-\/character keys associated with the parameter. \\
+\hline
+{\em key\+\_\+strs} & An std\+::intializer\+\_\+list of string keys associated with the parameter. \\
+\hline
+{\em defval} & The default value of the parameter (rvalue reference version). \\
+\hline
+{\em brief} & A brief description of the parameter. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classclp_1_1basic__cl__param_a5a0a67083f1deab01860558ba5a80658}\label{classclp_1_1basic__cl__param_a5a0a67083f1deab01860558ba5a80658} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!assign@{assign}}
+\index{assign@{assign}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{assign()}{assign()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::assign (\begin{DoxyParamCaption}\item[{const value\+\_\+type \&}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Assigns a const reference value to the parameter if no previous failures occurred. 
+
+Attempts to assign the provided const reference value to the parameter. If there were no previous failures, the assignment is successful, and the function returns true. Otherwise, the function returns false. 
+\begin{DoxyParams}{Parameters}
+{\em val} & The const reference value to be assigned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the assignment is successful, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_aae4eb9da0e6b9705b5514ec68ebc2107}\label{classclp_1_1basic__cl__param_aae4eb9da0e6b9705b5514ec68ebc2107} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!assign@{assign}}
+\index{assign@{assign}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{assign()}{assign()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+template$<$class In\+Compatible $>$ \newline
+requires detail\+::not\+\_\+convertible\+\_\+to$<$ std\+::remove\+\_\+cvref\+\_\+t$<$In\+Compatible$>$, value\+\_\+type $>$\\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::assign (\begin{DoxyParamCaption}\item[{In\+Compatible \&\&}]{arg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Assigns a value to the parameter, marking the parameter as failed if the assignment is not possible. 
+
+Attempts to assign the provided value to the parameter. If the assignment is not possible due to type incompatibility, the parameter is marked as failed, and the function returns false. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em In\+Compatible} & The type of the value to be assigned. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & The value to be assigned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the assignment is successful, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_aff887b8d25f8219175bce2eaaac4b38b}\label{classclp_1_1basic__cl__param_aff887b8d25f8219175bce2eaaac4b38b} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!assign@{assign}}
+\index{assign@{assign}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{assign()}{assign()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::assign (\begin{DoxyParamCaption}\item[{value\+\_\+type \&\&}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Assigns an rvalue reference value to the parameter if no previous failures occurred. 
+
+Attempts to assign the provided rvalue reference value to the parameter. If there were no previous failures, the assignment is successful, and the function returns true. Otherwise, the function returns false. 
+\begin{DoxyParams}{Parameters}
+{\em val} & The rvalue reference value to be assigned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the assignment is successful, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a8ee4dfb67b3d1a82707183b445ca2623}\label{classclp_1_1basic__cl__param_a8ee4dfb67b3d1a82707183b445ca2623} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!brief\_message@{brief\_message}}
+\index{brief\_message@{brief\_message}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{brief\_message()}{brief\_message()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+const auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::brief\+\_\+message (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Returns the brief description message associated with the parameter. 
+
+This function returns the brief description message associated with the parameter. \begin{DoxyReturn}{Returns}
+The brief description message. 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+The parameter has a brief description. 
+\end{DoxyPrecond}
+\Hypertarget{classclp_1_1basic__cl__param_a2744714bd581a0bdda2641968326a039}\label{classclp_1_1basic__cl__param_a2744714bd581a0bdda2641968326a039} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!clear@{clear}}
+\index{clear@{clear}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+void \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::clear (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Resets the failure status of the parameter. 
+
+This function resets the failure status of the parameter, allowing subsequent assignments to be attempted. \Hypertarget{classclp_1_1basic__cl__param_a03e656ccd3f67a44e05993d101a88401}\label{classclp_1_1basic__cl__param_a03e656ccd3f67a44e05993d101a88401} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!contains@{contains}}
+\index{contains@{contains}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::contains (\begin{DoxyParamCaption}\item[{char\+\_\+type}]{key\+\_\+char }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the parameter contains the specified single-\/character key. 
+
+This function checks if the parameter contains the specified single-\/character key. 
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+char} & The single-\/character key to check for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the key is found, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_ade883a8afa950fa0cf87ba915cf804ab}\label{classclp_1_1basic__cl__param_ade883a8afa950fa0cf87ba915cf804ab} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!contains@{contains}}
+\index{contains@{contains}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+template$<$std\+::input\+\_\+iterator It$>$ \newline
+requires requires(It a, It b) \{ string\+\_\+view\+\_\+type(a, b); \}\\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::contains (\begin{DoxyParamCaption}\item[{It}]{first,  }\item[{It}]{last }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the parameter contains the specified key range. 
+
+This function checks if the parameter contains the specified key range defined by iterators {\ttfamily first} and {\ttfamily last}. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em It} & An input iterator type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em first} & The beginning of the key range. \\
+\hline
+{\em last} & The end of the key range. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the key range is found, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a93cffab4f0445839472e5d9d17e68399}\label{classclp_1_1basic__cl__param_a93cffab4f0445839472e5d9d17e68399} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!contains@{contains}}
+\index{contains@{contains}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+template$<$std\+::ranges\+::range R$>$ \newline
+requires std\+::convertible\+\_\+to$<$R, string\+\_\+view\+\_\+type$>$\\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::contains (\begin{DoxyParamCaption}\item[{R \&\&}]{r }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the parameter contains the specified key range from a range object. 
+
+This function checks if the parameter contains the specified key range obtained from the input range object {\ttfamily r}. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em R} & A range type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em r} & The input range object. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the key range is found, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a7b4f18d11302cba88c5f918b49324f09}\label{classclp_1_1basic__cl__param_a7b4f18d11302cba88c5f918b49324f09} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!contains@{contains}}
+\index{contains@{contains}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::contains (\begin{DoxyParamCaption}\item[{string\+\_\+view\+\_\+type}]{key\+\_\+string }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if the parameter contains the specified string key. 
+
+This function checks if the parameter contains the specified string key. 
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+string} & The string key to check for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the key is found, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a3577f83129307898adeab0cfb8729400}\label{classclp_1_1basic__cl__param_a3577f83129307898adeab0cfb8729400} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!fail@{fail}}
+\index{fail@{fail}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{fail()}{fail()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::fail (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Checks if the parameter has encountered a failure during assignment. 
+
+This function checks if the parameter has encountered a failure during assignment. \begin{DoxyReturn}{Returns}
+true if a failure occurred, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a6b394d78a4ce886465fd4699d8354eb8}\label{classclp_1_1basic__cl__param_a6b394d78a4ce886465fd4699d8354eb8} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!has\_brief\_message@{has\_brief\_message}}
+\index{has\_brief\_message@{has\_brief\_message}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{has\_brief\_message()}{has\_brief\_message()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::has\+\_\+brief\+\_\+message (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Checks if the parameter has a brief description message. 
+
+This function checks if the parameter has a brief description message. \begin{DoxyReturn}{Returns}
+true if the parameter has a brief description, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_ab6b2f8247e12d5345d8bdced88fd3536}\label{classclp_1_1basic__cl__param_ab6b2f8247e12d5345d8bdced88fd3536} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!has\_value@{has\_value}}
+\index{has\_value@{has\_value}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{has\_value()}{has\_value()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::has\+\_\+value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Checks if the parameter has a value (either assigned or default). 
+
+\begin{DoxyReturn}{Returns}
+true if the parameter has a value, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}\label{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!key\_chars@{key\_chars}}
+\index{key\_chars@{key\_chars}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{key\_chars()}{key\_chars()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::key\+\_\+chars (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Returns a const reference to the list of single-\/character keys associated with the parameter. 
+
+This function returns a const reference to the list of single-\/character keys associated with the parameter. \begin{DoxyReturn}{Returns}
+A const reference to the list of single-\/character keys. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}\label{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!key\_strs@{key\_strs}}
+\index{key\_strs@{key\_strs}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{key\_strs()}{key\_strs()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::key\+\_\+strs (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Returns a const reference to the list of string keys associated with the parameter. 
+
+This function returns a const reference to the list of string keys associated with the parameter. \begin{DoxyReturn}{Returns}
+A const reference to the list of string keys. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_aa227f987178d3b59fed9c0370fdda526}\label{classclp_1_1basic__cl__param_aa227f987178d3b59fed9c0370fdda526} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!value@{value}}
+\index{value@{value}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{value()}{value()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Returns a const reference to the parameter value or default value. 
+
+This function returns a const reference to the parameter value if it is assigned, or the default value otherwise. \begin{DoxyReturn}{Returns}
+A const reference to the parameter value or default value. 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+The parameter has a value (either assigned or default). 
+\end{DoxyPrecond}
+\Hypertarget{classclp_1_1basic__cl__param_affb49461dbc6192725226773a8a92923}\label{classclp_1_1basic__cl__param_affb49461dbc6192725226773a8a92923} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!value@{value}}
+\index{value@{value}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{value()}{value()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$\+::value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Returns a reference to the parameter value or default value. 
+
+This function returns a reference to the parameter value if it is assigned, or the default value otherwise. \begin{DoxyReturn}{Returns}
+A reference to the parameter value or default value. 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+The parameter has a value (either assigned or default). 
+\end{DoxyPrecond}
+
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{classclp_1_1basic__cl__param_a46ad7b8384094c00b65e5bcea7b1b688}\label{classclp_1_1basic__cl__param_a46ad7b8384094c00b65e5bcea7b1b688} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+ostream\+\_\+type \& operator$<$$<$ (\begin{DoxyParamCaption}\item[{ostream\+\_\+type \&}]{os,  }\item[{const \mbox{\hyperlink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$ \&}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Outputs the parameter value or default value to the output stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & The output stream. \\
+\hline
+{\em p} & The \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The output stream. 
+\end{DoxyReturn}
+\Hypertarget{classclp_1_1basic__cl__param_a259ae2ad6d61a5004994c18d3722dc12}\label{classclp_1_1basic__cl__param_a259ae2ad6d61a5004994c18d3722dc12} 
+\index{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$@{clp::basic\_cl\_param$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{operator$>$$>$}{operator>>}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+istream\+\_\+type \& operator$>$$>$ (\begin{DoxyParamCaption}\item[{istream\+\_\+type \&}]{is,  }\item[{\mbox{\hyperlink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param}}$<$ ValT, CharT, Traits $>$ \&}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Reads a parameter value from the input stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is} & The input stream. \\
+\hline
+{\em p} & The \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The input stream. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+cl\+\_\+parser.\+hpp\end{DoxyCompactItemize}

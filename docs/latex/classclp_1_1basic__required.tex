@@ -1,0 +1,138 @@
+\doxysection{clp\+::basic\+\_\+required\texorpdfstring{$<$}{<} ValT, CharT, Traits \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classclp_1_1basic__required}{}\label{classclp_1_1basic__required}\index{clp::basic\_required$<$ ValT, CharT, Traits $>$@{clp::basic\_required$<$ ValT, CharT, Traits $>$}}
+
+
+Represents a required command-\/line parameter.  
+
+
+
+
+{\ttfamily \#include $<$cl\+\_\+parser.\+hpp$>$}
+
+Inheritance diagram for clp\+::basic\+\_\+required\texorpdfstring{$<$}{<} ValT, CharT, Traits \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classclp_1_1basic__required}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classclp_1_1basic__required_ae102b9cbbb07440cdfd2ff69328e5179}\label{classclp_1_1basic__required_ae102b9cbbb07440cdfd2ff69328e5179} 
+using {\bfseries value\+\_\+type} = ValT
+\item 
+\Hypertarget{classclp_1_1basic__required_a7b1f8e8a6245878a46a36a832010e365}\label{classclp_1_1basic__required_a7b1f8e8a6245878a46a36a832010e365} 
+using {\bfseries char\+\_\+type} = CharT
+\item 
+\Hypertarget{classclp_1_1basic__required_a2793d890ea3a08572be3d4b66616a3b7}\label{classclp_1_1basic__required_a2793d890ea3a08572be3d4b66616a3b7} 
+using {\bfseries traits\+\_\+type} = Traits
+\item 
+\Hypertarget{classclp_1_1basic__required_aa3cda95b808b988011781ebe658d9c4d}\label{classclp_1_1basic__required_aa3cda95b808b988011781ebe658d9c4d} 
+using {\bfseries string\+\_\+view\+\_\+type} = std\+::basic\+\_\+string\+\_\+view$<$ char\+\_\+type, traits\+\_\+type $>$
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param$<$ Val\+T, Char\+T, Traits $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+using {\bfseries value\+\_\+type} = ValT
+\item 
+using {\bfseries char\+\_\+type} = CharT
+\item 
+using {\bfseries traits\+\_\+type} = Traits
+\item 
+using {\bfseries string\+\_\+view\+\_\+type} = std\+::basic\+\_\+string\+\_\+view$<$ char\+\_\+type, traits\+\_\+type $>$
+\item 
+{\footnotesize template$<$class T $>$ }\\using {\bfseries key\+\_\+container} = std\+::vector$<$ T $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classclp_1_1basic__required_ab312298d5e1bbfea36cbefa2475c2ed3}{basic\+\_\+required}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__required}{basic\+\_\+required} object with specified key characters, key strings, and brief description. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classclp_1_1basic__cl__param}{clp\+::basic\+\_\+cl\+\_\+param$<$ Val\+T, Char\+T, Traits $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__param_a3cb011394791a9922c8eb48f53f3de92}{basic\+\_\+cl\+\_\+param}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters and brief description. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__param_a1b12e04bc01129589ac456a36a13bdf7}{basic\+\_\+cl\+\_\+param}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, const value\+\_\+type \&defval, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters, brief description, and default value. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classclp_1_1basic__cl__param_adba55867bc535d4349ebb6ac652144ff}{basic\+\_\+cl\+\_\+param}} (std\+::initializer\+\_\+list$<$ char\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}}, std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$ \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}}, value\+\_\+type \&\&defval, string\+\_\+view\+\_\+type brief)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} object with specified key characters, brief description, and default value. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_ab6b2f8247e12d5345d8bdced88fd3536}{has\+\_\+value}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Checks if the parameter has a value (either assigned or default). \end{DoxyCompactList}\item 
+auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_affb49461dbc6192725226773a8a92923}{value}} () noexcept
+\begin{DoxyCompactList}\small\item\em Returns a reference to the parameter value or default value. \end{DoxyCompactList}\item 
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_aa227f987178d3b59fed9c0370fdda526}{value}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns a const reference to the parameter value or default value. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a03e656ccd3f67a44e05993d101a88401}{contains}} (char\+\_\+type key\+\_\+char) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified single-\/character key. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a7b4f18d11302cba88c5f918b49324f09}{contains}} (string\+\_\+view\+\_\+type key\+\_\+string) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified string key. \end{DoxyCompactList}\item 
+{\footnotesize template$<$std\+::input\+\_\+iterator It$>$ \newline
+requires requires(It a, It b) \{ string\+\_\+view\+\_\+type(a, b); \}}\\auto \mbox{\hyperlink{classclp_1_1basic__cl__param_ade883a8afa950fa0cf87ba915cf804ab}{contains}} (It first, It last) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified key range. \end{DoxyCompactList}\item 
+{\footnotesize template$<$std\+::ranges\+::range R$>$ \newline
+requires std\+::convertible\+\_\+to$<$R, string\+\_\+view\+\_\+type$>$}\\auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a93cffab4f0445839472e5d9d17e68399}{contains}} (R \&\&r) const
+\begin{DoxyCompactList}\small\item\em Checks if the parameter contains the specified key range from a range object. \end{DoxyCompactList}\item 
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_a38c31f315e40ea3093d3e1d148d5b3b4}{key\+\_\+chars}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns a const reference to the list of single-\/character keys associated with the parameter. \end{DoxyCompactList}\item 
+const auto \& \mbox{\hyperlink{classclp_1_1basic__cl__param_a3bf65040c4e1c76abd87b5f2295da9e8}{key\+\_\+strs}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns a const reference to the list of string keys associated with the parameter. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a6b394d78a4ce886465fd4699d8354eb8}{has\+\_\+brief\+\_\+message}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Checks if the parameter has a brief description message. \end{DoxyCompactList}\item 
+const auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a8ee4dfb67b3d1a82707183b445ca2623}{brief\+\_\+message}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Returns the brief description message associated with the parameter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class In\+Compatible $>$ \newline
+requires detail\+::not\+\_\+convertible\+\_\+to$<$ std\+::remove\+\_\+cvref\+\_\+t$<$In\+Compatible$>$, value\+\_\+type $>$}\\auto \mbox{\hyperlink{classclp_1_1basic__cl__param_aae4eb9da0e6b9705b5514ec68ebc2107}{assign}} (In\+Compatible \&\&arg)
+\begin{DoxyCompactList}\small\item\em Assigns a value to the parameter, marking the parameter as failed if the assignment is not possible. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a5a0a67083f1deab01860558ba5a80658}{assign}} (const value\+\_\+type \&val)
+\begin{DoxyCompactList}\small\item\em Assigns a const reference value to the parameter if no previous failures occurred. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_aff887b8d25f8219175bce2eaaac4b38b}{assign}} (value\+\_\+type \&\&val)
+\begin{DoxyCompactList}\small\item\em Assigns an rvalue reference value to the parameter if no previous failures occurred. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classclp_1_1basic__cl__param_a3577f83129307898adeab0cfb8729400}{fail}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Checks if the parameter has encountered a failure during assignment. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classclp_1_1basic__cl__param_a2744714bd581a0bdda2641968326a039}{clear}} () noexcept
+\begin{DoxyCompactList}\small\item\em Resets the failure status of the parameter. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class ValT, clp\+\_\+char CharT = char, class Traits = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$\newline
+class clp\+::basic\+\_\+required$<$ Val\+T, Char\+T, Traits $>$}
+Represents a required command-\/line parameter. 
+
+This class extends \doxylink{classclp_1_1basic__cl__param}{basic\+\_\+cl\+\_\+param} to handle required command-\/line parameters with specific key characters, key strings, and a brief description. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em ValT} & The type of the parameter value. \\
+\hline
+{\em CharT} & The character type used for keys (default is char). \\
+\hline
+{\em Traits} & The character traits type (default is std\+::char\+\_\+traits$<$\+Char\+T$>$). \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classclp_1_1basic__required_ab312298d5e1bbfea36cbefa2475c2ed3}\label{classclp_1_1basic__required_ab312298d5e1bbfea36cbefa2475c2ed3} 
+\index{clp::basic\_required$<$ ValT, CharT, Traits $>$@{clp::basic\_required$<$ ValT, CharT, Traits $>$}!basic\_required@{basic\_required}}
+\index{basic\_required@{basic\_required}!clp::basic\_required$<$ ValT, CharT, Traits $>$@{clp::basic\_required$<$ ValT, CharT, Traits $>$}}
+\doxysubsubsection{\texorpdfstring{basic\_required()}{basic\_required()}}
+{\footnotesize\ttfamily template$<$class ValT , clp\+\_\+char CharT = char, class Traits  = std\+::char\+\_\+traits$<$\+Char\+T$>$$>$ \\
+\mbox{\hyperlink{classclp_1_1basic__required}{clp\+::basic\+\_\+required}}$<$ ValT, CharT, Traits $>$\+::basic\+\_\+required (\begin{DoxyParamCaption}\item[{std\+::initializer\+\_\+list$<$ char\+\_\+type $>$}]{key\+\_\+chars,  }\item[{std\+::initializer\+\_\+list$<$ string\+\_\+view\+\_\+type $>$}]{key\+\_\+strs,  }\item[{string\+\_\+view\+\_\+type}]{brief }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a \doxylink{classclp_1_1basic__required}{basic\+\_\+required} object with specified key characters, key strings, and brief description. 
+
+Initializes a \doxylink{classclp_1_1basic__required}{basic\+\_\+required} object with the specified key characters, key strings, and brief description. 
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+chars} & An std\+::initializer\+\_\+list of single-\/character keys associated with the parameter. \\
+\hline
+{\em key\+\_\+strs} & An std\+::initializer\+\_\+list of string keys associated with the parameter. \\
+\hline
+{\em brief} & A brief description of the parameter. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+cl\+\_\+parser.\+hpp\end{DoxyCompactItemize}
