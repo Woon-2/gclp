@@ -900,10 +900,10 @@ template <class ValT>
 using required = basic_required<ValT, char, std::char_traits<char>>;
 template <class ValT>
 using wrequired = basic_required<ValT, wchar_t, std::char_traits<wchar_t>>;
-template <class ... ValTs>
-using parser = basic_cl_parser<char, std::char_traits<char>, ValTs...>;
-template <class ... ValTs>
-using wparser = basic_cl_parser<char, std::char_traits<char>, ValTs...>;
+template <class ... Params>
+using parser = basic_cl_parser<char, std::char_traits<char>, Params...>;
+template <class ... Params>
+using wparser = basic_cl_parser<char, std::char_traits<char>, Params...>;
 
 }   // namespace clp
 
