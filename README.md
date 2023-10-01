@@ -1,13 +1,13 @@
 ### Readme Language
 
 - English(current)
-- [한국어](https://github.com/Woon-2/clp/blob/main/readme/README-KR.md)
+- [한국어](https://github.com/Woon-2/gclp/blob/main/readme/README-KR.md)
 
 # Generic Command-Line Parser(gclp)
 
 gclp is a single-header-only library that provides convenient command-line parsing functionality.    
 It leverages features up to C++20 to establish a generic and robust codebase.     
-[See documentation](https://woon-2.github.io/clp/) for detailed information.
+[See documentation](https://woon-2.github.io/gclp/) for detailed information.
 
 With gclp, you can declare command-line parameters of various types,    
 including standard containers such as `std::basic_string<T>`, `std::vector<T>`, as well as custom user-defined types like `Point` and `Matrix`.    
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 // output: 0, 6.0, Hello World!, c
 ```
 
-For more detailed usage, [see documentation.](https://woon-2.github.io/clp/)
+For more detailed usage, [see documentation.](https://woon-2.github.io/gclp/)
 
 ## Requirements
 
@@ -97,4 +97,4 @@ just include cl_parser.hpp in your project! That's all you need to do.
 
 ## License
 
-gclp follows the [MIT License.](https://github.com/Woon-2/clp/blob/main/LICENSE)
+gclp follows the [MIT License.](https://github.com/Woon-2/gclp/blob/main/LICENSE)
