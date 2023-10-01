@@ -224,3 +224,61 @@ TEST_F(ParsingTest, CompareOverloadings) {
     EXPECT_EQ(result_from_argc_argv, result_from_string_view)  
         << "overloadings of \"parse\" (argc, argv version/string view version) behaves differently.";
 }
+
+TEST_F(ParsingTest, FailWithWrongIdentifier) {
+    auto cmd = "WrongCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::invalid_identifier
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::invalid_identifier
+    ) << parser.error_message() << "\nparser doesn't detect wrong identifier at the top priority.";
+}
+
+TEST_F(ParsingTest, FailWithSkippingKey) {
+    auto cmd = "TestCLI 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::key_not_given
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::key_not_given
+    ) << parser.error_message() << "\nparser doesn't detect wrong key-arguments order.";
+}
+
+TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument1) {
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d 3 -e 4 -f 1.6 -g 1"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::incompatible_argument
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::incompatible_argument
+    ) << parser.error_message() << "\nparser doesn't detect assignment of incompatible arguments.\n"
+        << "tried: assigning int to std::string";
+}
+
+TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument2) {
+    auto cmd = "TestCLI -a abc -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::incompatible_argument
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::incompatible_argument
+    ) << parser.error_message() << "\nparser doesn't detect assignment of incompatible arguments.\n"
+        << "tried: assigning std::string to int";
+}
