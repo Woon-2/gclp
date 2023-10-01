@@ -1013,10 +1013,6 @@ public:
         // Check if parameter has been already assigned a value
         // to guarantee that the parameters will have been assigned a value
         // only once.
-        auto b_assigned = std::bitset<
-            std::tuple_size_v<result_tuple_type>
-        >(0u);
-
         auto has_duplicated_assignments = [b_assigned
             = std::bitset< std::tuple_size_v<result_tuple_type> >(0u),
             this
@@ -1044,7 +1040,14 @@ public:
                 }
             }
             else {
-                map_with_key( detail::remove_dash(word) );
+                auto key = detail::remove_dash(word);
+                if ( std::size(key) > 1) {
+                    map_with_key(key);
+                }
+                else {  // short option must be treated as a character
+                    // rather than string.
+                    map_with_key( *std::begin(key) );
+                }
             }
 
             return ret;

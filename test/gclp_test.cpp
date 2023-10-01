@@ -125,13 +125,13 @@ TEST(BasicParsingTest, ParseSingleBoolean) {
     );
     auto [a1] = parser.parse("identifier -a 1"sv);
     ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_TRUE(a1) << "parser doesn't recognize 1 as true.";
+    EXPECT_TRUE(a1) << "parser doesn't recognize 1 as true.\n";
     auto [a2] = parser.parse("identifier -a true"sv);
     ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_TRUE(a2) << "parser doesn't recognize \'true\' from command-line arguments.";
+    EXPECT_TRUE(a2) << "parser doesn't recognize \'true\' from command-line arguments.\n";
     auto [a3] = parser.parse("identifier -a"sv);
     ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_TRUE(a3) << "parser doesn't recognize a boolean option with no argument as true.";
+    EXPECT_TRUE(a3) << "parser doesn't recognize a boolean option with no argument as true.\n";
 }
 
 TEST(BasicParsingTest, ParseComplexBoolean) {
@@ -185,19 +185,24 @@ TEST(BasicParsingTest, FailWithParsingComplexBooleanContainingDuplication) {
     );
 
     parser.parse("identifier -abcabc"sv);
-    EXPECT_TRUE(parser.error());
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::duplicated_assignments
+    ) << parser.error_message();
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::duplicated_assignments
+    ) << "parser doesn't detect duplicated assignments occured within complex boolean params\n";
 }
 
 class ParsingTest : public ::testing::Test {
 protected:
     ParsingTest()
         : a(
-            {'a', 'A', 'i', 'I'},
+            {'a', 'A'},
             {"aa", "AA", "int", "integer", "Integer"},
             "an optional integer parameter"
         ),
         b(
-            {'b', 'B', 'd', 'D'},
+            {'b', 'B'},
             {"bb", "BB", "double", "real", "Double", "Real"},
             "an optional real parameter"
         ),
@@ -300,7 +305,7 @@ TEST_F(ParsingTest, FailWithOmittingRequired) {
 
     EXPECT_TRUE(parser.error() && parser.error()
         == clp::error_code::required_key_not_given
-    ) << parser.error_message() << "\nparser doesn't detect required key not given.";
+    ) << parser.error_message() << "\nparser doesn't detect required key not given.\n";
 }
 
 TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
@@ -313,7 +318,7 @@ TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
 
     EXPECT_FALSE(parser.error() && parser.error()
         == clp::error_code::unparsed_argument
-    ) << parser.error_message() << "\nremainders are from not ignoring space within quote.";
+    ) << parser.error_message() << "\nremainders are from not ignoring space within quote.\n";
 }
 
 TEST_F(ParsingTest, CompareOverloadings) {
@@ -331,7 +336,7 @@ TEST_F(ParsingTest, CompareOverloadings) {
     ASSERT_FALSE(parser.error()) << parser.error_message();
 
     EXPECT_EQ(result_from_argc_argv, result_from_string_view)  
-        << "overloadings of \"parse\" (argc, argv version/string view version) behaves differently.";
+        << "overloadings of \"parse\" (argc, argv version/string view version) behaves differently.\n";
 }
 
 TEST_F(ParsingTest, FailWithWrongIdentifier) {
@@ -345,7 +350,7 @@ TEST_F(ParsingTest, FailWithWrongIdentifier) {
 
     EXPECT_TRUE(parser.error() && parser.error()
         == clp::error_code::invalid_identifier
-    ) << parser.error_message() << "\nparser doesn't detect wrong identifier at the top priority.";
+    ) << parser.error_message() << "\nparser doesn't detect wrong identifier at the top priority.\n";
 }
 
 TEST_F(ParsingTest, FailWithSkippingKey) {
@@ -359,7 +364,7 @@ TEST_F(ParsingTest, FailWithSkippingKey) {
 
     EXPECT_TRUE(parser.error() && parser.error()
         == clp::error_code::key_not_given
-    ) << parser.error_message() << "\nparser doesn't detect wrong key-arguments order.";
+    ) << parser.error_message() << "\nparser doesn't detect wrong key-arguments order.\n";
 }
 
 TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument) {
@@ -389,4 +394,32 @@ TEST_F(ParsingTest, FailWithUndefinedKey) {
     EXPECT_TRUE(parser.error() && parser.error()
         == clp::error_code::undefined_key
     ) << parser.error_message() << "\nparser doesn't detect usage of undefined key.\n";
+}
+
+TEST_F(ParsingTest, FailWithAssignmentDuplicationOfExactSameKeys) {
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -a 2 -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::duplicated_assignments
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::duplicated_assignments
+    ) << parser.error_message() << "\nparser doesn't detect assignment duplication of exact same keys.\n";
+}
+
+TEST_F(ParsingTest, FailWithAssignmentDuplicationOfDifferentKeys) {
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c --AA 2 -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::duplicated_assignments
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::duplicated_assignments
+    ) << parser.error_message() << "\nparser doesn't detect assignment duplication of different keys.\n";
 }
