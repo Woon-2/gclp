@@ -30,6 +30,18 @@ THE SOFTWARE.
 
 using namespace std::literals;
 
+TEST(RemoveDashTest, RemoveSingleDash) {
+    auto src = "-abcdefg"sv;
+
+    EXPECT_EQ(clp::detail::remove_dash(src), "abcdefg"sv);
+}
+
+TEST(RemoveDashTest, RemoveDoubleDash) {
+    auto src = "--abcdefg"sv;
+
+    EXPECT_EQ(clp::detail::remove_dash(src), "abcdefg"sv);
+}
+
 TEST(SplitWordsTest, SplitWords) {
     auto splitted = clp::detail::split_words(
         "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
