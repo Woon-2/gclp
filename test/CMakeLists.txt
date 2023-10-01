@@ -10,7 +10,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     target_compile_options(gclp_test
     PRIVATE
         /MP     # compilation speed-up via multi processor
-        $<IF:$<CONFIG:DEBUG>,/MTd,/MT>    # use static multi-threaded crt library
+        $<IF:$<CONFIG:DEBUG>,/MDd,/MD>    # use dynamic multi-threaded crt library
         /sdl    # security check
         /O2     # maximum speed optimization
         /fp:strict    # rate correctness over speed on floating points
