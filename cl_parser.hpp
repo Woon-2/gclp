@@ -1422,7 +1422,7 @@ using parser = basic_cl_parser<char, std::char_traits<char>, Params...>;
  * @tparam Params Parameter types to be parsed by the parser.
  */
 template <class ... Params>
-using wparser = basic_cl_parser<char, std::char_traits<char>, Params...>;
+using wparser = basic_cl_parser<wchar_t, std::char_traits<wchar_t>, Params...>;
 
 }   // namespace clp
 
