@@ -140,7 +140,7 @@ struct is_char<T> : std::true_type
  * @tparam T The type to be checked.
  */
 template <class T>
-inline constexpr auto is_char_v = is_char<T>::value;
+inline constexpr bool is_char_v = is_char<T>::value;
 
 /**
  * @brief Concept to check if a type is not convertible to another type.
@@ -256,7 +256,7 @@ void tuple_conv(
  * @return The dash character.
  */
 template <class CharT>
-constexpr auto dash() {
+constexpr CharT dash() {
     return CharT('-');
 }
 
@@ -268,7 +268,7 @@ constexpr auto dash() {
  * @return The character escape character.
  */
 template <class CharT>
-constexpr auto char_escape() {
+constexpr CharT char_escape() {
     return CharT('\\');
 }
 
@@ -280,7 +280,7 @@ constexpr auto char_escape() {
  * @return The stream delimiter character.
  */
 template <class CharT>
-constexpr auto stream_delim() {
+constexpr CharT stream_delim() {
     return CharT(' ');
 }
 
@@ -292,7 +292,7 @@ constexpr auto stream_delim() {
  * @return The character assignment character.
  */
 template <class CharT>
-constexpr auto char_assign() {
+constexpr CharT char_assign() {
     return CharT('=');
 }
 
@@ -304,7 +304,7 @@ constexpr auto char_assign() {
  * @return The single quote character.
  */
 template <class CharT>
-constexpr auto single_quote() {
+constexpr CharT single_quote() {
     return CharT('\'');
 }
 
@@ -316,7 +316,7 @@ constexpr auto single_quote() {
  * @return The double quote character.
  */
 template <class CharT>
-constexpr auto double_quote() {
+constexpr CharT double_quote() {
     return CharT('\"');
 }
 
@@ -329,7 +329,7 @@ constexpr auto double_quote() {
  * @return true if the string starts with a single dash character, false otherwise.
  */
 template <class StringView>
-auto is_single_dashed(StringView word) noexcept {
+bool is_single_dashed(StringView word) noexcept {
     using char_type = typename StringView::value_type;
 
     return std::size(word) > std::size_t(1)
@@ -346,7 +346,7 @@ auto is_single_dashed(StringView word) noexcept {
  * @return true if the string represents a key, false otherwise.
  */
 template <class StringView>
-auto is_key(StringView word) noexcept {
+bool is_key(StringView word) noexcept {
     using char_type = typename StringView::value_type;
 
     if ( std::size(word) == std::size_t(1) ) {
@@ -371,7 +371,7 @@ auto is_key(StringView word) noexcept {
  * @return true if the string represents a complex boolean parameter, false otherwise.
  */
 template <class StringView>
-auto is_complex_boolean_param(StringView word) noexcept {
+bool is_complex_boolean_param(StringView word) noexcept {
     return is_single_dashed(word) && std::size(word) > 2;
 }
 
@@ -384,7 +384,7 @@ auto is_complex_boolean_param(StringView word) noexcept {
  * @return A new string view with leading dash characters removed.
  */
 template <class StringView>
-auto remove_dash(StringView s) noexcept {
+bool remove_dash(StringView s) noexcept {
     return StringView(
         s.begin() + s.find_first_not_of('-'),
         s.end()
@@ -400,7 +400,7 @@ auto remove_dash(StringView s) noexcept {
  * @return A vector of string views representing individual words.
  */
 template <class StringView>
-auto split_words(StringView s) {
+std::vector<StringView> split_words(StringView s) {
     using char_type = typename StringView::value_type;
 
     auto ret = std::vector<StringView>{};
@@ -566,7 +566,7 @@ public:
      * 
      * @return true if the parameter has a value, false otherwise.
      */
-    auto has_value() const noexcept {
+    bool has_value() const noexcept {
         return val_.has_value() || defval_.has_value();
     }
 
@@ -577,7 +577,7 @@ public:
      * @return A reference to the parameter value or default value.
      * @pre The parameter has a value (either assigned or default).
      */
-    auto& value() noexcept {
+    value_type& value() noexcept {
         assert(has_value());
 
         if (val_.has_value()) {
@@ -593,7 +593,7 @@ public:
      * @return A const reference to the parameter value or default value.
      * @pre The parameter has a value (either assigned or default).
      */
-    const auto& value() const noexcept {
+    const value_type& value() const noexcept {
         assert(has_value());
 
         if (val_.has_value()) {
@@ -609,7 +609,7 @@ public:
      * @param key_char The single-character key to check for.
      * @return true if the key is found, false otherwise.
      */
-    auto contains(char_type key_char) const {
+    bool contains(char_type key_char) const {
         return std::ranges::find(key_chars_, key_char) != std::end(key_chars_);
     }
     
@@ -620,7 +620,7 @@ public:
      * @param key_string The string key to check for.
      * @return true if the key is found, false otherwise.
      */
-    auto contains(string_view_type key_string) const {
+    bool contains(string_view_type key_string) const {
         return std::ranges::find(key_strs_, key_string) != std::end(key_strs_);
     }
     
@@ -637,7 +637,7 @@ public:
         requires requires(It a, It b) {
             string_view_type(a, b);
         }
-    auto contains(It first, It last) const {
+    bool contains(It first, It last) const {
         return std::ranges::find(
                 key_strs_, string_view_type(first, last)
             ) != std::end(key_strs_);
@@ -653,7 +653,7 @@ public:
      */
     template <std::ranges::range R>
        requires std::convertible_to<R, string_view_type>
-    auto contains(R&& r) const {
+    bool contains(R&& r) const {
         return contains(
             static_cast<string_view_type>( std::forward<R>(r) )
         );
@@ -665,7 +665,7 @@ public:
      * This function returns a const reference to the list of single-character keys associated with the parameter.
      * @return A const reference to the list of single-character keys.
      */
-    const auto& key_chars() const noexcept {
+    const key_container<char_type>& key_chars() const noexcept {
         return key_chars_;
     }
 
@@ -675,7 +675,7 @@ public:
      * This function returns a const reference to the list of string keys associated with the parameter.
      * @return A const reference to the list of string keys.
      */
-    const auto& key_strs() const noexcept {
+    const key_container<string_view_type>& key_strs() const noexcept {
         return key_strs_;
     }
 
@@ -685,7 +685,7 @@ public:
      * This function checks if the parameter has a brief description message.
      * @return true if the parameter has a brief description, false otherwise.
      */
-    auto has_brief_message() const noexcept {
+    bool has_brief_message() const noexcept {
         return brief_.has_value();
     }
 
@@ -696,7 +696,7 @@ public:
      * @return The brief description message.
      * @pre The parameter has a brief description.
      */
-    const auto brief_message() const noexcept {
+    const string_view_type brief_message() const noexcept {
         assert(has_brief_message());
         return brief_.value();
     }
@@ -715,7 +715,7 @@ public:
             std::remove_cvref_t<InCompatible>,
             value_type
         >
-    auto assign(InCompatible&& arg) {
+    bool assign(InCompatible&& arg) {
         fail_ = true;
         return false;
     }
@@ -728,7 +728,7 @@ public:
      * @param val The const reference value to be assigned.
      * @return true if the assignment is successful, false otherwise.
      */
-    auto assign(const value_type& val) {
+    bool assign(const value_type& val) {
         if (fail()) {
             return false;
         }
@@ -744,7 +744,7 @@ public:
      * @param val The rvalue reference value to be assigned.
      * @return true if the assignment is successful, false otherwise.
      */
-    auto assign(value_type&& val) {
+    bool assign(value_type&& val) {
         if (fail()) {
             return false;
         }
@@ -758,7 +758,7 @@ public:
      * This function checks if the parameter has encountered a failure during assignment.
      * @return true if a failure occurred, false otherwise.
      */
-    auto fail() const noexcept {
+    bool fail() const noexcept {
         return fail_;
     }
 
@@ -943,7 +943,7 @@ public:
      * This function returns the error code representing the parsing status.
      * @return The error code indicating the parsing status.
      */
-    auto error() const noexcept {
+    error_code error() const noexcept {
         return err_code_;
     }
 
@@ -953,7 +953,7 @@ public:
      * This function returns the error message associated with the parsing error.
      * @return The error message describing the parsing error.
      */
-    auto error_message() const noexcept {
+    string_type error_message() const noexcept {
         return err_stream_.str();
     }
 
@@ -987,8 +987,7 @@ public:
      * @return A tuple containing the parsed values.
      */
     template <class IntType, class StrArrType>
-    auto parse(IntType argc, StrArrType argv)
-        -> result_tuple_type {
+    result_tuple_type parse(IntType argc, StrArrType argv) {
         auto flattend = string_type();
 
         for (auto i = decltype(argc)(0); i < argc; ++i) {
@@ -1006,8 +1005,7 @@ public:
      * @param command_line The command-line arguments as a single string.
      * @return A tuple containing the parsed values.
      */
-    auto parse(string_view_type command_line)
-        -> result_tuple_type {
+    result_tuple_type parse(string_view_type command_line)  {
         result_tuple_type ret;
 
         // Check if parameter has been already assigned a value
@@ -1153,7 +1151,7 @@ private:
      * @param word The complex key to parse.
      * @return False if parsing fails (at least one undefined key or incompatible argument), true otherwise.
      */
-    auto parse_complex_keys(string_view_type word) {
+    bool parse_complex_keys(string_view_type word) {
         /*
         fail means at least one of the keys in complex param received
         isn't defined as boolean param.
@@ -1191,8 +1189,8 @@ private:
      * @param word The key to search for.
      * @return An optional index indicating the position of the parameter, or empty if the key is undefined.
      */
-    auto find_param_index(string_view_type word) {
-        std::optional<index_type> idx_found{};
+    std::optional<index_type> find_param_index(string_view_type word) {
+        auto idx_found = std::optional<index_type>();
 
         detail::tuple_for_each(
             params_,
@@ -1223,7 +1221,7 @@ private:
      * @param param_idx The index of the parameter to assign arguments to.
      * @return True if assignment is successful, false otherwise.
      */
-    auto assign_arg_by_idx(index_type param_idx) {
+    bool assign_arg_by_idx(index_type param_idx) {
         bool success = false;
 
         detail::tuple_for_each(
@@ -1275,7 +1273,7 @@ private:
      * Generates a string representation of the command-line arguments for error messages.
      * @return A string containing formatted command-line arguments.
      */
-    auto get_args_string() {
+    string_type get_args_string() {
         auto args = string_type();
 
         auto view = std::ranges::basic_istream_view<
@@ -1366,7 +1364,7 @@ private:
      * Checks if there are unparsed arguments remaining in the input stream.
      * @return True if there are unparsed arguments, false otherwise.
      */
-    auto has_unparsed_arguments() const {
+    bool has_unparsed_arguments() const {
         // if any character rather than eof remain in stream,
         // stream buffer size is greater than 1. (the one stands for eof.)
         return arg_stream_.rdbuf()->in_avail() > 1;
