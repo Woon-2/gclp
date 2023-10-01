@@ -1173,8 +1173,25 @@ private:
         detail::tuple_for_each(
             params_,
             [ &success, this, param_idx, i = 0 ](auto& p) mutable {
+                using value_type = typename std::remove_cvref_t<decltype(p)>
+                    ::value_type;
+
                 if (param_idx == i) {
-                    this->arg_stream_ >> p;
+                    // when extracting string_type,
+                    // all characters in the stream regardless of white space should be extracted.
+                    if constexpr (std::is_base_of_v<string_type, value_type>) {
+                        auto acc = string_type();
+                        for (auto&& s : std::views::istream<string_type>(this->arg_stream_)) {
+                            acc += s;
+                            acc += detail::stream_delim<char_type>();
+                        }
+                        acc.pop_back();
+                        p.assign( std::move(acc) );
+                        this->arg_stream_.clear();
+                    }
+                    else {
+                        this->arg_stream_ >> p;
+                    }
                     success = !p.fail();
                 }
                 ++i;

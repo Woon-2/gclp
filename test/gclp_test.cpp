@@ -191,5 +191,5 @@ TEST_F(ParsingTest, IgnoresSpaceInQuoted) {
 
     EXPECT_FALSE(parser.error() && parser.error()
         == clp::error_code::unparsed_argument
-    ) << "remainders are from not ignoring space within quote.";
+    ) << parser.error_message() << "\nremainders are from not ignoring space within quote.";
 }
