@@ -181,6 +181,19 @@ TEST_F(ParsingTest, OmitOptional) {
     EXPECT_EQ(rg, 1u);
 }
 
+TEST_F(ParsingTest, FailWithOmittingRequired) {
+    auto cmd = "TestCLI -a 1 -b 3.14 -e World! -f 1.6"sv;
+    auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::required_key_not_given
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::required_key_not_given
+    ) << parser.error_message() << "\nparser doesn't detect required key not given.";
+}
+
 TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
     auto cmd = "TestCLI -a 1 -b 3.14 -c c -d \"He llo\" -e \"Wo rld ! \" -f 1.6 -g 1"sv;
     auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
