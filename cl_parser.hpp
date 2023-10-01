@@ -1189,6 +1189,18 @@ private:
                         p.assign( std::move(acc) );
                         this->arg_stream_.clear();
                     }
+                    // when extracting boolean type,
+                    // omitting argument means the value is true
+                    else if constexpr (std::is_base_of_v<bool, value_type>
+                        || std::is_same_v<bool, value_type>
+                    ) {
+                        if (!has_unparsed_arguments()) {
+                            p.assign(true);
+                        }
+                        else {
+                            this->arg_stream_ >> p;
+                        }
+                    }
                     else {
                         this->arg_stream_ >> p;
                     }
@@ -1221,7 +1233,9 @@ private:
             );
         }
 
-        args.pop_back();
+        if (!args.empty()) {
+            args.pop_back();
+        }
 
         return args;
     }
