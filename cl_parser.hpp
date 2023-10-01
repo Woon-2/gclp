@@ -43,7 +43,7 @@ THE SOFTWARE.
 #include <cassert>
 #include <format>
 #include <unordered_set>
-
+#include <bitset>
 
 /* The '__LITERAL' macro generates character literals
    based on the provided 'type' and 's'.
@@ -389,36 +389,6 @@ auto remove_dash(StringView s) noexcept {
         s.begin() + s.find_first_not_of('-'),
         s.end()
     );
-}
-
-/**
- * @brief Check if a range contains duplicate elements.
- * 
- * Determines whether a given range contains duplicate elements.
- * The function uses an unordered set to efficiently keep track of unique elements.
- * If there are duplicates in the input range, the function returns true; otherwise, it returns false.
- * 
- * @tparam R The type of the input range.
- * @param r The input range to check for duplicates.
- * @return `true` if the input range contains duplicates, `false` otherwise.
- * 
- * Example Usage:
- * @code
- * std::vector<int> numbers = {1, 2, 3, 4, 2, 5};
- * bool hasDuplicates = has_duplicate(numbers);
- * // hasDuplicates will be true, as there are duplicates in the 'numbers' vector.
- * @endcode
- */
-template <std::ranges::range R>
-auto has_duplicate(const R& r) {
-    std::unordered_set<std::ranges::range_value_t<R>> uniqueElements;
-    for (const auto& element : r) {
-        if (!uniqueElements.insert(element).second) {
-            // If the element is not inserted (i.e., it already exists), it's a duplicate.
-            return true;
-        }
-    }
-    return false;
 }
 
 /**
@@ -935,7 +905,8 @@ enum class error_code {
     unparsed_argument,  ///< An argument could not be parsed successfully.
     incompatible_argument, ///< The provided argument is incompatible with the associated key.
     wrong_complex_key,  ///< An incorrect complex key format was provided.
-    required_key_not_given ///< A required key was not provided in the command-line arguments.
+    required_key_not_given, ///< A required key was not provided in the command-line arguments.
+    duplicated_assignments  ///< More then one of the keys are assigning value to the same parameter.
 };
 
 template <
@@ -1039,6 +1010,46 @@ public:
         -> result_tuple_type {
         result_tuple_type ret;
 
+        // Check if parameter has been already assigned a value
+        // to guarantee that the parameters will have been assigned a value
+        // only once.
+        auto b_assigned = std::bitset<
+            std::tuple_size_v<result_tuple_type>
+        >(0u);
+
+        auto has_duplicated_assignments = [b_assigned
+            = std::bitset< std::tuple_size_v<result_tuple_type> >(0u),
+            this
+        ](auto word) mutable {
+            bool ret = false;
+
+            auto map_with_key = [&](auto key) {
+                detail::tuple_for_each(
+                    this->params_,
+                    [&, i = 0](auto& p) mutable {
+                        if ( p.contains(key) ) {
+                            if (b_assigned.test(i)) {
+                                ret = true;
+                            }
+                            b_assigned.set(i);
+                        }
+                        ++i;
+                    }
+                );
+            };
+
+            if ( detail::is_complex_boolean_param(word) ) {
+                for (auto key : detail::remove_dash(word)) {
+                    map_with_key(key);
+                }
+            }
+            else {
+                map_with_key( detail::remove_dash(word) );
+            }
+
+            return ret;
+        };
+
         if (error().has_value()) {
             return ret;
         }
@@ -1059,17 +1070,20 @@ public:
         }
 
         while (it_first != it_last) {
-            if (detail::is_complex_boolean_param(*it_first)) {
-                if (!parse_complex_keys(*it_first)) {
+            if ( detail::is_complex_boolean_param(*it_first) ) {
+                if ( !parse_complex_keys(*it_first) ) {
                     log_error_wrong_complex_key(*it_first);
                     return ret;
+                }
+                if ( has_duplicated_assignments(*it_first) ) {
+                    log_error_duplicated_assignments(*it_first);
                 }
                 ++it_first;
                 continue;
             }
 
             auto param_idx = find_param_index(*it_first);
-            if (!param_idx.has_value()) {
+            if ( !param_idx.has_value() ) {
                 log_error_undefined_key(*it_first);
                 return ret;
             }
@@ -1090,6 +1104,10 @@ public:
             if ( !assign_arg_by_idx( param_idx.value() ) ) {
                 log_error_incompatible_argument(*it_first);
                 return ret;
+            }
+
+            if ( has_duplicated_assignments(*it_first) ) {
+                log_error_duplicated_assignments(*it_first);
             }
 
             if ( has_unparsed_arguments() ) {
@@ -1138,10 +1156,6 @@ private:
         isn't defined as boolean param.
         */ 
         auto fail = false;
-
-        if (detail::has_duplicate(word)) {
-            return false;
-        }
 
         for (auto key : detail::remove_dash(word)) {
             auto key_found = false;
@@ -1433,6 +1447,24 @@ private:
                         << p.brief_message() << __LITERAL(char_type, "\n");
                 }
             }
+        );
+    }
+
+    /**
+     * @brief Log an error for duplicated assignments.
+     * 
+     * Logs an error indicating that duplicated assignments were detected while parsing the specified key.
+     * Duplicated assignments occur when more than one key assigns its value to the same parameter.
+     * 
+     * @param key The key for which duplicated assignments were detected.
+     */
+    void log_error_duplicated_assignments(string_view_type key) {
+        err_code_ = error_code::duplicated_assignments;
+        err_stream_ << __LITERAL(char_type,
+            "[gclp] error: duplicated assignments detected when parsing \""
+        ) << key << __LITERAL(char_type,
+            "\".\n"
+            "\tmore than one of keys are assigning their values to same parameter.\n"
         );
     }
 
