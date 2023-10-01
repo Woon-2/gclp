@@ -62,6 +62,21 @@ TEST(BasicParsingTest, ParseSingleRequired) {
     EXPECT_EQ(aa, 4);
 }
 
+TEST(BasicParsingTest, ParseSingleBoolean) {
+    auto parser = clp::parser(
+        "identifier"sv,
+        clp::optional<bool>(
+            {'a'}, {"aa"}, "an optional boolean"
+        )
+    );
+    auto [a1] = parser.parse("identifier -a 1"sv);
+    EXPECT_TRUE(a1) << "parser doesn't recognize 1 as true.";
+    auto [a2] = parser.parse("identifier -a true"sv);
+    EXPECT_TRUE(a2) << "parser doesn't recognize \'true\' from command-line arguments.";
+    auto [a3] = parser.parse("identifier -a"sv);
+    EXPECT_TRUE(a3) << "parser doesn't recognize a boolean option with no argument as true.";
+}
+
 TEST(SplitWordsTest, SplitWords) {
     auto splitted = clp::detail::split_words(
         "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
@@ -142,7 +157,27 @@ protected:
             {"gg", "GG", "unsigned_short", "UnsignedShort", "ushort"},
             "a required unsigned short parameter"
         ),
-        parser("TestCLI"sv, a, b, c, d, e, f, g) {}
+        h(
+            {'h', 'H'},
+            {"hh", "HH"},
+            "an optional boolean parameter"
+        ),
+        i(
+            {'i', 'I'},
+            {"ii", "II"},
+            "an optional boolean parameter"
+        ),
+        j(
+            {'j', 'J'},
+            {"jj", "JJ"},
+            "an optional boolean parameter"
+        ),
+        k(
+            {'k', 'K'},
+            {"kk", "KK"},
+            "an optional boolean parameter"
+        ), 
+        parser("TestCLI"sv, a, b, c, d, e, f, g, h, i, j, k) {}
 
 private:
     clp::optional<int> a;
@@ -152,27 +187,32 @@ private:
     clp::optional<std::string> e;
     clp::optional<float> f;
     clp::required<unsigned short> g;
+    clp::optional<bool> h;
+    clp::optional<bool> i;
+    clp::required<bool> j;
+    clp::required<bool> k;
 
 protected:
     clp::parser<
         decltype(a), decltype(b), decltype(c),
         decltype(d), decltype(e), decltype(f),
-        decltype(g)
+        decltype(g), decltype(h), decltype(i),
+        decltype(j), decltype(k)
     > parser;
 };
 
 TEST_F(ParsingTest, ParseMultipleArgs) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
     auto res = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error()) << parser.error_message();
 
-    EXPECT_EQ(res, std::make_tuple(1, 3.14, 'c', "Hello"s, "World!"s, 1.6f, 1u));
+    EXPECT_EQ(res, std::make_tuple(1, 3.14, 'c', "Hello"s, "World!"s, 1.6f, 1u, true ,true, true, true));
 }
 
 TEST_F(ParsingTest, OmitOptional) {
-    auto cmd = "TestCLI -c c -d Hello -g 1"sv;
-    auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
+    auto cmd = "TestCLI -c c -d Hello -g 1 -j -k"sv;
+    auto [ra, rb, rc, rd, re, rf, rg, rh, ri, rj, rk] = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error()) << parser.error_message();
 
@@ -182,8 +222,8 @@ TEST_F(ParsingTest, OmitOptional) {
 }
 
 TEST_F(ParsingTest, FailWithOmittingRequired) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -e World! -f 1.6"sv;
-    auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
+    auto cmd = "TestCLI -a 1 -b 3.14 -e World! -f 1.6 -h -i"sv;
+    auto [ra, rb, rc, rd, re, rf, rg, rh, ri, rj, rk] = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
         != clp::error_code::required_key_not_given
@@ -195,8 +235,8 @@ TEST_F(ParsingTest, FailWithOmittingRequired) {
 }
 
 TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d \"He llo\" -e \"Wo rld ! \" -f 1.6 -g 1"sv;
-    auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d \"He llo\" -e \"Wo rld ! \" -f 1.6 -g 1 -h -i -j -k"sv;
+    auto [ra, rb, rc, rd, re, rf, rg, rh, ri, rj ,rk] = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
         != clp::error_code::unparsed_argument
@@ -208,13 +248,13 @@ TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
 }
 
 TEST_F(ParsingTest, CompareOverloadings) {
-    int argc = 15;
+    int argc = 19;
     const char* argv[] = {"TestCLI", "-a", "1", "-b",
         "3.14", "-c", "c", "-d", "Hello", "-e", "World!",
-        "-f", "1.6", "-g", "1"
+        "-f", "1.6", "-g", "1", "-h", "-i", "-j", "-k"
     };
 
-    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
 
     auto result_from_argc_argv = parser.parse(argc, argv);
     ASSERT_FALSE(parser.error()) << parser.error_message();
@@ -226,7 +266,7 @@ TEST_F(ParsingTest, CompareOverloadings) {
 }
 
 TEST_F(ParsingTest, FailWithWrongIdentifier) {
-    auto cmd = "WrongCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+    auto cmd = "WrongCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
 
     parser.parse(cmd);
 
@@ -240,7 +280,7 @@ TEST_F(ParsingTest, FailWithWrongIdentifier) {
 }
 
 TEST_F(ParsingTest, FailWithSkippingKey) {
-    auto cmd = "TestCLI 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+    auto cmd = "TestCLI 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
 
     parser.parse(cmd);
 
@@ -254,7 +294,7 @@ TEST_F(ParsingTest, FailWithSkippingKey) {
 }
 
 TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument) {
-    auto cmd = "TestCLI -a abc -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+    auto cmd = "TestCLI -a abc -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
 
     parser.parse(cmd);
 
@@ -269,7 +309,7 @@ TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument) {
 }
 
 TEST_F(ParsingTest, FailWithUndefinedKey) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -x c -d Hello -e World! -f 1.6 -g 1"sv;
+    auto cmd = "TestCLI -a 1 -b 3.14 -x c -d Hello -e World! -f 1.6 -g 1 -h -i -j -k"sv;
 
     parser.parse(cmd);
 
