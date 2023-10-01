@@ -181,7 +181,7 @@ TEST_F(ParsingTest, OmitOptional) {
     EXPECT_EQ(rg, 1u);
 }
 
-TEST_F(ParsingTest, IgnoresSpaceInQuoted) {
+TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
     auto cmd = "TestCLI -a 1 -b 3.14 -c c -d \"He llo\" -e \"Wo rld ! \" -f 1.6 -g 1"sv;
     auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
 
@@ -192,4 +192,22 @@ TEST_F(ParsingTest, IgnoresSpaceInQuoted) {
     EXPECT_FALSE(parser.error() && parser.error()
         == clp::error_code::unparsed_argument
     ) << parser.error_message() << "\nremainders are from not ignoring space within quote.";
+}
+
+TEST_F(ParsingTest, CompareOverloadings) {
+    int argc = 15;
+    const char* argv[] = {"TestCLI", "-a", "1", "-b",
+        "3.14", "-c", "c", "-d", "Hello", "-e", "World!",
+        "-f", "1.6", "-g", "1"
+    };
+
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
+
+    auto result_from_argc_argv = parser.parse(argc, argv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+    auto result_from_string_view = parser.parse(cmd);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+
+    EXPECT_EQ(result_from_argc_argv, result_from_string_view)  
+        << "overloadings of \"parse\" (argc, argv version/string view version) behaves differently.";
 }
