@@ -43,8 +43,10 @@ TEST(BasicParsingTest, ParseSingleOptional) {
     );
 
     auto [a] = parser.parse("identifier -a 3"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_EQ(a, 3);
     auto [aa] = parser.parse("identifier --aa 4"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_EQ(aa, 4);
 }
 
@@ -57,8 +59,10 @@ TEST(BasicParsingTest, ParseSingleRequired) {
     );
 
     auto [a] = parser.parse("identifier -a 3"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_EQ(a, 3);
     auto [aa] = parser.parse("identifier --aa 4"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_EQ(aa, 4);
 }
 
@@ -70,10 +74,13 @@ TEST(BasicParsingTest, ParseSingleBoolean) {
         )
     );
     auto [a1] = parser.parse("identifier -a 1"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_TRUE(a1) << "parser doesn't recognize 1 as true.";
     auto [a2] = parser.parse("identifier -a true"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_TRUE(a2) << "parser doesn't recognize \'true\' from command-line arguments.";
     auto [a3] = parser.parse("identifier -a"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
     EXPECT_TRUE(a3) << "parser doesn't recognize a boolean option with no argument as true.";
 }
 
@@ -85,7 +92,8 @@ TEST(BasicParsingTest, ParseComplexBoolean) {
         clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
     );
 
-    auto [ra1, rb1, rc1] = parser.parse("identifer -abc"sv);
+    auto [ra1, rb1, rc1] = parser.parse("identifier -abc"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
 
     EXPECT_TRUE(ra1);
     EXPECT_TRUE(rb1);
@@ -100,9 +108,12 @@ TEST(BasicParsingTest, ParseComplexBooleanWithTwistedOrder) {
         clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
     );
 
-    auto [ra1, rb1, rc1] = parser.parse("identifer --bb -ac"sv);
-    auto [ra2, rb2, rc2] = parser.parse("identifer -cba"sv);
-    auto [ra3, rb3, rc3] = parser.parse("identifer -c -ba"sv);
+    auto [ra1, rb1, rc1] = parser.parse("identifier --bb -ac"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+    auto [ra2, rb2, rc2] = parser.parse("identifier -cba"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+    auto [ra3, rb3, rc3] = parser.parse("identifier -c -ba"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
 
     EXPECT_TRUE(ra1);
     EXPECT_TRUE(rb1);
@@ -123,7 +134,7 @@ TEST(BasicParsingTest, FailWithParsingComplexBooleanContainingDuplication) {
         clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
     );
 
-    parser.parse("identifer -abcabc"sv);
+    parser.parse("identifier -abcabc"sv);
     EXPECT_TRUE(parser.error());
 }
 
