@@ -30,8 +30,46 @@ THE SOFTWARE.
 
 using namespace std::literals;
 
-TEST(HelloTestSuite, HelloTest) {
-    ASSERT_EQ(1, 1);
+TEST(SplitWordsTest, SplitWords) {
+    auto splitted = clp::detail::split_words(
+        "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
+    );
+
+    auto expected = decltype(splitted){
+        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
+        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
+        "1.6"sv, "-g"sv, "1"sv
+    };
+
+    EXPECT_EQ(splitted, expected);
+}
+
+TEST(SplitWordsTest, SplitWordsWithQuotes) {
+    auto splitted = clp::detail::split_words(
+        "TestCLI -a 1 -b 3.14 -c c -d \"Hello\" -e \"World!\" -f 1.6 -g 1"sv
+    );
+
+    auto expected = decltype(splitted){
+        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
+        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
+        "1.6"sv, "-g"sv, "1"sv
+    };
+
+    EXPECT_EQ(splitted, expected);
+}
+
+TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
+    auto splitted = clp::detail::split_words(
+        "TestCLI -a 1 -b 3.14 -c c -d \"Hello World!\" -e \"Bye World!\" -f 1.6 -g 1"sv
+    );
+
+    auto expected = decltype(splitted){
+        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
+        "c"sv, "-d"sv, "Hello World!"sv, "-e"sv, "Bye World!"sv, "-f"sv,
+        "1.6"sv, "-g"sv, "1"sv
+    };
+
+    EXPECT_EQ(splitted, expected);
 }
 
 TEST(BasicParsingTest, ParseSingleOptional) {
@@ -136,48 +174,6 @@ TEST(BasicParsingTest, FailWithParsingComplexBooleanContainingDuplication) {
 
     parser.parse("identifier -abcabc"sv);
     EXPECT_TRUE(parser.error());
-}
-
-TEST(SplitWordsTest, SplitWords) {
-    auto splitted = clp::detail::split_words(
-        "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
-    );
-
-    auto expected = decltype(splitted){
-        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
-        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
-        "1.6"sv, "-g"sv, "1"sv
-    };
-
-    EXPECT_EQ(splitted, expected);
-}
-
-TEST(SplitWordsTest, SplitWordsWithQuotes) {
-    auto splitted = clp::detail::split_words(
-        "TestCLI -a 1 -b 3.14 -c c -d \"Hello\" -e \"World!\" -f 1.6 -g 1"sv
-    );
-
-    auto expected = decltype(splitted){
-        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
-        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
-        "1.6"sv, "-g"sv, "1"sv
-    };
-
-    EXPECT_EQ(splitted, expected);
-}
-
-TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
-    auto splitted = clp::detail::split_words(
-        "TestCLI -a 1 -b 3.14 -c c -d \"Hello World!\" -e \"Bye World!\" -f 1.6 -g 1"sv
-    );
-
-    auto expected = decltype(splitted){
-        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
-        "c"sv, "-d"sv, "Hello World!"sv, "-e"sv, "Bye World!"sv, "-f"sv,
-        "1.6"sv, "-g"sv, "1"sv
-    };
-
-    EXPECT_EQ(splitted, expected);
 }
 
 class ParsingTest : public ::testing::Test {
