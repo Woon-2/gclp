@@ -62,6 +62,48 @@ TEST(BasicParsingTest, ParseSingleRequired) {
     EXPECT_EQ(aa, 4);
 }
 
+TEST(SplitWordsTest, SplitWords) {
+    auto splitted = clp::detail::split_words(
+        "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
+    );
+
+    auto expected = decltype(splitted){
+        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
+        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
+        "1.6"sv, "-g"sv, "1"sv
+    };
+
+    EXPECT_EQ(splitted, expected);
+}
+
+TEST(SplitWordsTest, SplitWordsWithQuotes) {
+    auto splitted = clp::detail::split_words(
+        "TestCLI -a 1 -b 3.14 -c c -d \"Hello\" -e \"World!\" -f 1.6 -g 1"sv
+    );
+
+    auto expected = decltype(splitted){
+        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
+        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
+        "1.6"sv, "-g"sv, "1"sv
+    };
+
+    EXPECT_EQ(splitted, expected);
+}
+
+TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
+    auto splitted = clp::detail::split_words(
+        "TestCLI -a 1 -b 3.14 -c c -d \"Hello World!\" -e \"Bye World!\" -f 1.6 -g 1"sv
+    );
+
+    auto expected = decltype(splitted){
+        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
+        "c"sv, "-d"sv, "Hello World!"sv, "-e"sv, "Bye World!"sv, "-f"sv,
+        "1.6"sv, "-g"sv, "1"sv
+    };
+
+    EXPECT_EQ(splitted, expected);
+}
+
 class ParsingTest : public ::testing::Test {
 protected:
     ParsingTest()
@@ -120,12 +162,12 @@ protected:
 };
 
 TEST_F(ParsingTest, ParseMultipleArgs) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 g 1"sv;
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
     auto res = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error()) << parser.error_message();
 
-    EXPECT_EQ(res, std::make_tuple(1, 3.14, 'c', "Hello"s, "World!"s, 1.6, 1));
+    EXPECT_EQ(res, std::make_tuple(1, 3.14, 'c', "Hello"s, "World!"s, 1.6f, 1u));
 }
 
 TEST_F(ParsingTest, OmitOptional) {
@@ -140,7 +182,7 @@ TEST_F(ParsingTest, OmitOptional) {
 }
 
 TEST_F(ParsingTest, IgnoresSpaceInQuoted) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d \"He llo\" -e \"Wo rld ! \" -f 1.6 g 1"sv;
+    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d \"He llo\" -e \"Wo rld ! \" -f 1.6 -g 1"sv;
     auto [ra, rb, rc, rd, re, rf, rg] = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
