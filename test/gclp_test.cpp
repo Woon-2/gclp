@@ -267,3 +267,17 @@ TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument) {
     ) << parser.error_message() << "\nparser doesn't detect assignment of incompatible arguments.\n"
         << "tried: assigning std::string to int";
 }
+
+TEST_F(ParsingTest, FailWithUndefinedKey) {
+    auto cmd = "TestCLI -a 1 -b 3.14 -x c -d Hello -e World! -f 1.6 -g 1"sv;
+
+    parser.parse(cmd);
+
+    ASSERT_FALSE(parser.error() && parser.error()
+        != clp::error_code::undefined_key
+    ) << parser.error_message();
+
+    EXPECT_TRUE(parser.error() && parser.error()
+        == clp::error_code::undefined_key
+    ) << parser.error_message() << "\nparser doesn't detect usage of undefined key.\n";
+}
