@@ -253,22 +253,7 @@ TEST_F(ParsingTest, FailWithSkippingKey) {
     ) << parser.error_message() << "\nparser doesn't detect wrong key-arguments order.";
 }
 
-TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument1) {
-    auto cmd = "TestCLI -a 1 -b 3.14 -c c -d 3 -e 4 -f 1.6 -g 1"sv;
-
-    parser.parse(cmd);
-
-    ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::incompatible_argument
-    ) << parser.error_message();
-
-    EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::incompatible_argument
-    ) << parser.error_message() << "\nparser doesn't detect assignment of incompatible arguments.\n"
-        << "tried: assigning int to std::string";
-}
-
-TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument2) {
+TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument) {
     auto cmd = "TestCLI -a abc -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv;
 
     parser.parse(cmd);
