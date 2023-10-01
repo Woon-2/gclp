@@ -42,6 +42,7 @@ THE SOFTWARE.
 #include <limits>
 #include <cassert>
 #include <format>
+#include <unordered_set>
 
 
 /* The '__LITERAL' macro generates character literals
@@ -388,6 +389,36 @@ auto remove_dash(StringView s) noexcept {
         s.begin() + s.find_first_not_of('-'),
         s.end()
     );
+}
+
+/**
+ * @brief Check if a range contains duplicate elements.
+ * 
+ * Determines whether a given range contains duplicate elements.
+ * The function uses an unordered set to efficiently keep track of unique elements.
+ * If there are duplicates in the input range, the function returns true; otherwise, it returns false.
+ * 
+ * @tparam R The type of the input range.
+ * @param r The input range to check for duplicates.
+ * @return `true` if the input range contains duplicates, `false` otherwise.
+ * 
+ * Example Usage:
+ * @code
+ * std::vector<int> numbers = {1, 2, 3, 4, 2, 5};
+ * bool hasDuplicates = has_duplicate(numbers);
+ * // hasDuplicates will be true, as there are duplicates in the 'numbers' vector.
+ * @endcode
+ */
+template <std::ranges::range R>
+auto has_duplicate(const R& r) {
+    std::unordered_set<std::ranges::range_value_t<R>> uniqueElements;
+    for (const auto& element : r) {
+        if (!uniqueElements.insert(element).second) {
+            // If the element is not inserted (i.e., it already exists), it's a duplicate.
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -1030,7 +1061,7 @@ public:
         while (it_first != it_last) {
             if (detail::is_complex_boolean_param(*it_first)) {
                 if (!parse_complex_keys(*it_first)) {
-                    log_error_wrong_complex_key();
+                    log_error_wrong_complex_key(*it_first);
                     return ret;
                 }
                 ++it_first;
@@ -1108,24 +1139,32 @@ private:
         */ 
         auto fail = false;
 
-        detail::tuple_for_each(
-            params_,
-            [ &fail, keys = detail::remove_dash(word) ](auto& p) mutable {
-                for (auto key : keys) {
+        if (detail::has_duplicate(word)) {
+            return false;
+        }
+
+        for (auto key : detail::remove_dash(word)) {
+            auto key_found = false;
+
+            detail::tuple_for_each(
+                params_,
+                [ &fail, &key_found, key ](auto& p) {
                     if (p.contains(key)) {
+                        key_found = true;
                         p.assign(true);
                         if (p.fail()) {
                             fail = true;
                         }
                     }
-                    else {
-                        fail = true;
-                    }
                 }
-            }
-        );
+            );
 
-        return !fail;
+            if (!key_found || fail) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -1336,16 +1375,19 @@ private:
     /**
      * @brief Logs an error for complex keys with undefined boolean parameters.
      * 
-     * Logs an error message when at least one key in a complex parameter is not defined as a boolean parameter.
+     * Logs an error message when at least one key in a complex parameter is not defined as a boolean parameter
+     * or at least one key in a complex parameter duplicated.
+     * @param keys The keys containing at least one key which is not defined as a boolean parameter.
      */
-    void log_error_wrong_complex_key() {
+    void log_error_wrong_complex_key(string_view_type keys) {
         err_code_ = error_code::incompatible_argument;
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: at least one of the keys in complex param received"
-            " isn't defined as boolean param.\n"
-            "\treceived: ["
-        ) << get_args_string() << __LITERAL(char_type,
-            "]\n"
+            " isn't defined as boolean param"
+            " or at least one key in a complex param duplicated.\n"
+            "\treceived: \""
+        ) << keys << __LITERAL(char_type,
+            "\"\n"
         );
     }
 
