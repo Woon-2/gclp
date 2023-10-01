@@ -10,7 +10,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     target_compile_options(gclp_test
     PRIVATE
         /MP     # compilation speed-up via multi processor
-        $<if:$<CONFIG:DEBUG>,MTd,MT>    # use static multi-threaded crt library
+        $<IF:$<CONFIG:DEBUG>,/MTd,/MT>    # use static multi-threaded crt library
         /sdl    # security check
         /O2     # maximum speed optimization
         /fp:strict    # rate correctness over speed on floating points
@@ -105,5 +105,5 @@ set_property(CACHE TEST_CONFIG PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
 add_custom_target(
     test
     COMMENT "test features"
-    COMMAND ctest -C ${TEST_CONFIG} --test-dir "${PROJECT_BINARY_DIR}/test"
+    COMMAND ctest -C ${TEST_CONFIG} --test-dir "${PROJECT_BINARY_DIR}/test" --output-on-failure
 )
