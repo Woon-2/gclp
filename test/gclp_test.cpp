@@ -77,6 +77,56 @@ TEST(BasicParsingTest, ParseSingleBoolean) {
     EXPECT_TRUE(a3) << "parser doesn't recognize a boolean option with no argument as true.";
 }
 
+TEST(BasicParsingTest, ParseComplexBoolean) {
+    auto parser = clp::parser(
+        "identifier"sv,
+        clp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
+        clp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
+        clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
+    );
+
+    auto [ra1, rb1, rc1] = parser.parse("identifer -abc"sv);
+
+    EXPECT_TRUE(ra1);
+    EXPECT_TRUE(rb1);
+    EXPECT_TRUE(rc1);
+}
+
+TEST(BasicParsingTest, ParseComplexBooleanWithTwistedOrder) {
+    auto parser = clp::parser(
+        "identifier"sv,
+        clp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
+        clp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
+        clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
+    );
+
+    auto [ra1, rb1, rc1] = parser.parse("identifer --bb -ac"sv);
+    auto [ra2, rb2, rc2] = parser.parse("identifer -cba"sv);
+    auto [ra3, rb3, rc3] = parser.parse("identifer -c -ba"sv);
+
+    EXPECT_TRUE(ra1);
+    EXPECT_TRUE(rb1);
+    EXPECT_TRUE(rc1);
+    EXPECT_TRUE(ra2);
+    EXPECT_TRUE(rb2);
+    EXPECT_TRUE(rc2);
+    EXPECT_TRUE(ra3);
+    EXPECT_TRUE(rb3);
+    EXPECT_TRUE(rc3);
+}
+
+TEST(BasicParsingTest, FailWithParsingComplexBooleanContainingDuplication) {
+    auto parser = clp::parser(
+        "identifier"sv,
+        clp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
+        clp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
+        clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
+    );
+
+    parser.parse("identifer -abcabc"sv);
+    EXPECT_TRUE(parser.error());
+}
+
 TEST(SplitWordsTest, SplitWords) {
     auto splitted = clp::detail::split_words(
         "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
