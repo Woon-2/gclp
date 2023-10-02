@@ -44,16 +44,39 @@ project(pgclp
 
 add_library(gclp INTERFACE cl_parser.hpp)
 
+set(Doxygen_ROOT "" CACHE STRING
+    "The path to directory where doxygen is installed
+    used in find_package(Doxygen),
+    This path is used prior to any other paths."
+)
+
+option(DOXYGEN_EXTRACT_ALL
+    "extract all entities including even enitites not documented.
+    (turn this option on when you need develop-documentation.)"
+    OFF
+)
+
 find_package(Doxygen)
 
 if(DOXYGEN_FOUND)
-    set(DOXYGEN_INPUT_DIR "${PROJECT_SOURCE_DIR}")
-    set(DOXYGEN_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/docs")
+    set(DOXYGEN_INPUT_DIR "${PROJECT_SOURCE_DIR}" CACHE
+        STRING "the input directory for doxygen")
+    set(DOXYGEN_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/docs" CACHE
+        STRING "the output directory for doxygen"
+    )
+    option(DOXYGEN_RECURSIVE "doxygen recursive option" OFF)
+
+    if (DOXYGEN_RECURSIVE)
+        set(DOXYGEN_RECURSIVE_VALUE YES)
+    else()
+        set(DOXYGEN_RECURSIVE_VALUE NO)
+    endif()
 
     if(NOT EXISTS "${DOXYGEN_INPUT_DIR}/docs/Doxyfile")
         configure_file(
             "${DOXYGEN_INPUT_DIR}/Doxyfile.in"
             "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
+            @ONLY
         )
     endif()
 
