@@ -1,8 +1,3 @@
-### 리드미 언어
-
-- [English](https://github.com/Woon-2/gclp/blob/main/README.md)
-- 한국어(현재 언어)
-
 # Generic Command-Line Parser(gclp)
 
 gclp는 편리한 명령줄 해석 기능을 제공하는 싱글 헤더 온리 라이브러리입니다.    
@@ -20,6 +15,11 @@ gclp는 유연한 인터페이스를 갖추고 있습니다.
 한 개의 매개변수를 나타내는 여러 가지 키를 둘 수 있습니다.     
 어떤 매개변수는 선택 사항으로, 어떤 매개변수는 필수 사항으로 설정할 수 있습니다.   
 명령줄 인자 사이에 공백이 여러 개여도 문제 없으며, 명령줄 인자의 순서가 바뀌어도 잘 동작합니다.
+
+### 리드미 언어
+
+- [English](https://github.com/Woon-2/gclp/blob/main/README.md)
+- 한국어(현재 언어)
 
 ## 사용법
 

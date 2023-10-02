@@ -1,8 +1,3 @@
-### Readme Language
-
-- English(current)
-- [한국어](https://github.com/Woon-2/gclp/blob/main/readme/README-KR.md)
-
 # Generic Command-Line Parser(gclp)
 
 gclp is a single-header-only library that provides convenient command-line parsing functionality.    
@@ -22,6 +17,11 @@ You can assign multiple keys to a single parameter, allowing common conventions 
 Some parameters can be marked as optional, while others can be marked as required.    
 Multiple spaces between command-line arguments pose no problem,     
 and the parser functions correctly even if the order of command-line arguments is changed.
+
+### Readme Language
+
+- English(current)
+- [한국어](https://github.com/Woon-2/gclp/blob/main/readme/README-KR.md)
 
 ## Usage
 
