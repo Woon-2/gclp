@@ -45,13 +45,17 @@ THE SOFTWARE.
 #include <unordered_set>
 #include <bitset>
 
-/* The '__LITERAL' macro generates character literals
-   based on the provided 'type' and 's'.
-   It handles different character types such as
-   'char', 'wchar_t', 'char16_t', 'char32_t', and 'char8_t' (if supported),
-   allowing seamless integration of character literals
-   into template functions with generic character types.
-   Note: '__cpp_char8_t' check ensures compatibility with C++20's 'char8_t'. */
+/**
+ * @brief Macro for creating string literals with correct prefix based on character type.
+ *
+ * This macro enables the creation of string literals with the appropriate prefix based on the character type.
+ * For example, if the character type is 'char', the macro returns the input string. If the character type is 'wchar_t',
+ * it returns the input string with the 'L' prefix, and so on for other character types.
+ *
+ * @param type The character type for which the string literal is created.
+ * @param s The input string for which the literal is generated.
+ * @return The string literal with the correct prefix based on the character type.
+ */
 #ifdef __cpp_char8_t
 #define __LITERAL(type, s)  \
 []() {  \
