@@ -38,11 +38,32 @@ endif()
 
 project(pgclp
     LANGUAGES CXX
-    VERSION 2023.9.29
+    VERSION 2023.10.01
     DESCRIPTION "a lightweight header-only generic command line parser"
 )
 
 add_library(gclp INTERFACE cl_parser.hpp)
+
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_INPUT_DIR "${PROJECT_SOURCE_DIR}")
+    set(DOXYGEN_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/docs")
+
+    if(NOT EXISTS "${DOXYGEN_INPUT_DIR}/docs/Doxyfile")
+        configure_file(
+            "${DOXYGEN_INPUT_DIR}/Doxyfile.in"
+            "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
+        )
+    endif()
+
+    doxygen_add_docs(doxygen
+        "${DOXYGEN_INPUT_DIR}"
+        WORKING_DIRECTORY "${DOXYGEN_INPUT_DIR}"
+        COMMENT "custom target for automatic documentation"
+        CONFIG_FILE "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
+    )
+endif()
 
 target_compile_features(gclp INTERFACE cxx_std_20)
 

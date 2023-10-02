@@ -95,6 +95,87 @@ THE SOFTWARE.
 }()
 #endif
 
+#define DEFINE_ENUM_LOGICAL_OP_ALL(Enum_t)    \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, bool)    \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, char) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, signed char) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, unsigned char) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, short) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, unsigned short) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, int) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, unsigned) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, long) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, unsigned long) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, long long) \
+    DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, unsigned long long)  \
+    DEFINE_ENUM_BINARY_LOGICAL_OP(Enum_t, Enum_t)   \
+    DEFINE_UNARY_OP(Enum_t, !, [](auto arg) { return !static_cast< std::underlying_type_t<Enum_t> >(arg); })
+
+#define DEFINE_ENUM_COMPARE_OP_ALL(Enum_t)    \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, char) \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, signed char) \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, unsigned char)   \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, short) \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, unsigned short)  \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, int) \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, unsigned int)    \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, long) \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, unsigned long)   \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, long long)   \
+    DEFINE_ENUM_INT_COMPARE_OP(Enum_t, unsigned long long)  \
+    DEFINE_ENUM_BINARY_COMPARE_OP(Enum_t, Enum_t)
+
+#define DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, int_t) \
+    DEFINE_ENUM_INT_OP(Enum_t, int_t, &, [](auto lhs, auto rhs) { return lhs & rhs; })  \
+    DEFINE_ENUM_INT_OP(Enum_t, int_t, |, [](auto lhs, auto rhs) { return lhs | rhs; })  \
+    DEFINE_ENUM_INT_OP(Enum_t, int_t, &&, [](auto lhs, auto rhs) { return lhs && rhs; })    \
+    DEFINE_ENUM_INT_OP(Enum_t, int_t, ||, [](auto lhs, auto rhs) { return lhs || rhs; })
+    
+#define DEFINE_ENUM_BINARY_LOGICAL_OP(Enum1_t, Enum2_t) \
+    DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, &, [](auto lhs, auto rhs) { return lhs & rhs; })    \
+    DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, |, [](auto lhs, auto rhs) { return lhs | rhs; })    \
+    DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, &&, [](auto lhs, auto rhs) { return lhs && rhs; })    \
+    DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, ||, [](auto lhs, auto rhs) { return lhs || rhs; })    \
+
+#define DEFINE_ENUM_INT_COMPARE_OP(Enum_t, int_t)   \
+    DEFINE_ENUM_INT_OP(Enum_t, int_t, <=>, [](auto lhs, auto rhs) { return lhs <=> rhs; })
+
+#define DEFINE_ENUM_BINARY_COMPARE_OP(Enum1_t, Enum2_t) \
+    DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, <=>, [](auto lhs, auto rhs) { return lhs <=> rhs; })
+
+#define DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, opSymbol, opIntFunc)  \
+    DEFINE_BINARY_OP(Enum1_t, Enum2_t, opSymbol,  \
+        [](auto e1, auto e2) { return opIntFunc( static_cast< std::underlying_type_t<Enum1_t> >(e1),  \
+            static_cast< std::underlying_type_t<Enum2_t> >(e2)    \
+        ); } \
+    )
+
+#define DEFINE_ENUM_INT_OP(Enum_t, int_t, opSymbol, opIntFunc)   \
+    DEFINE_BINARY_OP(Enum_t, int_t, opSymbol,   \
+        [](auto e, auto i) { return opIntFunc( static_cast<decltype(i)>(e), i ); } \
+    )   \
+    DEFINE_BINARY_OP(int_t, Enum_t, opSymbol,    \
+        [](auto i, auto e) { return opIntFunc( i, static_cast<decltype(i)>(e) ); } \
+    )
+
+#define DEFINE_BINARY_OP(Lhs_t, Rhs_t, opSymbol, opFunc)    \
+    decltype(auto) operator opSymbol (Lhs_t lhs, Rhs_t rhs)   \
+        noexcept( noexcept(opFunc(  \
+            std::forward<Lhs_t>(lhs),   \
+            std::forward<Rhs_t>(rhs)    \
+        )) ) {  \
+        return opFunc( std::forward<Lhs_t>(lhs),    \
+            std::forward<Rhs_t>(rhs) ); \
+    }
+
+#define DEFINE_UNARY_OP(Arg_t, opSymbol, opFunc) \
+    decltype(auto) operator opSymbol (Arg_t arg)    \
+        noexcept( noexcept( opFunc( \
+            std::forward<Arg_t>(arg)    \
+        )) ) {  \
+        return opFunc( std::forward<Arg_t>(arg) );  \
+    }
+
 namespace clp {
 
 namespace detail {
@@ -384,7 +465,7 @@ bool is_complex_boolean_param(StringView word) noexcept {
  * @return A new string view with leading dash characters removed.
  */
 template <class StringView>
-bool remove_dash(StringView s) noexcept {
+StringView remove_dash(StringView s) noexcept {
     return StringView(
         s.begin() + s.find_first_not_of('-'),
         s.end()
@@ -909,6 +990,9 @@ enum class error_code {
     duplicated_assignments  ///< More then one of the keys are assigning value to the same parameter.
 };
 
+DEFINE_ENUM_LOGICAL_OP_ALL(error_code)
+DEFINE_ENUM_COMPARE_OP_ALL(error_code)
+
 template <
     clp_char CharT = char,
     class Traits = std::char_traits<CharT>,
@@ -943,7 +1027,7 @@ public:
      * This function returns the error code representing the parsing status.
      * @return The error code indicating the parsing status.
      */
-    error_code error() const noexcept {
+    std::optional<error_code> error() const noexcept {
         return err_code_;
     }
 
@@ -1533,5 +1617,12 @@ using wparser = basic_cl_parser<wchar_t, std::char_traits<wchar_t>, Params...>;
 }   // namespace clp
 
 #undef __LITERAL
+#undef DEFINE_ENUM_LOGICAL_OP_WITH_ALL_INTS
+#undef DEFINE_ENUM_COMPARE_OP_WITH_ALL_INTS
+#undef DEFINE_ENUM_LOGICAL_OP
+#undef DEFINE_ENUM_COMPARE_OP
+#undef DEFINE_ENUM_INT_OP
+#undef DEFINE_BINARY_OP
+#undef DEFINE_UNARY_OP
 
 #endif  // __cl_parser
