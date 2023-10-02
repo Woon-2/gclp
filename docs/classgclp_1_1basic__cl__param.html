@@ -198,9 +198,9 @@ requires detail::not_convertible_to&lt; std::remove_cvref_t&lt;InCompatible&gt;,
 <tr class="memitem:a70fbd2ed237f828fbcb08a26b9319fbc" id="r_a70fbd2ed237f828fbcb08a26b9319fbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a70fbd2ed237f828fbcb08a26b9319fbc">set_defval</a> (value_type &amp;&amp;val)</td></tr>
 <tr class="memdesc:a70fbd2ed237f828fbcb08a26b9319fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default value for the command-line parameter using move semantics.  <br /></td></tr>
 <tr class="separator:a70fbd2ed237f828fbcb08a26b9319fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c0ffbc618ce53d60d68b754f1a09789" id="r_a7c0ffbc618ce53d60d68b754f1a09789"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a7c0ffbc618ce53d60d68b754f1a09789">has_defval</a> ()</td></tr>
-<tr class="memdesc:a7c0ffbc618ce53d60d68b754f1a09789"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the command-line parameter has a default value set.  <br /></td></tr>
-<tr class="separator:a7c0ffbc618ce53d60d68b754f1a09789"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68483a08dd1bed0030251d0908a5a8d3" id="r_a68483a08dd1bed0030251d0908a5a8d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a68483a08dd1bed0030251d0908a5a8d3">has_defval</a> () const noexcept</td></tr>
+<tr class="memdesc:a68483a08dd1bed0030251d0908a5a8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the command-line parameter has a default value set.  <br /></td></tr>
+<tr class="separator:a68483a08dd1bed0030251d0908a5a8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45c63fe32bc3c72971833a54910afa2b" id="r_a45c63fe32bc3c72971833a54910afa2b"><td class="memItemLeft" align="right" valign="top">const value_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a45c63fe32bc3c72971833a54910afa2b">get_defval</a> () const</td></tr>
 <tr class="memdesc:a45c63fe32bc3c72971833a54910afa2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the default value of the command-line parameter.  <br /></td></tr>
 <tr class="separator:a45c63fe32bc3c72971833a54910afa2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -695,7 +695,7 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 </div><div class="memdoc">
 
 <p>Gets the default value of the command-line parameter. </p>
-<dl class="section pre"><dt>Precondition</dt><dd><code><a class="el" href="classgclp_1_1basic__cl__param.html#a7c0ffbc618ce53d60d68b754f1a09789" title="Checks if the command-line parameter has a default value set.">has_defval()</a></code> should be true.</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code><a class="el" href="classgclp_1_1basic__cl__param.html#a68483a08dd1bed0030251d0908a5a8d3" title="Checks if the command-line parameter has a default value set.">has_defval()</a></code> should be true.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The default value of the parameter. </dd></dl>
 
 </div>
@@ -730,8 +730,8 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 
 </div>
 </div>
-<a id="a7c0ffbc618ce53d60d68b754f1a09789" name="a7c0ffbc618ce53d60d68b754f1a09789"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c0ffbc618ce53d60d68b754f1a09789">&#9670;&#160;</a></span>has_defval()</h2>
+<a id="a68483a08dd1bed0030251d0908a5a8d3" name="a68483a08dd1bed0030251d0908a5a8d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68483a08dd1bed0030251d0908a5a8d3">&#9670;&#160;</a></span>has_defval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -745,12 +745,12 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
           <td class="memname">bool <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::has_defval </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
