@@ -147,6 +147,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5899f44e9f61d6b5b85d454d7c5b9d04" id="r_a5899f44e9f61d6b5b85d454d7c5b9d04"><td class="memItemLeft" align="right" valign="top">const value_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a5899f44e9f61d6b5b85d454d7c5b9d04">value</a> () const noexcept</td></tr>
 <tr class="memdesc:a5899f44e9f61d6b5b85d454d7c5b9d04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the parameter value or default value.  <br /></td></tr>
 <tr class="separator:a5899f44e9f61d6b5b85d454d7c5b9d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0377df74e3c6cfbdf6e905c15193c9bd" id="r_a0377df74e3c6cfbdf6e905c15193c9bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a0377df74e3c6cfbdf6e905c15193c9bd">remove_value</a> () noexcept</td></tr>
+<tr class="memdesc:a0377df74e3c6cfbdf6e905c15193c9bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the current value of the command-line parameter.  <br /></td></tr>
+<tr class="separator:a0377df74e3c6cfbdf6e905c15193c9bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bc6ec8cf077f852a8266ef29fa92522" id="r_a9bc6ec8cf077f852a8266ef29fa92522"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a9bc6ec8cf077f852a8266ef29fa92522">contains</a> (char_type key_char) const</td></tr>
 <tr class="memdesc:a9bc6ec8cf077f852a8266ef29fa92522"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the parameter contains the specified single-character key.  <br /></td></tr>
 <tr class="separator:a9bc6ec8cf077f852a8266ef29fa92522"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,6 +207,9 @@ requires detail::not_convertible_to&lt; std::remove_cvref_t&lt;InCompatible&gt;,
 <tr class="memitem:a45c63fe32bc3c72971833a54910afa2b" id="r_a45c63fe32bc3c72971833a54910afa2b"><td class="memItemLeft" align="right" valign="top">const value_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a45c63fe32bc3c72971833a54910afa2b">get_defval</a> () const</td></tr>
 <tr class="memdesc:a45c63fe32bc3c72971833a54910afa2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the default value of the command-line parameter.  <br /></td></tr>
 <tr class="separator:a45c63fe32bc3c72971833a54910afa2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab23e9498d5c205025fd780e64eb82d2d" id="r_ab23e9498d5c205025fd780e64eb82d2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#ab23e9498d5c205025fd780e64eb82d2d">remove_defval</a> () noexcept</td></tr>
+<tr class="memdesc:ab23e9498d5c205025fd780e64eb82d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the default value of the command-line parameter.  <br /></td></tr>
+<tr class="separator:ab23e9498d5c205025fd780e64eb82d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -847,6 +853,66 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 
 <p>Returns a const reference to the list of string keys associated with the parameter. </p>
 <p>This function returns a const reference to the list of string keys associated with the parameter. </p><dl class="section return"><dt>Returns</dt><dd>A const reference to the list of string keys. </dd></dl>
+
+</div>
+</div>
+<a id="ab23e9498d5c205025fd780e64eb82d2d" name="ab23e9498d5c205025fd780e64eb82d2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab23e9498d5c205025fd780e64eb82d2d">&#9670;&#160;</a></span>remove_defval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::remove_defval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the default value of the command-line parameter. </p>
+<p>This function resets the stored default value of the command-line parameter, making it empty. After calling this function, the parameter does not have a default value. </p>
+
+</div>
+</div>
+<a id="a0377df74e3c6cfbdf6e905c15193c9bd" name="a0377df74e3c6cfbdf6e905c15193c9bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0377df74e3c6cfbdf6e905c15193c9bd">&#9670;&#160;</a></span>remove_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::remove_value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the current value of the command-line parameter. </p>
+<p>This function resets the stored value of the command-line parameter, making it empty. After calling this function, the parameter does not have a valid value. </p>
 
 </div>
 </div>

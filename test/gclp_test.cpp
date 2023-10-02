@@ -492,3 +492,19 @@ TEST(ParamTest, SetDefaultValue) {
     EXPECT_EQ(paramI.get_defval(), 42);
     EXPECT_EQ(paramS.get_defval(), "Hello, World!");
 }
+
+TEST(ParamTest, RemoveDefaultValue) {
+    auto paramI = gclp::optional<int>(
+        {'i'}, {"integer"}, "an optional integer parameter"
+    )->defval(42);
+
+    auto paramS = gclp::required<std::string>(
+        {'s'}, {"string"}, "a required string parameter"
+    )->defval("Hello, World!");
+
+    paramI.remove_defval();
+    paramS.remove_defval();
+
+    EXPECT_FALSE(paramI.has_defval());
+    EXPECT_FALSE(paramS.has_defval());
+}

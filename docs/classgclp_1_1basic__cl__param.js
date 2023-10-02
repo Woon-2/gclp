@@ -17,6 +17,8 @@ var classgclp_1_1basic__cl__param =
     [ "has_value", "classgclp_1_1basic__cl__param.html#a1499237fdfe881f0b806e6e9c1d2cedb", null ],
     [ "key_chars", "classgclp_1_1basic__cl__param.html#a85b6cd9637fc2af52db72dc37c89c216", null ],
     [ "key_strs", "classgclp_1_1basic__cl__param.html#a536547d740d284f3a18c284418637c66", null ],
+    [ "remove_defval", "classgclp_1_1basic__cl__param.html#ab23e9498d5c205025fd780e64eb82d2d", null ],
+    [ "remove_value", "classgclp_1_1basic__cl__param.html#a0377df74e3c6cfbdf6e905c15193c9bd", null ],
     [ "set_defval", "classgclp_1_1basic__cl__param.html#a5d4a4f09580d90bfcb426e3110b8a740", null ],
     [ "set_defval", "classgclp_1_1basic__cl__param.html#a70fbd2ed237f828fbcb08a26b9319fbc", null ],
     [ "value", "classgclp_1_1basic__cl__param.html#a5899f44e9f61d6b5b85d454d7c5b9d04", null ],

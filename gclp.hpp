@@ -916,6 +916,16 @@ public:
     }
 
     /**
+     * @brief Removes the current value of the command-line parameter.
+     *
+     * This function resets the stored value of the command-line parameter, making it empty.
+     * After calling this function, the parameter does not have a valid value.
+     */
+    void remove_value() noexcept {
+        val_.reset();
+    }
+
+    /**
      * @brief Checks if the parameter contains the specified single-character key.
      * 
      * This function checks if the parameter contains the specified single-character key.
@@ -1170,6 +1180,16 @@ public:
     const value_type& get_defval() const {
         assert(has_defval());
         return defval_.value();
+    }
+
+    /**
+     * @brief Removes the default value of the command-line parameter.
+     *
+     * This function resets the stored default value of the command-line parameter, making it empty.
+     * After calling this function, the parameter does not have a default value.
+     */
+    void remove_defval() noexcept {
+        defval_.reset();
     }
 
 private:
