@@ -1,8 +1,6 @@
 var classgclp_1_1basic__cl__param =
 [
     [ "basic_cl_param", "classgclp_1_1basic__cl__param.html#a5c5305a9d394dc69d4b6511a5c904d02", null ],
-    [ "basic_cl_param", "classgclp_1_1basic__cl__param.html#ad0dd70dc818c0c814f9631546260aec6", null ],
-    [ "basic_cl_param", "classgclp_1_1basic__cl__param.html#a03fa90c407db7f91a51121515a16e5e1", null ],
     [ "assign", "classgclp_1_1basic__cl__param.html#a113f48712fc2087eae0673a86a789731", null ],
     [ "assign", "classgclp_1_1basic__cl__param.html#a98f1bcb384ee26ab53b2aefc82a7cd4b", null ],
     [ "assign", "classgclp_1_1basic__cl__param.html#af1b8e21fa2016ce98d76fef6b7a385da", null ],
