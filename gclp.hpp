@@ -1524,6 +1524,18 @@ public:
     }
 
 private:
+    /**
+     * @brief Helper function to create a tuple representing parsed results.
+     *
+     * This function constructs a tuple containing parsed values based on the specified parameter types. It iterates
+     * through the parameters and retrieves their values. If a required parameter is not provided, an error
+     * "required_key_not_given" is logged.
+     * 
+     * The parameters' values are copied rather then moved.
+     * Therefore, the parameters' values don't change after call of this function.
+     *
+     * @return A tuple representing parsed values according to the specified parameter types.
+     */
     result_tuple_type make_parsed_result() {
         result_tuple_type ret;
 
@@ -1549,6 +1561,12 @@ private:
         return ret;
     }
 
+    /**
+     * @brief Logs an error when the command-line identifier is not given.
+     *
+     * This function sets the error code to 'identifier_not_given' and constructs an error message indicating that the
+     * command-line identifier is missing.
+     */
     void log_error_identifier_not_given() {
         err_code_ = error_code::identifier_not_given;
         err_stream_ << __LITERAL(char_type,
