@@ -161,12 +161,13 @@ class gclp::basic_cl_parser&lt; CharT, Traits, Params &gt;</div><p>A generic com
 <div class="fragment"><div class="line"><span class="comment">// Create a parser for a simple todo list application</span></div>
 <div class="line"><span class="keyword">auto</span> todoParser = <a class="code hl_class" href="classgclp_1_1basic__cl__parser.html">gclp::basic_cl_parser</a>(</div>
 <div class="line">    <span class="stringliteral">&quot;todo&quot;</span>, <span class="comment">// Command name</span></div>
-<div class="line">    <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;std::string&gt;</a>{ <span class="stringliteral">&quot;-a&quot;</span>, <span class="stringliteral">&quot;--add&quot;</span>, <span class="stringliteral">&quot;Add a new task to the todo list.&quot;</span> },</div>
+<div class="line">    <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;std::string&gt;</a>{ <span class="stringliteral">&quot;-t&quot;</span>, <span class="stringliteral">&quot;--task&quot;</span>, <span class="stringliteral">&quot;Specify the task name to modify,</span></div>
+<div class="line"><span class="stringliteral">        or add a new task to the todo list.&quot;</span> },</div>
 <div class="line">    <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;int&gt;</a>{ <span class="stringliteral">&quot;-p&quot;</span>, <span class="stringliteral">&quot;--priority&quot;</span>, <span class="stringliteral">&quot;Set priority for the task.&quot;</span> },</div>
 <div class="line">    <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;bool&gt;</a>{ <span class="stringliteral">&quot;-d&quot;</span>, <span class="stringliteral">&quot;--done&quot;</span>, <span class="stringliteral">&quot;Mark the task as done.&quot;</span> }</div>
 <div class="line">);</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">auto</span> [taskDescription, taskPriority, isTaskDone] = todoParser.<a class="code hl_function" href="classgclp_1_1basic__cl__parser.html#aebdd58e16033e7ab8cb782cb0cdb5406">parse</a>(argc, argv);</div>
+<div class="line"><span class="keyword">auto</span> [taskName, taskPriority, isTaskDone] = todoParser.<a class="code hl_function" href="classgclp_1_1basic__cl__parser.html#aebdd58e16033e7ab8cb782cb0cdb5406">parse</a>(argc, argv);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span> (todoParser.error()) {</div>
 <div class="line">    std::cerr &lt;&lt; <span class="stringliteral">&quot;Error: &quot;</span> &lt;&lt; todoParser.error_message() &lt;&lt; std::endl;</div>
@@ -174,8 +175,8 @@ class gclp::basic_cl_parser&lt; CharT, Traits, Params &gt;</div><p>A generic com
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Process the parsed task information...</span></div>
-<div class="ttc" id="aclassgclp_1_1basic__cl__parser_html"><div class="ttname"><a href="classgclp_1_1basic__cl__parser.html">gclp::basic_cl_parser</a></div><div class="ttdoc">A generic command-line parser template for processing command-line arguments.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1255</div></div>
-<div class="ttc" id="aclassgclp_1_1basic__cl__parser_html_aebdd58e16033e7ab8cb782cb0cdb5406"><div class="ttname"><a href="classgclp_1_1basic__cl__parser.html#aebdd58e16033e7ab8cb782cb0cdb5406">gclp::basic_cl_parser::parse</a></div><div class="ttdeci">result_tuple_type parse(IntType argc, StrArrType argv)</div><div class="ttdoc">Parses command-line arguments provided as an array of strings.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1327</div></div>
+<div class="ttc" id="aclassgclp_1_1basic__cl__parser_html"><div class="ttname"><a href="classgclp_1_1basic__cl__parser.html">gclp::basic_cl_parser</a></div><div class="ttdoc">A generic command-line parser template for processing command-line arguments.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1256</div></div>
+<div class="ttc" id="aclassgclp_1_1basic__cl__parser_html_aebdd58e16033e7ab8cb782cb0cdb5406"><div class="ttname"><a href="classgclp_1_1basic__cl__parser.html#aebdd58e16033e7ab8cb782cb0cdb5406">gclp::basic_cl_parser::parse</a></div><div class="ttdeci">result_tuple_type parse(IntType argc, StrArrType argv)</div><div class="ttdoc">Parses command-line arguments provided as an array of strings.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1328</div></div>
 <div class="ttc" id="aclassgclp_1_1basic__optional_html"><div class="ttname"><a href="classgclp_1_1basic__optional.html">gclp::basic_optional</a></div><div class="ttdoc">Represents an optional command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1134</div></div>
 </div><!-- fragment --><p>In the above example, the <code>todoParser</code> instance is created to handle command-line arguments for a todo list application. The parser automatically deduces the parameter types, simplifying the code and enhancing readability. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>

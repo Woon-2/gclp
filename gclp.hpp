@@ -1228,12 +1228,13 @@ DEFINE_ENUM_COMPARE_OP_ALL(error_code)
  * // Create a parser for a simple todo list application
  * auto todoParser = gclp::basic_cl_parser(
  *     "todo", // Command name
- *     gclp::optional<std::string>{ "-a", "--add", "Add a new task to the todo list." },
+ *     gclp::optional<std::string>{ "-t", "--task", "Specify the task name to modify,
+ *         or add a new task to the todo list." },
  *     gclp::optional<int>{ "-p", "--priority", "Set priority for the task." },
  *     gclp::optional<bool>{ "-d", "--done", "Mark the task as done." }
  * );
  * 
- * auto [taskDescription, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
+ * auto [taskName, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
  * 
  * if (todoParser.error()) {
  *     std::cerr << "Error: " << todoParser.error_message() << std::endl;
