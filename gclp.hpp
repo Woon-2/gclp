@@ -771,19 +771,45 @@ std::vector<StringView> split_words(StringView s) {
     return ret;
 }
 
+/**
+ * @brief An adaptor class to adapt default value settings for command-line parameters.
+ *
+ * This class provides a way to set default values for command-line parameters. It acts as an adaptor to modify the
+ * default values of a parent parameter.
+ *
+ * @tparam Param The type of the parent parameter for which default values are being set.
+ */
 template <class Param>
 class default_value_adaptor {
 public:
-    using parent_type = Param;
-    using value_type = typename parent_type::value_type;
+    using parent_type = Param;  ///< Alias for the parent parameter type.
+    using value_type = typename parent_type::value_type;    ///< Alias for the value type of the parent parameter.
+
+    /**
+     * @brief Constructs a default_value_adaptor with a pointer to the parent parameter.
+     *
+     * @param parent A pointer to the parent parameter for which default values will be adapted.
+     */
     default_value_adaptor(parent_type* parent)
         : parent_(parent) {}
 
+    /**
+     * @brief Sets a new default value for the parent parameter.
+     *
+     * @param val The new default value to be set.
+     * @return A reference to the parent parameter with the updated default value.
+     */
     parent_type& defval(const value_type& val) {
         parent_->set_defval(val);
         return *parent_;
     }
 
+    /**
+     * @brief Sets a new default value for the parent parameter using move semantics.
+     *
+     * @param val The new default value to be set.
+     * @return A reference to the parent parameter with the updated default value.
+     */
     parent_type& defval(value_type&& val) {
         parent_->set_defval( std::move(val) );
         return *parent_;
@@ -1099,6 +1125,21 @@ public:
         fail_ = false;
     }
 
+    /**
+     * @brief Provides access to the default value adaptor for setting default values of the parameter.
+     *
+     * This member function allows direct access to the default value adaptor associated with the parameter. It enables
+     * setting default values for the parameter using the `defval` member functions provided by the adaptor.
+     *
+     * Example Usage:
+     *
+     * @code
+     * clp::basic_optional<int> param{'i', "integer", "An optional integer parameter"};
+     * param->defval(42); // Sets the default value of the parameter to 42 using the default value adaptor.
+     * @endcode
+     *
+     * @return A pointer to the default value adaptor for the parameter.
+     */
     defval_adaptor_type* operator->() noexcept {
         return &defval_adaptor_;
     }
