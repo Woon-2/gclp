@@ -1156,7 +1156,7 @@ public:
      *
      * @return true if a default value is set, false otherwise.
      */
-    bool has_defval() {
+    bool has_defval() const noexcept {
         return defval_.has_value();
     }
 
