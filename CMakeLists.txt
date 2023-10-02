@@ -80,20 +80,17 @@ if(DOXYGEN_FOUND)
         set(DOXYGEN_RECURSIVE_VALUE NO)
     endif()
 
-
     if (DOXYGEN_EXCLUDE_DETAIL)
         list(APPEND DOXYGEN_PREDEFINITIONS
             "DOXYGEN_IGNORE_DETAIL"
         )
     endif()
 
-    if(NOT EXISTS "${DOXYGEN_INPUT_DIR}/docs/Doxyfile")
-        configure_file(
+    configure_file(
             "${DOXYGEN_INPUT_DIR}/Doxyfile.in"
             "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
             @ONLY
-        )
-    endif()
+    )
 
     option(BUILD_DOXYGEN
         "enable if you want to document with doxygen 
