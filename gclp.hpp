@@ -312,7 +312,7 @@ THE SOFTWARE.
  * @endcode
  */
 #define DEFINE_BINARY_OP(Lhs_t, Rhs_t, opSymbol, opFunc)    \
-    decltype(auto) operator opSymbol (Lhs_t lhs, Rhs_t rhs)   \
+    static decltype(auto) operator opSymbol (Lhs_t lhs, Rhs_t rhs)   \
         noexcept( noexcept(opFunc(  \
             std::forward<Lhs_t>(lhs),   \
             std::forward<Rhs_t>(rhs)    \
@@ -339,7 +339,7 @@ THE SOFTWARE.
  * @endcode
  */
 #define DEFINE_UNARY_OP(Arg_t, opSymbol, opFunc) \
-    decltype(auto) operator opSymbol (Arg_t arg)    \
+    static decltype(auto) operator opSymbol (Arg_t arg)    \
         noexcept( noexcept( opFunc( \
             std::forward<Arg_t>(arg)    \
         )) ) {  \
