@@ -12,7 +12,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
         /MP     # compilation speed-up via multi processor
         $<IF:$<CONFIG:DEBUG>,/MDd,/MD>    # use dynamic multi-threaded crt library
         /sdl    # security check
-        /O2     # maximum speed optimization
+        $<IF:$<CONFIG:RELEASE>,/O2,/Od>     # maximum speed optimization for Release
         /fp:strict    # rate correctness over speed on floating points
         /Zc:preprocessor    # standard behavior of preprocessor
         /W3     # warning level
