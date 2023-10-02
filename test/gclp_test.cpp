@@ -480,6 +480,41 @@ TEST_F(ParsingTest, ConserveTypeWhenUsingDefaultValueAdaptor) {
     EXPECT_TRUE(is_type_conserved());
 }
 
+TEST(ParamTest, SetValue) {
+    auto paramI = gclp::optional<int>(
+        {'i'}, {"integer"}, "an optional integer parameter"
+    );
+
+    auto paramS = gclp::required<std::string>(
+        {'s'}, {"string"}, "a required string parameter"
+    );
+
+    paramI.set_value(42);
+    paramS.set_value("Hello, World!");
+
+    EXPECT_EQ(paramI.value(), 42);
+    EXPECT_EQ(paramS.value(), "Hello, World!");
+}
+
+TEST(ParamTest, RemoveValue) {
+    auto paramI = gclp::optional<int>(
+        {'i'}, {"integer"}, "an optional integer parameter"
+    );
+
+    auto paramS = gclp::required<std::string>(
+        {'s'}, {"string"}, "a required string parameter"
+    );
+
+    paramI.set_value(42);
+    paramS.set_value("Hello, World!");
+
+    paramI.remove_value();
+    paramS.remove_value();
+
+    EXPECT_FALSE(paramI.has_value());
+    EXPECT_FALSE(paramS.has_value());
+}
+
 TEST(ParamTest, SetDefaultValue) {
     auto paramI = gclp::optional<int>(
         {'i'}, {"integer"}, "an optional integer parameter"

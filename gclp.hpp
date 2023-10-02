@@ -884,6 +884,26 @@ public:
     }
 
     /**
+     * @brief Sets the value of the command-line parameter.
+     *
+     * This function sets the value of the command-line parameter to the provided value.
+     * @param val The new value to be assigned to the command-line parameter.
+     */
+    void set_value(const value_type& val) {
+        val_ = val;
+    }
+
+    /**
+     * @brief Sets the value of the command-line parameter using move semantics.
+     *
+     * This function sets the value of the command-line parameter by moving the provided value.
+     * @param val The new value to be moved and assigned to the command-line parameter.
+     */
+    void set_value(value_type&& val) {
+        val_ = std::move(val);
+    }
+
+    /**
      * @brief Returns a reference to the parameter value or default value.
      * 
      * This function returns a reference to the parameter value if it is assigned, or the default value otherwise.

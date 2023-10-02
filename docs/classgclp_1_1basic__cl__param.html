@@ -141,6 +141,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1499237fdfe881f0b806e6e9c1d2cedb" id="r_a1499237fdfe881f0b806e6e9c1d2cedb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a1499237fdfe881f0b806e6e9c1d2cedb">has_value</a> () const noexcept</td></tr>
 <tr class="memdesc:a1499237fdfe881f0b806e6e9c1d2cedb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the parameter has a value (either assigned or default).  <br /></td></tr>
 <tr class="separator:a1499237fdfe881f0b806e6e9c1d2cedb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08854357e851732a89ff4b19c5819f59" id="r_a08854357e851732a89ff4b19c5819f59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a08854357e851732a89ff4b19c5819f59">set_value</a> (const value_type &amp;val)</td></tr>
+<tr class="memdesc:a08854357e851732a89ff4b19c5819f59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the command-line parameter.  <br /></td></tr>
+<tr class="separator:a08854357e851732a89ff4b19c5819f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eef922329045b250b1991cc51c71ac4" id="r_a1eef922329045b250b1991cc51c71ac4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a1eef922329045b250b1991cc51c71ac4">set_value</a> (value_type &amp;&amp;val)</td></tr>
+<tr class="memdesc:a1eef922329045b250b1991cc51c71ac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value of the command-line parameter using move semantics.  <br /></td></tr>
+<tr class="separator:a1eef922329045b250b1991cc51c71ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77ff4104994dc5616a0ab02f618c77cd" id="r_a77ff4104994dc5616a0ab02f618c77cd"><td class="memItemLeft" align="right" valign="top">value_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a77ff4104994dc5616a0ab02f618c77cd">value</a> () noexcept</td></tr>
 <tr class="memdesc:a77ff4104994dc5616a0ab02f618c77cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference to the parameter value or default value.  <br /></td></tr>
 <tr class="separator:a77ff4104994dc5616a0ab02f618c77cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -984,6 +990,78 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">val</td><td>The default value to be set for the parameter (will be moved). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a08854357e851732a89ff4b19c5819f59" name="a08854357e851732a89ff4b19c5819f59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08854357e851732a89ff4b19c5819f59">&#9670;&#160;</a></span>set_value() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::set_value </td>
+          <td>(</td>
+          <td class="paramtype">const value_type &amp;&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the value of the command-line parameter. </p>
+<p>This function sets the value of the command-line parameter to the provided value. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>The new value to be assigned to the command-line parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1eef922329045b250b1991cc51c71ac4" name="a1eef922329045b250b1991cc51c71ac4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eef922329045b250b1991cc51c71ac4">&#9670;&#160;</a></span>set_value() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::set_value </td>
+          <td>(</td>
+          <td class="paramtype">value_type &amp;&amp;&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the value of the command-line parameter using move semantics. </p>
+<p>This function sets the value of the command-line parameter by moving the provided value. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>The new value to be moved and assigned to the command-line parameter. </td></tr>
   </table>
   </dd>
 </dl>
