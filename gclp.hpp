@@ -880,42 +880,6 @@ public:
         defval_adaptor_(this), fail_(false) {}
 
     /**
-     * @brief Constructs a basic_cl_param object with specified key characters, brief description, and default value.
-     * 
-     * Initializes a basic_cl_param object with the specified key characters, key strings, brief description, and default value.
-     * @param key_chars An std::intializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::intializer_list of string keys associated with the parameter.
-     * @param defval The default value of the parameter.
-     * @param brief A brief description of the parameter.
-     */
-    basic_cl_param(
-        std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
-        const value_type& defval,
-        string_view_type brief
-    ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_(defval), val_(),
-        defval_adaptor_(this), fail_(false) {}
-
-    /**
-     * @brief Constructs a basic_cl_param object with specified key characters, brief description, and default value.
-     * 
-     * Initializes a basic_cl_param object with the specified key characters, key strings, brief description, and default value.
-     * @param key_chars An std::intializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::intializer_list of string keys associated with the parameter.
-     * @param defval The default value of the parameter (rvalue reference version).
-     * @param brief A brief description of the parameter.
-     */
-    basic_cl_param(
-        std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
-        value_type&& defval,
-        string_view_type brief
-    ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_( std::move(defval) ),
-        val_(), defval_adaptor_(this), fail_(false) {}
-
-    /**
      * @brief Checks if the parameter has a value (either assigned or default).
      * 
      * @return true if the parameter has a value, false otherwise.
