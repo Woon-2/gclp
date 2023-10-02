@@ -2,7 +2,14 @@ enable_testing()
 
 add_executable(gclp_test)
 
-target_sources(gclp_test PRIVATE gclp_test.cpp)
+target_sources(gclp_test
+PRIVATE
+    "${PROJECT_SOURCE_DIR}/gclp.hpp"
+    interpreter_test.cpp
+    param_test.cpp
+    basic_parsing_test.cpp
+    advanced_parsing_test.cpp
+)
 
 target_compile_features(gclp_test PRIVATE cxx_std_20)
 
