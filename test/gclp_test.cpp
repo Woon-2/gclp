@@ -423,3 +423,20 @@ TEST_F(ParsingTest, FailWithAssignmentDuplicationOfDifferentKeys) {
         == gclp::error_code::duplicated_assignments
     ) << parser.error_message() << "\nparser doesn't detect assignment duplication of different keys.\n";
 }
+
+TEST_F(ParsingTest, AssignDefaultValue) {
+    auto parser = gclp::parser(
+        "identifier"sv,
+        gclp::optional<int>(
+            {'a'}, {"aa"}, "an optional int"
+        )->defval(3),
+        gclp::required<std::string>(
+            {'b'}, {"bb"}, "a required string"
+        )->defval("Hello, World!")
+    );
+
+    auto [ra, rb] = parser.parse("identifier"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+    EXPECT_EQ(ra, 3);
+    EXPECT_EQ(rb, "Hello, World!");
+}

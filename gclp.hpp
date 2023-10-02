@@ -771,6 +771,28 @@ std::vector<StringView> split_words(StringView s) {
     return ret;
 }
 
+template <class Param>
+class default_value_adaptor {
+public:
+    using parent_type = Param;
+    using value_type = typename parent_type::value_type;
+    default_value_adaptor(parent_type* parent)
+        : parent_(parent) {}
+
+    parent_type& defval(const value_type& val) {
+        parent_->set_defval(val);
+        return *parent_;
+    }
+
+    parent_type& defval(value_type&& val) {
+        parent_->set_defval( std::move(val) );
+        return *parent_;
+    }
+
+private:
+    parent_type* parent_;
+};
+
 }   // namespace gclp::detail
 #endif   // DOXYGEN_IGNORE_DETAIL
 
@@ -807,6 +829,10 @@ public:
     using key_container = std::vector<T>;
 
 private:
+    using defval_adaptor_type = detail::default_value_adaptor<
+        basic_cl_param<value_type, char_type, traits_type>
+    >;
+    friend class defval_adaptor_type;
     using istream_type = std::basic_istream<char_type, traits_type>;
     using ostream_type = std::basic_ostream<char_type, traits_type>;
 
@@ -824,7 +850,8 @@ public:
         std::initializer_list<string_view_type> key_strs,
         string_view_type brief
     ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_(), val_(), fail_(false) {}
+        brief_(brief), defval_(), val_(),
+        defval_adaptor_(this), fail_(false) {}
 
     /**
      * @brief Constructs a basic_cl_param object with specified key characters, brief description, and default value.
@@ -841,7 +868,8 @@ public:
         const value_type& defval,
         string_view_type brief
     ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_(defval), val_(), fail_(false) {}
+        brief_(brief), defval_(defval), val_(),
+        defval_adaptor_(this), fail_(false) {}
 
     /**
      * @brief Constructs a basic_cl_param object with specified key characters, brief description, and default value.
@@ -858,7 +886,8 @@ public:
         value_type&& defval,
         string_view_type brief
     ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_( std::move(defval) ), val_(), fail_(false) {}
+        brief_(brief), defval_( std::move(defval) ),
+        val_(), defval_adaptor_(this), fail_(false) {}
 
     /**
      * @brief Checks if the parameter has a value (either assigned or default).
@@ -1070,6 +1099,10 @@ public:
         fail_ = false;
     }
 
+    defval_adaptor_type* operator->() noexcept {
+        return &defval_adaptor_;
+    }
+
     /**
      * @brief Outputs the parameter value or default value to the output stream.
      * 
@@ -1116,11 +1149,19 @@ public:
     }
 
 private:
+    void set_defval(const value_type& val) {
+        defval_ = val;
+    }
+    void set_defval(value_type&& val) {
+        defval_ = std::move(val);
+    }
+
     key_container<char_type> key_chars_;
     key_container<string_view_type> key_strs_;
     std::optional<string_view_type> brief_;
     std::optional<value_type> defval_;
     std::optional<value_type> val_;
+    defval_adaptor_type defval_adaptor_;
     bool fail_;
 };
 
