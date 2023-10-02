@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 #include "gtest/gtest.h"
-#include "cl_parser.hpp"
+#include "gclp.hpp"
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -33,17 +33,17 @@ using namespace std::literals;
 TEST(RemoveDashTest, RemoveSingleDash) {
     auto src = "-abcdefg"sv;
 
-    EXPECT_EQ(clp::detail::remove_dash(src), "abcdefg"sv);
+    EXPECT_EQ(gclp::detail::remove_dash(src), "abcdefg"sv);
 }
 
 TEST(RemoveDashTest, RemoveDoubleDash) {
     auto src = "--abcdefg"sv;
 
-    EXPECT_EQ(clp::detail::remove_dash(src), "abcdefg"sv);
+    EXPECT_EQ(gclp::detail::remove_dash(src), "abcdefg"sv);
 }
 
 TEST(SplitWordsTest, SplitWords) {
-    auto splitted = clp::detail::split_words(
+    auto splitted = gclp::detail::split_words(
         "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
     );
 
@@ -57,7 +57,7 @@ TEST(SplitWordsTest, SplitWords) {
 }
 
 TEST(SplitWordsTest, SplitWordsWithQuotes) {
-    auto splitted = clp::detail::split_words(
+    auto splitted = gclp::detail::split_words(
         "TestCLI -a 1 -b 3.14 -c c -d \"Hello\" -e \"World!\" -f 1.6 -g 1"sv
     );
 
@@ -71,7 +71,7 @@ TEST(SplitWordsTest, SplitWordsWithQuotes) {
 }
 
 TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
-    auto splitted = clp::detail::split_words(
+    auto splitted = gclp::detail::split_words(
         "TestCLI -a 1 -b 3.14 -c c -d \"Hello World!\" -e \"Bye World!\" -f 1.6 -g 1"sv
     );
 
@@ -85,9 +85,9 @@ TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
 }
 
 TEST(BasicParsingTest, ParseSingleOptional) {
-    auto parser = clp::parser(
+    auto parser = gclp::parser(
         "identifier"sv,
-        clp::optional<int>(
+        gclp::optional<int>(
             {'a'}, {"aa"}, "an optional int"
         )
     );
@@ -101,9 +101,9 @@ TEST(BasicParsingTest, ParseSingleOptional) {
 }
 
 TEST(BasicParsingTest, ParseSingleRequired) {
-    auto parser = clp::parser(
+    auto parser = gclp::parser(
         "identifier"sv,
-        clp::required<int>(
+        gclp::required<int>(
             {'a'}, {"aa"}, "a required int"
         )
     );
@@ -117,9 +117,9 @@ TEST(BasicParsingTest, ParseSingleRequired) {
 }
 
 TEST(BasicParsingTest, ParseSingleBoolean) {
-    auto parser = clp::parser(
+    auto parser = gclp::parser(
         "identifier"sv,
-        clp::optional<bool>(
+        gclp::optional<bool>(
             {'a'}, {"aa"}, "an optional boolean"
         )
     );
@@ -135,11 +135,11 @@ TEST(BasicParsingTest, ParseSingleBoolean) {
 }
 
 TEST(BasicParsingTest, ParseComplexBoolean) {
-    auto parser = clp::parser(
+    auto parser = gclp::parser(
         "identifier"sv,
-        clp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
-        clp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
-        clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
+        gclp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
+        gclp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
+        gclp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
     );
 
     auto [ra1, rb1, rc1] = parser.parse("identifier -abc"sv);
@@ -151,11 +151,11 @@ TEST(BasicParsingTest, ParseComplexBoolean) {
 }
 
 TEST(BasicParsingTest, ParseComplexBooleanWithTwistedOrder) {
-    auto parser = clp::parser(
+    auto parser = gclp::parser(
         "identifier"sv,
-        clp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
-        clp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
-        clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
+        gclp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
+        gclp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
+        gclp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
     );
 
     auto [ra1, rb1, rc1] = parser.parse("identifier --bb -ac"sv);
@@ -177,19 +177,19 @@ TEST(BasicParsingTest, ParseComplexBooleanWithTwistedOrder) {
 }
 
 TEST(BasicParsingTest, FailWithParsingComplexBooleanContainingDuplication) {
-    auto parser = clp::parser(
+    auto parser = gclp::parser(
         "identifier"sv,
-        clp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
-        clp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
-        clp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
+        gclp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
+        gclp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
+        gclp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
     );
 
     parser.parse("identifier -abcabc"sv);
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::duplicated_assignments
+        != gclp::error_code::duplicated_assignments
     ) << parser.error_message();
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::duplicated_assignments
+        == gclp::error_code::duplicated_assignments
     ) << "parser doesn't detect duplicated assignments occured within complex boolean params\n";
 }
 
@@ -254,20 +254,20 @@ protected:
         parser("TestCLI"sv, a, b, c, d, e, f, g, h, i, j, k) {}
 
 private:
-    clp::optional<int> a;
-    clp::optional<double> b;
-    clp::required<char> c;
-    clp::required<std::string> d;
-    clp::optional<std::string> e;
-    clp::optional<float> f;
-    clp::required<unsigned short> g;
-    clp::optional<bool> h;
-    clp::optional<bool> i;
-    clp::required<bool> j;
-    clp::required<bool> k;
+    gclp::optional<int> a;
+    gclp::optional<double> b;
+    gclp::required<char> c;
+    gclp::required<std::string> d;
+    gclp::optional<std::string> e;
+    gclp::optional<float> f;
+    gclp::required<unsigned short> g;
+    gclp::optional<bool> h;
+    gclp::optional<bool> i;
+    gclp::required<bool> j;
+    gclp::required<bool> k;
 
 protected:
-    clp::parser<
+    gclp::parser<
         decltype(a), decltype(b), decltype(c),
         decltype(d), decltype(e), decltype(f),
         decltype(g), decltype(h), decltype(i),
@@ -300,11 +300,11 @@ TEST_F(ParsingTest, FailWithOmittingRequired) {
     auto [ra, rb, rc, rd, re, rf, rg, rh, ri, rj, rk] = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::required_key_not_given
+        != gclp::error_code::required_key_not_given
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::required_key_not_given
+        == gclp::error_code::required_key_not_given
     ) << parser.error_message() << "\nparser doesn't detect required key not given.\n";
 }
 
@@ -313,11 +313,11 @@ TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
     auto [ra, rb, rc, rd, re, rf, rg, rh, ri, rj ,rk] = parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::unparsed_argument
+        != gclp::error_code::unparsed_argument
     ) << parser.error_message();
 
     EXPECT_FALSE(parser.error() && parser.error()
-        == clp::error_code::unparsed_argument
+        == gclp::error_code::unparsed_argument
     ) << parser.error_message() << "\nremainders are from not ignoring space within quote.\n";
 }
 
@@ -345,11 +345,11 @@ TEST_F(ParsingTest, FailWithWrongIdentifier) {
     parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::invalid_identifier
+        != gclp::error_code::invalid_identifier
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::invalid_identifier
+        == gclp::error_code::invalid_identifier
     ) << parser.error_message() << "\nparser doesn't detect wrong identifier at the top priority.\n";
 }
 
@@ -359,11 +359,11 @@ TEST_F(ParsingTest, FailWithSkippingKey) {
     parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::key_not_given
+        != gclp::error_code::key_not_given
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::key_not_given
+        == gclp::error_code::key_not_given
     ) << parser.error_message() << "\nparser doesn't detect wrong key-arguments order.\n";
 }
 
@@ -373,11 +373,11 @@ TEST_F(ParsingTest, FailWithAssigningIncompatibleArgument) {
     parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::incompatible_argument
+        != gclp::error_code::incompatible_argument
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::incompatible_argument
+        == gclp::error_code::incompatible_argument
     ) << parser.error_message() << "\nparser doesn't detect assignment of incompatible arguments.\n"
         << "tried: assigning std::string to int";
 }
@@ -388,11 +388,11 @@ TEST_F(ParsingTest, FailWithUndefinedKey) {
     parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::undefined_key
+        != gclp::error_code::undefined_key
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::undefined_key
+        == gclp::error_code::undefined_key
     ) << parser.error_message() << "\nparser doesn't detect usage of undefined key.\n";
 }
 
@@ -402,11 +402,11 @@ TEST_F(ParsingTest, FailWithAssignmentDuplicationOfExactSameKeys) {
     parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::duplicated_assignments
+        != gclp::error_code::duplicated_assignments
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::duplicated_assignments
+        == gclp::error_code::duplicated_assignments
     ) << parser.error_message() << "\nparser doesn't detect assignment duplication of exact same keys.\n";
 }
 
@@ -416,10 +416,10 @@ TEST_F(ParsingTest, FailWithAssignmentDuplicationOfDifferentKeys) {
     parser.parse(cmd);
 
     ASSERT_FALSE(parser.error() && parser.error()
-        != clp::error_code::duplicated_assignments
+        != gclp::error_code::duplicated_assignments
     ) << parser.error_message();
 
     EXPECT_TRUE(parser.error() && parser.error()
-        == clp::error_code::duplicated_assignments
+        == gclp::error_code::duplicated_assignments
     ) << parser.error_message() << "\nparser doesn't detect assignment duplication of different keys.\n";
 }

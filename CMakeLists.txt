@@ -42,7 +42,10 @@ project(pgclp
     DESCRIPTION "a lightweight header-only generic command line parser"
 )
 
-add_library(gclp INTERFACE cl_parser.hpp)
+add_library(gclp INTERFACE gclp.hpp)
+
+target_compile_features(gclp INTERFACE cxx_std_20)
+
 
 set(Doxygen_ROOT "" CACHE PATH
     "The path to directory where doxygen is installed
@@ -92,15 +95,28 @@ if(DOXYGEN_FOUND)
         )
     endif()
 
+    option(BUILD_DOXYGEN
+        "enable if you want to document with doxygen 
+        each time you build the project."
+        OFF
+    )
+
+    if(BUILD_DOXYGEN)
+        set(DOXYGEN_ALL ALL)
+    endif()
+
     doxygen_add_docs(doxygen
         "${DOXYGEN_INPUT_DIR}"
         WORKING_DIRECTORY "${DOXYGEN_INPUT_DIR}"
+        ${DOXYGEN_ALL}
         COMMENT "custom target for automatic documentation"
         CONFIG_FILE "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
     )
-endif()
 
-target_compile_features(gclp INTERFACE cxx_std_20)
+    if(BUILD_DOXYGEN)
+        add_dependencies(doxygen gclp)
+    endif()
+endif()
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     add_subdirectory(test)

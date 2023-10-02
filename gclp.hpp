@@ -349,24 +349,24 @@ THE SOFTWARE.
 /**
  * @brief The namespace containing the core functionalities for command-line parameter parsing.
  * 
- * The `clp` namespace provides fundamental components for parsing command-line arguments, including
- * the `clp::basic_cl_param` class for defining individual command-line parameters and the
- * `clp::basic_cl_parser` class for parsing command-line arguments. Additionally, it defines the `clp::error_code`
- * enum class for representing different error scenarios, and various type aliases like `clp::parser`,
- * `clp::optional`, `clp::required`, `clp::woptional`, and `clp::wrequired` for ease of use.
+ * The `gclp` namespace provides fundamental components for parsing command-line arguments, including
+ * the `gclp::basic_cl_param` class for defining individual command-line parameters and the
+ * `gclp::basic_cl_parser` class for parsing command-line arguments. Additionally, it defines the `gclp::error_code`
+ * enum class for representing different error scenarios, and various type aliases like `gclp::parser`,
+ * `gclp::optional`, `gclp::required`, `gclp::woptional`, and `gclp::wrequired` for ease of use.
  * 
  * Usage Example:
  * @code
  * // Define a simple command-line parser for a fictional "file sorter" application.
- * auto sorterParser = clp::parser(
+ * auto sorterParser = gclp::parser(
  *     "sorter",
- *     clp::required<std::filesystem::path>(
+ *     gclp::required<std::filesystem::path>(
  *         {'i'}, {"input"}, "Input file path for sorting."
  *     ),
- *     clp::optional<std::filesystem::path>(
+ *     gclp::optional<std::filesystem::path>(
  *         {'o'}, {"output"}, "Output file path. If not provided, prints to console."
  *     ),
- *     clp::optional<bool>(
+ *     gclp::optional<bool>(
  *         {'r'}, {"reverse"}, false, "Sort in reverse order."
  *     )
  * );
@@ -382,13 +382,13 @@ THE SOFTWARE.
  * // ...
  * @endcode
  */
-namespace clp {
+namespace gclp {
 
 #ifndef DOXYGEN_IGNORE_DETAIL
 /**
  * @brief The namespace encapsulating internal functionalities for command-line parameter parsing.
  * 
- * The `clp::detail` namespace provides certain concepts related to instancing `clp`'s classes,
+ * The `gclp::detail` namespace provides certain concepts related to instancing `gclp`'s classes,
  * generic string operations, and generic literals.
  */
 namespace detail {
@@ -767,7 +767,7 @@ std::vector<StringView> split_words(StringView s) {
     return ret;
 }
 
-}   // namespace clp::detail
+}   // namespace gclp::detail
 #endif   // DOXYGEN_IGNORE_DETAIL
 
 /**
@@ -777,7 +777,7 @@ std::vector<StringView> split_words(StringView s) {
  * @tparam T The character type to be checked.
  */
 template <class T>
-concept clp_char = detail::is_char_v<T>;
+concept gclp_char = detail::is_char_v<T>;
 
 /**
  * @brief Represents a basic command-line parameter with specified key characters and brief description.
@@ -788,7 +788,7 @@ concept clp_char = detail::is_char_v<T>;
  * @tparam Traits The character traits type (default is std::char_traits<CharT>).
  */
 template <
-    class ValT, clp_char CharT = char,
+    class ValT, gclp_char CharT = char,
     class Traits = std::char_traits<CharT>
 >
 class basic_cl_param
@@ -1128,7 +1128,7 @@ private:
  * @tparam CharT The character type used for keys (default is char).
  * @tparam Traits The character traits type (default is std::char_traits<CharT>).
  */
-template <class ValT, clp_char CharT = char,
+template <class ValT, gclp_char CharT = char,
     class Traits = std::char_traits<CharT>
 >
 class basic_optional : public basic_cl_param<ValT, CharT, Traits> {
@@ -1162,7 +1162,7 @@ public:
  * @tparam CharT The character type used for keys (default is char).
  * @tparam Traits The character traits type (default is std::char_traits<CharT>).
  */
-template <class ValT, clp_char CharT = char,
+template <class ValT, gclp_char CharT = char,
     class Traits = std::char_traits<CharT>
 >
 class basic_required : public basic_cl_param<ValT, CharT, Traits> {
@@ -1226,11 +1226,11 @@ DEFINE_ENUM_COMPARE_OP_ALL(error_code)
  * 
  * @code
  * // Create a parser for a simple todo list application
- * auto todoParser = clp::basic_cl_parser(
+ * auto todoParser = gclp::basic_cl_parser(
  *     "todo", // Command name
- *     clp::optional<std::string>{ "-a", "--add", "Add a new task to the todo list." },
- *     clp::optional<int>{ "-p", "--priority", "Set priority for the task." },
- *     clp::optional<bool>{ "-d", "--done", "Mark the task as done." }
+ *     gclp::optional<std::string>{ "-a", "--add", "Add a new task to the todo list." },
+ *     gclp::optional<int>{ "-p", "--priority", "Set priority for the task." },
+ *     gclp::optional<bool>{ "-d", "--done", "Mark the task as done." }
  * );
  * 
  * auto [taskDescription, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
@@ -1247,7 +1247,7 @@ DEFINE_ENUM_COMPARE_OP_ALL(error_code)
  * The parser automatically deduces the parameter types, simplifying the code and enhancing readability.
  */
 template <
-    clp_char CharT = char,
+    gclp_char CharT = char,
     class Traits = std::char_traits<CharT>,
     class ... Params
 >
@@ -1867,7 +1867,7 @@ using parser = basic_cl_parser<char, std::char_traits<char>, Params...>;
 template <class ... Params>
 using wparser = basic_cl_parser<wchar_t, std::char_traits<wchar_t>, Params...>;
 
-}   // namespace clp
+}   // namespace gclp
 
 #undef __LITERAL
 #undef DEFINE_ENUM_LOGICAL_OP_ALL

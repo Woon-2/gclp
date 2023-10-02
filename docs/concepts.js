@@ -1,6 +1,6 @@
 var concepts =
 [
-    [ "clp", "namespaceclp.html", [
-      [ "clp_char", "conceptclp_1_1clp__char.html", null ]
+    [ "gclp", "namespacegclp.html", [
+      [ "gclp_char", "conceptgclp_1_1gclp__char.html", null ]
     ] ]
 ];

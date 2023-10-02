@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['stream_5ftype_0',['stream_type',['../classclp_1_1basic__cl__parser.html#a5d57ec832a417e43536ebe1ec4cf72f9',1,'clp::basic_cl_parser']]],
-  ['string_5ftype_1',['string_type',['../classclp_1_1basic__cl__parser.html#a2fbf5dc7b17a95c92ce380a2c1d8e2cf',1,'clp::basic_cl_parser']]],
-  ['string_5fview_5ftype_2',['string_view_type',['../classclp_1_1basic__cl__parser.html#a71e4190a30a99d123651fcc1de2ea071',1,'clp::basic_cl_parser']]]
+  ['required_0',['required',['../namespacegclp.html#af643760a7a56b9c6617232c6de8d4838',1,'gclp']]],
+  ['required_5fkey_5fnot_5fgiven_1',['required_key_not_given',['../namespacegclp.html#a872562150e0252846e8071f1f183b56aae420af013c621d3124c0b1e59f90ee64',1,'gclp']]],
+  ['result_5ftuple_5ftype_2',['result_tuple_type',['../classgclp_1_1basic__cl__parser.html#a959572fa487a3d611b5003eb914d278f',1,'gclp::basic_cl_parser']]]
 ];

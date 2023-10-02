@@ -77,7 +77,7 @@ else()
     FetchContent_MakeAvailable(googletest)
 endif()
 
-target_link_libraries(gclp_test PRIVATE GTest::gtest_main)
+target_link_libraries(gclp_test PRIVATE GTest::gtest_main gclp)
 # TODO: separate paths for build interface/install interface
 target_include_directories(gclp_test PRIVATE "${PROJECT_SOURCE_DIR}" "${gtest_SOURCE_DIR}/include")
 
@@ -92,3 +92,14 @@ add_custom_target(
     COMMENT "test features"
     COMMAND ctest -C ${TEST_CONFIG} --test-dir "${PROJECT_BINARY_DIR}/test" --output-on-failure
 )
+
+option(BUILD_TESTING
+    "enable if you want to test each time you build the project."
+    OFF
+)
+if (BUILD_TESTING)
+    add_custom_command(TARGET gclp_test POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" --build "${PROJECT_BINARY_DIR}" --target test
+        COMMENT "Building test target after all gclp_test target is built."
+    )
+endif()

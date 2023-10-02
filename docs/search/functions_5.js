@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['has_5fbrief_5fmessage_0',['has_brief_message',['../classclp_1_1basic__cl__param.html#a239b19ea092ecfa7d862209f82b9eb1e',1,'clp::basic_cl_param']]],
-  ['has_5fvalue_1',['has_value',['../classclp_1_1basic__cl__param.html#af564dd12ff0fe504c5e5110d77cf3942',1,'clp::basic_cl_param']]]
+  ['has_5fbrief_5fmessage_0',['has_brief_message',['../classgclp_1_1basic__cl__param.html#a78a49774cc895925ceb2bdc66d3ae2ee',1,'gclp::basic_cl_param']]],
+  ['has_5fvalue_1',['has_value',['../classgclp_1_1basic__cl__param.html#a1499237fdfe881f0b806e6e9c1d2cedb',1,'gclp::basic_cl_param']]]
 ];
