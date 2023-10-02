@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <type_traits>
 
 using namespace std::literals;
 
@@ -82,6 +83,14 @@ TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
     };
 
     EXPECT_EQ(splitted, expected);
+}
+
+TEST(BasicParsingTest, ParseJustIdentifier) {
+    auto parser = gclp::parser(
+        "identifier"sv
+    );
+    auto res = parser.parse("identifier"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
 }
 
 TEST(BasicParsingTest, ParseSingleOptional) {
@@ -422,4 +431,64 @@ TEST_F(ParsingTest, FailWithAssignmentDuplicationOfDifferentKeys) {
     EXPECT_TRUE(parser.error() && parser.error()
         == gclp::error_code::duplicated_assignments
     ) << parser.error_message() << "\nparser doesn't detect assignment duplication of different keys.\n";
+}
+
+TEST_F(ParsingTest, AssignDefaultValue) {
+    auto parser = gclp::parser(
+        "identifier"sv,
+        gclp::optional<int>(
+            {'a'}, {"aa"}, "an optional int"
+        )->defval(3),
+        gclp::required<std::string>(
+            {'b'}, {"bb"}, "a required string"
+        )->defval("Hello, World!")
+    );
+
+    auto [ra, rb] = parser.parse("identifier"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+    EXPECT_EQ(ra, 3);
+    EXPECT_EQ(rb, "Hello, World!");
+}
+
+TEST_F(ParsingTest, ConserveTypeWhenUsingDefaultValueAdaptor) {
+    auto parser = gclp::parser(
+        "identifier"sv,
+        gclp::required<int>(
+            {'a'}, {"aa"}, "an optional int"
+        )->defval(3),
+        gclp::optional<std::string>(
+            {'b'}, {"bb"}, "a required string"
+        )->defval("Hello, World!")
+    );
+
+    auto is_type_conserved = [&parser]() {
+        using none_qualified_t = std::remove_cvref_t<decltype(parser)>;
+        if ( !std::is_same_v<
+            none_qualified_t::param_tuple_type,
+            std::tuple<
+                gclp::required<int>,
+                gclp::optional<std::string>
+            >
+        >) {
+            return ::testing::AssertionFailure();
+        }
+        else {
+            return ::testing::AssertionSuccess();
+        }
+    };
+
+    EXPECT_TRUE(is_type_conserved());
+}
+
+TEST(ParamTest, SetDefaultValue) {
+    auto paramI = gclp::optional<int>(
+        {'i'}, {"integer"}, "an optional integer parameter"
+    )->defval(42);
+
+    auto paramS = gclp::required<std::string>(
+        {'s'}, {"string"}, "a required string parameter"
+    )->defval("Hello, World!");
+
+    EXPECT_EQ(paramI.get_defval(), 42);
+    EXPECT_EQ(paramS.get_defval(), "Hello, World!");
 }

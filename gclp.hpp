@@ -371,8 +371,8 @@ THE SOFTWARE.
  *             {'o'}, {"output", "out"}, "Output file path. If not provided, prints to console."
  *         ),
  *         gclp::optional<bool>(
- *             {'r'}, {"reverse"}, false, "Sort in reverse order."
- *         )
+ *             {'r'}, {"reverse"}, "Sort in reverse order."
+ *         )->defval(false) // set default value
  *     );
  *     
  *     // Parse command-line arguments.
@@ -771,6 +771,54 @@ std::vector<StringView> split_words(StringView s) {
     return ret;
 }
 
+/**
+ * @brief An adaptor class to adapt default value settings for command-line parameters.
+ *
+ * This class provides a way to set default values for command-line parameters. It acts as an adaptor to modify the
+ * default values of a parent parameter.
+ *
+ * @tparam Param The type of the parent parameter for which default values are being set.
+ */
+template <class Param>
+class default_value_adaptor {
+public:
+    using parent_type = Param;  ///< Alias for the parent parameter type.
+    using value_type = typename parent_type::value_type;    ///< Alias for the value type of the parent parameter.
+
+    /**
+     * @brief Constructs a default_value_adaptor with a pointer to the parent parameter.
+     *
+     * @param parent A pointer to the parent parameter for which default values will be adapted.
+     */
+    default_value_adaptor(parent_type* parent)
+        : parent_(parent) {}
+
+    /**
+     * @brief Sets a new default value for the parent parameter.
+     *
+     * @param val The new default value to be set.
+     * @return A reference to the parent parameter with the updated default value.
+     */
+    parent_type& defval(const value_type& val) {
+        parent_->set_defval(val);
+        return *parent_;
+    }
+
+    /**
+     * @brief Sets a new default value for the parent parameter using move semantics.
+     *
+     * @param val The new default value to be set.
+     * @return A reference to the parent parameter with the updated default value.
+     */
+    parent_type& defval(value_type&& val) {
+        parent_->set_defval( std::move(val) );
+        return *parent_;
+    }
+
+private:
+    parent_type* parent_;
+};
+
 }   // namespace gclp::detail
 #endif   // DOXYGEN_IGNORE_DETAIL
 
@@ -825,40 +873,6 @@ public:
         string_view_type brief
     ) : key_chars_(key_chars), key_strs_(key_strs),
         brief_(brief), defval_(), val_(), fail_(false) {}
-
-    /**
-     * @brief Constructs a basic_cl_param object with specified key characters, brief description, and default value.
-     * 
-     * Initializes a basic_cl_param object with the specified key characters, key strings, brief description, and default value.
-     * @param key_chars An std::intializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::intializer_list of string keys associated with the parameter.
-     * @param defval The default value of the parameter.
-     * @param brief A brief description of the parameter.
-     */
-    basic_cl_param(
-        std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
-        const value_type& defval,
-        string_view_type brief
-    ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_(defval), val_(), fail_(false) {}
-
-    /**
-     * @brief Constructs a basic_cl_param object with specified key characters, brief description, and default value.
-     * 
-     * Initializes a basic_cl_param object with the specified key characters, key strings, brief description, and default value.
-     * @param key_chars An std::intializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::intializer_list of string keys associated with the parameter.
-     * @param defval The default value of the parameter (rvalue reference version).
-     * @param brief A brief description of the parameter.
-     */
-    basic_cl_param(
-        std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
-        value_type&& defval,
-        string_view_type brief
-    ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_( std::move(defval) ), val_(), fail_(false) {}
 
     /**
      * @brief Checks if the parameter has a value (either assigned or default).
@@ -1115,6 +1129,49 @@ public:
         return is;
     }
 
+    /**
+     * @brief Sets the default value for the command-line parameter.
+     *
+     * This function sets the default value for the command-line parameter to the specified value.
+     *
+     * @param val The default value to be set for the parameter.
+     */
+    void set_defval(const value_type& val) {
+        defval_ = val;
+    }
+
+    /**
+     * @brief Sets the default value for the command-line parameter using move semantics.
+     *
+     * This function sets the default value for the command-line parameter by moving the specified value.
+     *
+     * @param val The default value to be set for the parameter (will be moved).
+     */
+    void set_defval(value_type&& val) {
+        defval_ = std::move(val);
+    }
+
+    /**
+     * @brief Checks if the command-line parameter has a default value set.
+     *
+     * @return true if a default value is set, false otherwise.
+     */
+    bool has_defval() const noexcept {
+        return defval_.has_value();
+    }
+
+    /**
+     * @brief Gets the default value of the command-line parameter.
+     *
+     * @pre `has_defval()` should be true.
+     *
+     * @return The default value of the parameter.
+     */
+    const value_type& get_defval() const {
+        assert(has_defval());
+        return defval_.value();
+    }
+
 private:
     key_container<char_type> key_chars_;
     key_container<string_view_type> key_strs_;
@@ -1144,6 +1201,13 @@ public:
         char_type, traits_type
     >;
 
+private:
+    using defval_adaptor_type = detail::default_value_adaptor<
+        basic_optional<value_type, char_type, traits_type>
+    >;
+    friend defval_adaptor_type;
+
+public:
     /**
      * @brief Constructs a basic_optional object with specified key characters, key strings, and brief description.
      * 
@@ -1155,7 +1219,30 @@ public:
     basic_optional(std::initializer_list<char_type> key_chars,
         std::initializer_list<string_view_type> key_strs,
         string_view_type brief
-    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief) {}
+    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief),
+        defval_adaptor_(this) {}
+
+    /**
+     * @brief Provides access to the default value adaptor for setting default values of the parameter.
+     *
+     * This member function allows direct access to the default value adaptor associated with the parameter. It enables
+     * setting default values for the parameter using the `defval` member functions provided by the adaptor.
+     *
+     * Example Usage:
+     *
+     * @code
+     * // Sets the default value of the parameter to 42 using the default value adaptor.
+     * auto param = gclp::optional<int>{'i', "integer", "An optional integer parameter"}->defval(42);
+     * @endcode
+     *
+     * @return A pointer to the default value adaptor for the parameter.
+     */
+    defval_adaptor_type* operator->() && noexcept {
+        return &defval_adaptor_;
+    }
+
+private:
+    defval_adaptor_type defval_adaptor_;
 };
 
 /**
@@ -1178,6 +1265,13 @@ public:
         char_type, traits_type
     >;
 
+private:
+    using defval_adaptor_type = detail::default_value_adaptor<
+        basic_required<value_type, char_type, traits_type>
+    >;
+    friend defval_adaptor_type;
+
+public:
     /**
      * @brief Constructs a basic_required object with specified key characters, key strings, and brief description.
      * 
@@ -1189,7 +1283,30 @@ public:
     basic_required(std::initializer_list<char_type> key_chars,
         std::initializer_list<string_view_type> key_strs,
         string_view_type brief
-    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief) {}
+    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief),
+        defval_adaptor_(this) {}
+
+    /**
+     * @brief Provides access to the default value adaptor for setting default values of the parameter.
+     *
+     * This member function allows direct access to the default value adaptor associated with the parameter. It enables
+     * setting default values for the parameter using the `defval` member functions provided by the adaptor.
+     *
+     * Example Usage:
+     *
+     * @code
+     * // Sets the default value of the parameter to 42 using the default value adaptor.
+     * auto param = gclp::required<int>{'i', "integer", "A required integer parameter"}->defval(42);
+     * @endcode
+     *
+     * @return A pointer to the default value adaptor for the parameter.
+     */
+    defval_adaptor_type* operator->() && noexcept {
+        return &defval_adaptor_;
+    }
+
+private:
+    defval_adaptor_type defval_adaptor_;
 };
 
 /**
@@ -1198,6 +1315,7 @@ public:
  * This enumeration defines various error states that can occur during the parsing of command-line arguments.
  */
 enum class error_code {
+    identifier_not_given,   ///< The identifier was not provided, i.e. the command line is empty.
     invalid_identifier, ///< The provided identifier is invalid or malformed.
     key_not_given,      ///< A required key was not provided in the command-line arguments.
     undefined_key,      ///< An undefined or unexpected key was provided in the command-line arguments.
@@ -1353,8 +1471,6 @@ public:
      * @return A tuple containing the parsed values.
      */
     result_tuple_type parse(string_view_type command_line)  {
-        result_tuple_type ret;
-
         // Check if parameter has been already assigned a value
         // to guarantee that the parameters will have been assigned a value
         // only once.
@@ -1399,29 +1515,40 @@ public:
         };
 
         if (error().has_value()) {
-            return ret;
+            return {};
         }
 
         auto words = detail::split_words(command_line);
+
+        if ( std::empty(words) ) {
+            log_error_identifier_not_given();
+            return {};
+        }
+
         if ( words.front() != identifier_ ) {
             log_error_invalid_identifier( words.front() );
-            return ret;
+            return {};
         }
 
         auto it_first = std::next(std::begin(words));
         auto it_last = std::end(words);
 
+        if (it_first == it_last) {
+            // there's no argument to parse.
+            return make_parsed_result();
+        }
+
         // check first word is key,
         if (!detail::is_key(*it_first)) {
             log_error_key_not_given();
-            return ret;
+            return {};
         }
 
         while (it_first != it_last) {
             if ( detail::is_complex_boolean_param(*it_first) ) {
                 if ( !parse_complex_keys(*it_first) ) {
                     log_error_wrong_complex_key(*it_first);
-                    return ret;
+                    return {};
                 }
                 if ( has_duplicated_assignments(*it_first) ) {
                     log_error_duplicated_assignments(*it_first);
@@ -1433,7 +1560,7 @@ public:
             auto param_idx = find_param_index(*it_first);
             if ( !param_idx.has_value() ) {
                 log_error_undefined_key(*it_first);
-                return ret;
+                return {};
             }
     
             auto it_next_key = std::ranges::find_if(
@@ -1451,20 +1578,42 @@ public:
             );
             if ( !assign_arg_by_idx( param_idx.value() ) ) {
                 log_error_incompatible_argument(*it_first);
-                return ret;
+                return {};
             }
 
             if ( has_duplicated_assignments(*it_first) ) {
                 log_error_duplicated_assignments(*it_first);
+                return {};
             }
 
             if ( has_unparsed_arguments() ) {
                 log_error_unparsed_arguments();
-                return ret;
+                return {};
             }
 
             it_first = it_next_key;
         }   // while (it_first != last)
+
+        // TODO: check every required arguments are passed and all constraints are met
+
+        return make_parsed_result();
+    }
+
+private:
+    /**
+     * @brief Helper function to create a tuple representing parsed results.
+     *
+     * This function constructs a tuple containing parsed values based on the specified parameter types. It iterates
+     * through the parameters and retrieves their values. If a required parameter is not provided, an error
+     * "required_key_not_given" is logged.
+     * 
+     * The parameters' values are copied rather then moved.
+     * Therefore, the parameters' values don't change after call of this function.
+     *
+     * @return A tuple representing parsed values according to the specified parameter types.
+     */
+    result_tuple_type make_parsed_result() {
+        result_tuple_type ret;
 
         detail::tuple_conv(params_, ret, [this](const auto& p) {
             using none_qualified_t = std::remove_cvref_t<decltype(p)>;
@@ -1485,12 +1634,22 @@ public:
             return value_type{};
         });
 
-        // TODO: check every required arguments are passed and all constraints are met
-
         return ret;
     }
 
-private:
+    /**
+     * @brief Logs an error when the command-line identifier is not given.
+     *
+     * This function sets the error code to 'identifier_not_given' and constructs an error message indicating that the
+     * command-line identifier is missing.
+     */
+    void log_error_identifier_not_given() {
+        err_code_ = error_code::identifier_not_given;
+        err_stream_ << __LITERAL(char_type,
+            "[gclp] error: didn't receive identifier, command-line is empty.\n"
+        );
+    }
+
     /**
      * @brief Parses complex keys in the command line arguments.
      * 

@@ -138,12 +138,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5c5305a9d394dc69d4b6511a5c904d02" id="r_a5c5305a9d394dc69d4b6511a5c904d02"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a5c5305a9d394dc69d4b6511a5c904d02">basic_cl_param</a> (std::initializer_list&lt; char_type &gt; <a class="el" href="classgclp_1_1basic__cl__param.html#a85b6cd9637fc2af52db72dc37c89c216">key_chars</a>, std::initializer_list&lt; string_view_type &gt; <a class="el" href="classgclp_1_1basic__cl__param.html#a536547d740d284f3a18c284418637c66">key_strs</a>, string_view_type brief)</td></tr>
 <tr class="memdesc:a5c5305a9d394dc69d4b6511a5c904d02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with specified key characters and brief description.  <br /></td></tr>
 <tr class="separator:a5c5305a9d394dc69d4b6511a5c904d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0dd70dc818c0c814f9631546260aec6" id="r_ad0dd70dc818c0c814f9631546260aec6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#ad0dd70dc818c0c814f9631546260aec6">basic_cl_param</a> (std::initializer_list&lt; char_type &gt; <a class="el" href="classgclp_1_1basic__cl__param.html#a85b6cd9637fc2af52db72dc37c89c216">key_chars</a>, std::initializer_list&lt; string_view_type &gt; <a class="el" href="classgclp_1_1basic__cl__param.html#a536547d740d284f3a18c284418637c66">key_strs</a>, const value_type &amp;defval, string_view_type brief)</td></tr>
-<tr class="memdesc:ad0dd70dc818c0c814f9631546260aec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with specified key characters, brief description, and default value.  <br /></td></tr>
-<tr class="separator:ad0dd70dc818c0c814f9631546260aec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03fa90c407db7f91a51121515a16e5e1" id="r_a03fa90c407db7f91a51121515a16e5e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a03fa90c407db7f91a51121515a16e5e1">basic_cl_param</a> (std::initializer_list&lt; char_type &gt; <a class="el" href="classgclp_1_1basic__cl__param.html#a85b6cd9637fc2af52db72dc37c89c216">key_chars</a>, std::initializer_list&lt; string_view_type &gt; <a class="el" href="classgclp_1_1basic__cl__param.html#a536547d740d284f3a18c284418637c66">key_strs</a>, value_type &amp;&amp;defval, string_view_type brief)</td></tr>
-<tr class="memdesc:a03fa90c407db7f91a51121515a16e5e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with specified key characters, brief description, and default value.  <br /></td></tr>
-<tr class="separator:a03fa90c407db7f91a51121515a16e5e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1499237fdfe881f0b806e6e9c1d2cedb" id="r_a1499237fdfe881f0b806e6e9c1d2cedb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a1499237fdfe881f0b806e6e9c1d2cedb">has_value</a> () const noexcept</td></tr>
 <tr class="memdesc:a1499237fdfe881f0b806e6e9c1d2cedb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the parameter has a value (either assigned or default).  <br /></td></tr>
 <tr class="separator:a1499237fdfe881f0b806e6e9c1d2cedb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,6 +192,18 @@ requires detail::not_convertible_to&lt; std::remove_cvref_t&lt;InCompatible&gt;,
 <tr class="memitem:a3fae5e89932b00be8a5243c3a6385a18" id="r_a3fae5e89932b00be8a5243c3a6385a18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a3fae5e89932b00be8a5243c3a6385a18">clear</a> () noexcept</td></tr>
 <tr class="memdesc:a3fae5e89932b00be8a5243c3a6385a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the failure status of the parameter.  <br /></td></tr>
 <tr class="separator:a3fae5e89932b00be8a5243c3a6385a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d4a4f09580d90bfcb426e3110b8a740" id="r_a5d4a4f09580d90bfcb426e3110b8a740"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a5d4a4f09580d90bfcb426e3110b8a740">set_defval</a> (const value_type &amp;val)</td></tr>
+<tr class="memdesc:a5d4a4f09580d90bfcb426e3110b8a740"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default value for the command-line parameter.  <br /></td></tr>
+<tr class="separator:a5d4a4f09580d90bfcb426e3110b8a740"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70fbd2ed237f828fbcb08a26b9319fbc" id="r_a70fbd2ed237f828fbcb08a26b9319fbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a70fbd2ed237f828fbcb08a26b9319fbc">set_defval</a> (value_type &amp;&amp;val)</td></tr>
+<tr class="memdesc:a70fbd2ed237f828fbcb08a26b9319fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default value for the command-line parameter using move semantics.  <br /></td></tr>
+<tr class="separator:a70fbd2ed237f828fbcb08a26b9319fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68483a08dd1bed0030251d0908a5a8d3" id="r_a68483a08dd1bed0030251d0908a5a8d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a68483a08dd1bed0030251d0908a5a8d3">has_defval</a> () const noexcept</td></tr>
+<tr class="memdesc:a68483a08dd1bed0030251d0908a5a8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the command-line parameter has a default value set.  <br /></td></tr>
+<tr class="separator:a68483a08dd1bed0030251d0908a5a8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45c63fe32bc3c72971833a54910afa2b" id="r_a45c63fe32bc3c72971833a54910afa2b"><td class="memItemLeft" align="right" valign="top">const value_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgclp_1_1basic__cl__param.html#a45c63fe32bc3c72971833a54910afa2b">get_defval</a> () const</td></tr>
+<tr class="memdesc:a45c63fe32bc3c72971833a54910afa2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the default value of the command-line parameter.  <br /></td></tr>
+<tr class="separator:a45c63fe32bc3c72971833a54910afa2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -221,7 +227,7 @@ class gclp::basic_cl_param&lt; ValT, CharT, Traits &gt;</div><p>Represents a bas
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5c5305a9d394dc69d4b6511a5c904d02" name="a5c5305a9d394dc69d4b6511a5c904d02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c5305a9d394dc69d4b6511a5c904d02">&#9670;&#160;</a></span>basic_cl_param() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c5305a9d394dc69d4b6511a5c904d02">&#9670;&#160;</a></span>basic_cl_param()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -267,128 +273,6 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
   <table class="params">
     <tr><td class="paramname">key_chars</td><td>An std::intializer_list of single-character keys associated with the parameter. </td></tr>
     <tr><td class="paramname">key_strs</td><td>An std::intializer_list of string keys associated with the parameter. </td></tr>
-    <tr><td class="paramname">brief</td><td>A brief description of the parameter. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad0dd70dc818c0c814f9631546260aec6" name="ad0dd70dc818c0c814f9631546260aec6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0dd70dc818c0c814f9631546260aec6">&#9670;&#160;</a></span>basic_cl_param() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::basic_cl_param </td>
-          <td>(</td>
-          <td class="paramtype">std::initializer_list&lt; char_type &gt;&#160;</td>
-          <td class="paramname"><em>key_chars</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::initializer_list&lt; string_view_type &gt;&#160;</td>
-          <td class="paramname"><em>key_strs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const value_type &amp;&#160;</td>
-          <td class="paramname"><em>defval</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string_view_type&#160;</td>
-          <td class="paramname"><em>brief</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constructs a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with specified key characters, brief description, and default value. </p>
-<p>Initializes a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with the specified key characters, key strings, brief description, and default value. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">key_chars</td><td>An std::intializer_list of single-character keys associated with the parameter. </td></tr>
-    <tr><td class="paramname">key_strs</td><td>An std::intializer_list of string keys associated with the parameter. </td></tr>
-    <tr><td class="paramname">defval</td><td>The default value of the parameter. </td></tr>
-    <tr><td class="paramname">brief</td><td>A brief description of the parameter. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a03fa90c407db7f91a51121515a16e5e1" name="a03fa90c407db7f91a51121515a16e5e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03fa90c407db7f91a51121515a16e5e1">&#9670;&#160;</a></span>basic_cl_param() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::basic_cl_param </td>
-          <td>(</td>
-          <td class="paramtype">std::initializer_list&lt; char_type &gt;&#160;</td>
-          <td class="paramname"><em>key_chars</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::initializer_list&lt; string_view_type &gt;&#160;</td>
-          <td class="paramname"><em>key_strs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">value_type &amp;&amp;&#160;</td>
-          <td class="paramname"><em>defval</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string_view_type&#160;</td>
-          <td class="paramname"><em>brief</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constructs a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with specified key characters, brief description, and default value. </p>
-<p>Initializes a <a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">basic_cl_param</a> object with the specified key characters, key strings, brief description, and default value. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">key_chars</td><td>An std::intializer_list of single-character keys associated with the parameter. </td></tr>
-    <tr><td class="paramname">key_strs</td><td>An std::intializer_list of string keys associated with the parameter. </td></tr>
-    <tr><td class="paramname">defval</td><td>The default value of the parameter (rvalue reference version). </td></tr>
     <tr><td class="paramname">brief</td><td>A brief description of the parameter. </td></tr>
   </table>
   </dd>
@@ -785,6 +669,37 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 
 </div>
 </div>
+<a id="a45c63fe32bc3c72971833a54910afa2b" name="a45c63fe32bc3c72971833a54910afa2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45c63fe32bc3c72971833a54910afa2b">&#9670;&#160;</a></span>get_defval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const value_type &amp; <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::get_defval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the default value of the command-line parameter. </p>
+<dl class="section pre"><dt>Precondition</dt><dd><code><a class="el" href="classgclp_1_1basic__cl__param.html#a68483a08dd1bed0030251d0908a5a8d3" title="Checks if the command-line parameter has a default value set.">has_defval()</a></code> should be true.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The default value of the parameter. </dd></dl>
+
+</div>
+</div>
 <a id="a78a49774cc895925ceb2bdc66d3ae2ee" name="a78a49774cc895925ceb2bdc66d3ae2ee"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a78a49774cc895925ceb2bdc66d3ae2ee">&#9670;&#160;</a></span>has_brief_message()</h2>
 
@@ -812,6 +727,36 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 
 <p>Checks if the parameter has a brief description message. </p>
 <p>This function checks if the parameter has a brief description message. </p><dl class="section return"><dt>Returns</dt><dd>true if the parameter has a brief description, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a68483a08dd1bed0030251d0908a5a8d3" name="a68483a08dd1bed0030251d0908a5a8d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68483a08dd1bed0030251d0908a5a8d3">&#9670;&#160;</a></span>has_defval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::has_defval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if the command-line parameter has a default value set. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if a default value is set, false otherwise. </dd></dl>
 
 </div>
 </div>
@@ -902,6 +847,80 @@ template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_trait
 
 <p>Returns a const reference to the list of string keys associated with the parameter. </p>
 <p>This function returns a const reference to the list of string keys associated with the parameter. </p><dl class="section return"><dt>Returns</dt><dd>A const reference to the list of string keys. </dd></dl>
+
+</div>
+</div>
+<a id="a5d4a4f09580d90bfcb426e3110b8a740" name="a5d4a4f09580d90bfcb426e3110b8a740"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d4a4f09580d90bfcb426e3110b8a740">&#9670;&#160;</a></span>set_defval() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::set_defval </td>
+          <td>(</td>
+          <td class="paramtype">const value_type &amp;&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the default value for the command-line parameter. </p>
+<p>This function sets the default value for the command-line parameter to the specified value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>The default value to be set for the parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a70fbd2ed237f828fbcb08a26b9319fbc" name="a70fbd2ed237f828fbcb08a26b9319fbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70fbd2ed237f828fbcb08a26b9319fbc">&#9670;&#160;</a></span>set_defval() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ValT , gclp_char CharT = char, class Traits  = std::char_traits&lt;CharT&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classgclp_1_1basic__cl__param.html">gclp::basic_cl_param</a>&lt; ValT, CharT, Traits &gt;::set_defval </td>
+          <td>(</td>
+          <td class="paramtype">value_type &amp;&amp;&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the default value for the command-line parameter using move semantics. </p>
+<p>This function sets the default value for the command-line parameter by moving the specified value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>The default value to be set for the parameter (will be moved). </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -85,8 +85,8 @@ int main(int argc, char** argv) {
             {'o'}, {"output", "out"}, "Output file path. If not provided, prints to console."
         ),
         gclp::optional<bool>(
-            {'r'}, {"reverse"}, false, "Sort in reverse order."
-        )
+            {'r'}, {"reverse"}, "Sort in reverse order."
+        )->defval(false)    // set default value
     );
     
     // Parse command-line arguments.
