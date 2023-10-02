@@ -84,6 +84,14 @@ TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
     EXPECT_EQ(splitted, expected);
 }
 
+TEST(BasicParsingTest, ParseJustIdentifier) {
+    auto parser = gclp::parser(
+        "identifier"sv
+    );
+    auto res = parser.parse("identifier"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+}
+
 TEST(BasicParsingTest, ParseSingleOptional) {
     auto parser = gclp::parser(
         "identifier"sv,
