@@ -31,7 +31,7 @@ if (NOT DEFINED CMAKE_INSTALL_PREFIX)
     message(STATUS "Setting install path to ${DEFAULT_INSTALL_PATH}
         as none was specified."
     )
-    set (CMAKE_INSTALL_PREFIX "${DEFAULT_INSTALL_PATH}" CACHE STRING
+    set (CMAKE_INSTALL_PREFIX "${DEFAULT_INSTALL_PATH}" CACHE PATH
         "Set the install path."
     )
 endif()
@@ -44,16 +44,10 @@ project(pgclp
 
 add_library(gclp INTERFACE cl_parser.hpp)
 
-set(Doxygen_ROOT "" CACHE STRING
+set(Doxygen_ROOT "" CACHE PATH
     "The path to directory where doxygen is installed
     used in find_package(Doxygen),
     This path is used prior to any other paths."
-)
-
-option(DOXYGEN_EXTRACT_ALL
-    "extract all entities including even enitites not documented.
-    (turn this option on when you need develop-documentation.)"
-    OFF
 )
 
 find_package(Doxygen)
@@ -66,10 +60,28 @@ if(DOXYGEN_FOUND)
     )
     option(DOXYGEN_RECURSIVE "doxygen recursive option" OFF)
 
+    option(DOXYGEN_EXTRACT_ALL
+        "extract all entities including even enitites not documented.
+        (turn this option on when you need develop-documentation.)"
+        OFF
+    )
+    option(DOXYGEN_EXCLUDE_DETAIL 
+        "ignore clp::detail namespace when documenting with doxygen.
+        (turn this option off when you need develop-documentation.)"
+        ON
+    )
+
     if (DOXYGEN_RECURSIVE)
         set(DOXYGEN_RECURSIVE_VALUE YES)
     else()
         set(DOXYGEN_RECURSIVE_VALUE NO)
+    endif()
+
+
+    if (DOXYGEN_EXCLUDE_DETAIL)
+        list(APPEND DOXYGEN_PREDEFINITIONS
+            "DOXYGEN_IGNORE_DETAIL"
+        )
     endif()
 
     if(NOT EXISTS "${DOXYGEN_INPUT_DIR}/docs/Doxyfile")

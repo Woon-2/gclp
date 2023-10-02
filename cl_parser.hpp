@@ -95,6 +95,21 @@ THE SOFTWARE.
 }()
 #endif
 
+/**
+ * @brief Define logical operators for all integral types and a specified enumeration type.
+ * 
+ * This macro defines logical operators (such as '&&' and '||') between the specified enumeration type 
+ * and all integral types (char, short, int, long, etc.). The operators are implemented based on the provided logical functions.
+ * 
+ * @param Enum_t The enumeration type for which the logical operators are defined.
+ * 
+ * Example Usage:
+ * @code
+ * // Define logical operators for MyEnum and all integral types.
+ * DEFINE_ENUM_LOGICAL_OP_ALL(MyEnum)
+ * // Usage: bool result = (MyEnum::Value && 42);
+ * @endcode
+ */
 #define DEFINE_ENUM_LOGICAL_OP_ALL(Enum_t)    \
     DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, bool)    \
     DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, char) \
@@ -111,6 +126,22 @@ THE SOFTWARE.
     DEFINE_ENUM_BINARY_LOGICAL_OP(Enum_t, Enum_t)   \
     DEFINE_UNARY_OP(Enum_t, !, [](auto arg) { return !static_cast< std::underlying_type_t<Enum_t> >(arg); })
 
+/**
+ * @brief Define comparison operators for all integral types and specified enumeration type.
+ * 
+ * This macro defines comparison operators (such as '==', '!=', '<', '<=', '>', '>=', etc.)
+ * between the specified enumeration type and all integral types (char, short, int, long, etc.). 
+ * The operators are implemented based on the provided comparison functions.
+ * 
+ * @param Enum_t The enumeration type for which the comparison operators are defined.
+ * 
+ * Example Usage:
+ * @code
+ * // Define comparison operators for MyEnum and all integral types.
+ * DEFINE_ENUM_COMPARE_OP_ALL(MyEnum)
+ * // Usage: bool result = MyEnum::Value == 42;
+ * @endcode
+ */
 #define DEFINE_ENUM_COMPARE_OP_ALL(Enum_t)    \
     DEFINE_ENUM_INT_COMPARE_OP(Enum_t, char) \
     DEFINE_ENUM_INT_COMPARE_OP(Enum_t, signed char) \
@@ -125,24 +156,110 @@ THE SOFTWARE.
     DEFINE_ENUM_INT_COMPARE_OP(Enum_t, unsigned long long)  \
     DEFINE_ENUM_BINARY_COMPARE_OP(Enum_t, Enum_t)
 
+/**
+ * @brief Define logical operators between an enumeration type and an integral type.
+ * 
+ * This macro defines logical operators (such as '&&' and '||') between the specified enumeration type 
+ * and the provided integral type. The operators are implemented based on the provided logical functions.
+ * 
+ * @param Enum_t The enumeration type for which the logical operators are defined.
+ * @param int_t The integral type for the logical operators.
+ * 
+ * Example Usage:
+ * @code
+ * // Define custom logical operations for enum type MyEnum and int.
+ * DEFINE_ENUM_INT_LOGICAL_OP(MyEnum, int)
+ * // Usage: bool result = (MyEnum::Value && 42);
+ * @endcode
+ */
 #define DEFINE_ENUM_INT_LOGICAL_OP(Enum_t, int_t) \
     DEFINE_ENUM_INT_OP(Enum_t, int_t, &, [](auto lhs, auto rhs) { return lhs & rhs; })  \
     DEFINE_ENUM_INT_OP(Enum_t, int_t, |, [](auto lhs, auto rhs) { return lhs | rhs; })  \
     DEFINE_ENUM_INT_OP(Enum_t, int_t, &&, [](auto lhs, auto rhs) { return lhs && rhs; })    \
     DEFINE_ENUM_INT_OP(Enum_t, int_t, ||, [](auto lhs, auto rhs) { return lhs || rhs; })
     
+/**
+ * @brief Define binary logical operators for two enumeration types.
+ * 
+ * This macro defines binary logical operators (such as '&&' and '||') between two specified enumeration types.
+ * The operators are implemented based on the provided logical functions.
+ * 
+ * @param Enum1_t The first enumeration type for the logical operators.
+ * @param Enum2_t The second enumeration type for the logical operators.
+ * 
+ * Example Usage:
+ * @code
+ * // Define custom logical operations for enum types MyEnum1 and MyEnum2.
+ * DEFINE_ENUM_BINARY_LOGICAL_OP(MyEnum1, MyEnum2)
+ * // Usage: bool result = (MyEnum1::Value && MyEnum2::Value);
+ * @endcode
+ */
 #define DEFINE_ENUM_BINARY_LOGICAL_OP(Enum1_t, Enum2_t) \
     DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, &, [](auto lhs, auto rhs) { return lhs & rhs; })    \
     DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, |, [](auto lhs, auto rhs) { return lhs | rhs; })    \
     DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, &&, [](auto lhs, auto rhs) { return lhs && rhs; })    \
     DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, ||, [](auto lhs, auto rhs) { return lhs || rhs; })    \
 
+/**
+ * @brief Define a comparison operator between an enumeration type and an integral type.
+ * 
+ * This macro defines a comparison operator (such as '==', '!=', '<', '<=', '>', '>=', etc.)
+ * between the specified enumeration type and the provided integral type. The operator is implemented based on the provided comparison function.
+ * 
+ * @param Enum_t The enumeration type for which the comparison operator is defined.
+ * @param int_t The integral type to perform the comparison with the enumeration type.
+ * @param opSymbol The symbol representing the comparison operator (e.g., '==', '!=', '<', '<=', '>', '>=', etc.).
+ * @param opIntFunc The comparison function to be applied to the enumeration and integral values.
+ * 
+ * Example Usage:
+ * @code
+ * // Define a custom comparison operation for MyEnum and int.
+ * DEFINE_ENUM_INT_COMPARE_OP(MyEnum, int, ==, [](auto lhs, auto rhs) { return lhs == rhs; })
+ * // Usage: bool result = MyEnum::Value == 42;
+ * @endcode
+ */
 #define DEFINE_ENUM_INT_COMPARE_OP(Enum_t, int_t)   \
     DEFINE_ENUM_INT_OP(Enum_t, int_t, <=>, [](auto lhs, auto rhs) { return lhs <=> rhs; })
 
+/**
+ * @brief Define a comparison operator between two enumeration types.
+ * 
+ * This macro defines a comparison operator (such as '==', '!=', '<', '<=', '>', '>=', etc.)
+ * between the specified enumeration types. The operator is implemented based on the provided comparison function.
+ * 
+ * @param Enum1_t The first enumeration type for the comparison operator.
+ * @param Enum2_t The second enumeration type for the comparison operator.
+ * @param opSymbol The symbol representing the comparison operator (e.g., '==', '!=', '<', '<=', '>', '>=', etc.).
+ * @param opFunc The comparison function to be applied to the two enumeration values.
+ * 
+ * Example Usage:
+ * @code
+ * // Define a custom comparison operation for enum types MyEnum1 and MyEnum2.
+ * DEFINE_ENUM_BINARY_COMPARE_OP(MyEnum1, MyEnum2, ==, [](auto lhs, auto rhs) { return lhs == rhs; })
+ * // Usage: bool result = MyEnum1::Value == MyEnum2::Value;
+ * @endcode
+ */
 #define DEFINE_ENUM_BINARY_COMPARE_OP(Enum1_t, Enum2_t) \
     DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, <=>, [](auto lhs, auto rhs) { return lhs <=> rhs; })
 
+/**
+ * @brief Define a binary operator between two enumeration types.
+ * 
+ * This macro defines a binary operator (such as '+', '-', '*', '/', etc.) between the specified enumeration types.
+ * The operator is implemented based on the provided binary operation function.
+ * 
+ * @param Enum1_t The first enumeration type for the binary operator.
+ * @param Enum2_t The second enumeration type for the binary operator.
+ * @param opSymbol The symbol representing the binary operator (e.g., '+', '-', '*', '/', etc.).
+ * @param opFunc The binary operation function to be applied to the two enumeration values.
+ * 
+ * Example Usage:
+ * @code
+ * // Define a custom binary operation for enum types MyEnum1 and MyEnum2.
+ * DEFINE_ENUM_BINARY_OP(MyEnum1, MyEnum2, +, [](auto lhs, auto rhs) { return lhs + rhs; })
+ * // Usage: int result = MyEnum1::Value + MyEnum2::Value;
+ * @endcode
+ */
 #define DEFINE_ENUM_BINARY_OP(Enum1_t, Enum2_t, opSymbol, opIntFunc)  \
     DEFINE_BINARY_OP(Enum1_t, Enum2_t, opSymbol,  \
         [](auto e1, auto e2) { return opIntFunc( static_cast< std::underlying_type_t<Enum1_t> >(e1),  \
@@ -150,6 +267,24 @@ THE SOFTWARE.
         ); } \
     )
 
+/**
+ * @brief Define a binary operator between an enumeration type and an integral type.
+ * 
+ * This macro defines a binary operator (such as '+', '-', '*', '/', etc.) between the specified enumeration type
+ * and the provided integral type. The operator is implemented based on the provided binary operation function.
+ * 
+ * @param Enum_t The enumeration type for which the binary operator is defined.
+ * @param int_t The integral type to perform the binary operation with the enumeration type.
+ * @param opSymbol The symbol representing the binary operator (e.g., '+', '-', '*', '/', etc.).
+ * @param opIntFunc The binary operation function to be applied to the enumeration and integral values.
+ * 
+ * Example Usage:
+ * @code
+ * // Define a custom binary operation for MyEnum and int.
+ * DEFINE_ENUM_INT_OP(MyEnum, int, +, [](auto lhs, auto rhs) { return lhs + rhs; })
+ * // Usage: MyEnum result = MyEnum::Value + 42;
+ * @endcode
+ */
 #define DEFINE_ENUM_INT_OP(Enum_t, int_t, opSymbol, opIntFunc)   \
     DEFINE_BINARY_OP(Enum_t, int_t, opSymbol,   \
         [](auto e, auto i) { return opIntFunc( static_cast<decltype(i)>(e), i ); } \
@@ -158,6 +293,24 @@ THE SOFTWARE.
         [](auto i, auto e) { return opIntFunc( i, static_cast<decltype(i)>(e) ); } \
     )
 
+/**
+ * @brief Define a binary operator for enumeration types.
+ * 
+ * This macro defines a binary operator (such as '+', '-', '*', '/', etc.) for the specified enumeration types.
+ * The operator is implemented based on the provided binary operation function.
+ * 
+ * @param Lhs_t The left-hand side enumeration type for the binary operator.
+ * @param Rhs_t The right-hand side enumeration type for the binary operator.
+ * @param opSymbol The symbol representing the binary operator (e.g., '+', '-', '*', '/', etc.).
+ * @param opFunc The binary operation function to be applied to the enumeration values.
+ * 
+ * Example Usage:
+ * @code
+ * // Define a custom binary operation for enum types MyEnum1 and MyEnum2.
+ * DEFINE_BINARY_OP(MyEnum1, MyEnum2, +, [](auto lhs, auto rhs) { return lhs + rhs; })
+ * // Usage: MyEnum1 result = MyEnum1::Value + MyEnum2::Value;
+ * @endcode
+ */
 #define DEFINE_BINARY_OP(Lhs_t, Rhs_t, opSymbol, opFunc)    \
     decltype(auto) operator opSymbol (Lhs_t lhs, Rhs_t rhs)   \
         noexcept( noexcept(opFunc(  \
@@ -168,6 +321,23 @@ THE SOFTWARE.
             std::forward<Rhs_t>(rhs) ); \
     }
 
+/**
+ * @brief Define a unary operator for an enumeration type.
+ * 
+ * This macro defines a unary operator (such as '+', '-', '~', etc.) for the specified enumeration type.
+ * The operator is implemented based on the provided unary operation function.
+ * 
+ * @param Arg_t The enumeration type for which the unary operator is defined.
+ * @param opSymbol The symbol representing the unary operator (e.g., '+', '-', '~', etc.).
+ * @param opFunc The unary operation function to be applied to the enumeration value.
+ * 
+ * Example Usage:
+ * @code
+ * // Define a custom unary operation for the enum type MyEnum.
+ * DEFINE_UNARY_OP(MyEnum, ~, [](auto arg) { return ~static_cast<std::underlying_type_t<MyEnum>>(arg); })
+ * // Usage: MyEnum value = ~MyEnum::Value;
+ * @endcode
+ */
 #define DEFINE_UNARY_OP(Arg_t, opSymbol, opFunc) \
     decltype(auto) operator opSymbol (Arg_t arg)    \
         noexcept( noexcept( opFunc( \
@@ -176,8 +346,51 @@ THE SOFTWARE.
         return opFunc( std::forward<Arg_t>(arg) );  \
     }
 
+/**
+ * @brief The namespace containing the core functionalities for command-line parameter parsing.
+ * 
+ * The `clp` namespace provides fundamental components for parsing command-line arguments, including
+ * the `clp::basic_cl_param` class for defining individual command-line parameters and the
+ * `clp::basic_cl_parser` class for parsing command-line arguments. Additionally, it defines the `clp::error_code`
+ * enum class for representing different error scenarios, and various type aliases like `clp::parser`,
+ * `clp::optional`, `clp::required`, `clp::woptional`, and `clp::wrequired` for ease of use.
+ * 
+ * Usage Example:
+ * @code
+ * // Define a simple command-line parser for a fictional "file sorter" application.
+ * auto sorterParser = clp::parser(
+ *     "sorter",
+ *     clp::required<std::filesystem::path>(
+ *         {'i'}, {"input"}, "Input file path for sorting."
+ *     ),
+ *     clp::optional<std::filesystem::path>(
+ *         {'o'}, {"output"}, "Output file path. If not provided, prints to console."
+ *     ),
+ *     clp::optional<bool>(
+ *         {'r'}, {"reverse"}, false, "Sort in reverse order."
+ *     )
+ * );
+ * 
+ * // Parse command-line arguments.
+ * auto [inputFile, outputFile, reverseSort] = sorterParser.parse(argc, argv);
+ * if (sorterParser.error()) {
+ *     std::cerr << "Error: " << sorterParser.error_message();
+ *     return 1;
+ * }
+ * 
+ * // Perform sorting based on parsed parameters.
+ * // ...
+ * @endcode
+ */
 namespace clp {
 
+#ifndef DOXYGEN_IGNORE_DETAIL
+/**
+ * @brief The namespace encapsulating internal functionalities for command-line parameter parsing.
+ * 
+ * The `clp::detail` namespace provides certain concepts related to instancing `clp`'s classes,
+ * generic string operations, and generic literals.
+ */
 namespace detail {
 
 /**
@@ -555,6 +768,7 @@ std::vector<StringView> split_words(StringView s) {
 }
 
 }   // namespace clp::detail
+#endif   // DOXYGEN_IGNORE_DETAIL
 
 /**
  * @brief Concept representing character types suitable for command-line parameters.
@@ -993,6 +1207,45 @@ enum class error_code {
 DEFINE_ENUM_LOGICAL_OP_ALL(error_code)
 DEFINE_ENUM_COMPARE_OP_ALL(error_code)
 
+/**
+ * @brief A generic command-line parser template for processing command-line arguments.
+ *
+ * @tparam CharT The character type used in the command-line arguments (e.g., char or wchar_t).
+ * @tparam Traits The character traits type (defaulted to std::char_traits<CharT>).
+ * @tparam Params Parameter types that define the expected command-line arguments.
+ * 
+ * This class template is designed to handle parsing command-line arguments based on a predefined set of parameters.
+ * It allows specifying various optional and required parameters, parsing input strings, and validating the
+ * provided arguments.
+ * 
+ * This class template allows seamless parsing of command-line arguments by leveraging class type deduction,
+ * providing an elegant and expressive way to handle various types of parameters. It simplifies the process
+ * of defining and parsing command-line options, making it intuitive and user-friendly.
+ *
+ * Example Usage:
+ * 
+ * @code
+ * // Create a parser for a simple todo list application
+ * auto todoParser = clp::basic_cl_parser(
+ *     "todo", // Command name
+ *     clp::optional<std::string>{ "-a", "--add", "Add a new task to the todo list." },
+ *     clp::optional<int>{ "-p", "--priority", "Set priority for the task." },
+ *     clp::optional<bool>{ "-d", "--done", "Mark the task as done." }
+ * );
+ * 
+ * auto [taskDescription, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
+ * 
+ * if (todoParser.error()) {
+ *     std::cerr << "Error: " << todoParser.error_message() << std::endl;
+ *     std::terminate();
+ * }
+ * 
+ * // Process the parsed task information...
+ * @endcode
+ *
+ * In the above example, the `todoParser` instance is created to handle command-line arguments for a todo list application.
+ * The parser automatically deduces the parameter types, simplifying the code and enhancing readability.
+ */
 template <
     clp_char CharT = char,
     class Traits = std::char_traits<CharT>,
@@ -1001,14 +1254,14 @@ template <
 class basic_cl_parser
 {
 public:
-    using char_type = CharT;
-    using traits_type = Traits;
-    using string_type = std::basic_string<char_type, traits_type>;
-    using string_view_type = std::basic_string_view<char_type, traits_type>;
-    using result_tuple_type = std::tuple<typename Params::value_type...>;
-    using param_tuple_type = std::tuple<Params...>;
-    using index_type = int;
-    using stream_type = std::basic_stringstream<char_type, traits_type>;
+    using char_type = CharT;    /**< The character type used in the command-line arguments. */
+    using traits_type = Traits; /**< The character traits type for string manipulations. */
+    using string_type = std::basic_string<char_type, traits_type>;  /**< Type representing strings. */
+    using string_view_type = std::basic_string_view<char_type, traits_type>;    /**< Type representing string views. */
+    using result_tuple_type = std::tuple<typename Params::value_type...>;   /**< Type representing parsed parameter values. */
+    using param_tuple_type = std::tuple<Params...>; /**< Type representing the parameter tuple. */
+    using index_type = int; /**< Type representing parameter indices. */
+    using stream_type = std::basic_stringstream<char_type, traits_type>;    /**< Type representing string streams. */
 
     /**
      * @brief Constructs a basic_cl_parser object with the provided identifier and parameters.
