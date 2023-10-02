@@ -170,32 +170,36 @@ Enumerations</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The namespace containing the core functionalities for command-line parameter parsing. </p>
 <p>The <code>gclp</code> namespace provides fundamental components for parsing command-line arguments, including the <code><a class="el" href="classgclp_1_1basic__cl__param.html" title="Represents a basic command-line parameter with specified key characters and brief description.">gclp::basic_cl_param</a></code> class for defining individual command-line parameters and the <code><a class="el" href="classgclp_1_1basic__cl__parser.html" title="A generic command-line parser template for processing command-line arguments.">gclp::basic_cl_parser</a></code> class for parsing command-line arguments. Additionally, it defines the <code><a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56a" title="Enumeration representing error codes during command-line argument parsing.">gclp::error_code</a></code> enum class for representing different error scenarios, and various type aliases like <code><a class="el" href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7" title="Shortcut type alias for command-line parser with char character type.">gclp::parser</a></code>, <code><a class="el" href="namespacegclp.html#a4de0577e0f2b384c928b07cbdd40aa83" title="Shortcut type alias for optional command-line parameter with char character type.">gclp::optional</a></code>, <code><a class="el" href="namespacegclp.html#af643760a7a56b9c6617232c6de8d4838" title="Shortcut type alias for required command-line parameter with char character type.">gclp::required</a></code>, <code><a class="el" href="namespacegclp.html#a78ac096210575c74f0e237593648a6b2" title="Shortcut type alias for optional command-line parameter with wchar_t character type.">gclp::woptional</a></code>, and <code><a class="el" href="namespacegclp.html#abd52163364992f2ed6eb68e6be70d0ec" title="Shortcut type alias for required command-line parameter with wchar_t character type.">gclp::wrequired</a></code> for ease of use.</p>
-<p>Usage Example: </p><div class="fragment"><div class="line"><span class="comment">// Define a simple command-line parser for a fictional &quot;file sorter&quot; application.</span></div>
-<div class="line"><span class="keyword">auto</span> sorterParser = <a class="code hl_typedef" href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7">gclp::parser</a>(</div>
-<div class="line">    <span class="stringliteral">&quot;sorter&quot;</span>,</div>
-<div class="line">    <a class="code hl_class" href="classgclp_1_1basic__required.html">gclp::required&lt;std::filesystem::path&gt;</a>(</div>
-<div class="line">        {<span class="charliteral">&#39;i&#39;</span>}, {<span class="stringliteral">&quot;input&quot;</span>}, <span class="stringliteral">&quot;Input file path for sorting.&quot;</span></div>
-<div class="line">    ),</div>
-<div class="line">    <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;std::filesystem::path&gt;</a>(</div>
-<div class="line">        {<span class="charliteral">&#39;o&#39;</span>}, {<span class="stringliteral">&quot;output&quot;</span>}, <span class="stringliteral">&quot;Output file path. If not provided, prints to console.&quot;</span></div>
-<div class="line">    ),</div>
-<div class="line">    <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;bool&gt;</a>(</div>
-<div class="line">        {<span class="charliteral">&#39;r&#39;</span>}, {<span class="stringliteral">&quot;reverse&quot;</span>}, <span class="keyword">false</span>, <span class="stringliteral">&quot;Sort in reverse order.&quot;</span></div>
-<div class="line">    )</div>
-<div class="line">);</div>
+<p>Usage Example: </p><div class="fragment"><div class="line"><span class="comment">// example input1: sorter -i .\\ints.txt</span></div>
+<div class="line"><span class="comment">// example input2: sorter --in &quot;.\\ints.txt&quot; --out &quot;.\\sorted_ints.txt&quot; --reverse</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Parse command-line arguments.</span></div>
-<div class="line"><span class="keyword">auto</span> [inputFile, outputFile, reverseSort] = sorterParser.parse(argc, argv);</div>
-<div class="line"><span class="keywordflow">if</span> (sorterParser.error()) {</div>
-<div class="line">    std::cerr &lt;&lt; <span class="stringliteral">&quot;Error: &quot;</span> &lt;&lt; sorterParser.error_message();</div>
-<div class="line">    <span class="keywordflow">return</span> 1;</div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line">    <span class="comment">// Define a simple command-line parser for a fictional &quot;file sorter&quot; application.</span></div>
+<div class="line">    <span class="keyword">auto</span> sorterParser = <a class="code hl_typedef" href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7">gclp::parser</a>(</div>
+<div class="line">        <span class="stringliteral">&quot;sorter&quot;</span>,</div>
+<div class="line">        <a class="code hl_class" href="classgclp_1_1basic__required.html">gclp::required&lt;std::filesystem::path&gt;</a>(</div>
+<div class="line">            {<span class="charliteral">&#39;i&#39;</span>}, {<span class="stringliteral">&quot;input&quot;</span>, <span class="stringliteral">&quot;in&quot;</span>}, <span class="stringliteral">&quot;Input file path for sorting.&quot;</span></div>
+<div class="line">        ),</div>
+<div class="line">        <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;std::filesystem::path&gt;</a>(</div>
+<div class="line">            {<span class="charliteral">&#39;o&#39;</span>}, {<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;out&quot;</span>}, <span class="stringliteral">&quot;Output file path. If not provided, prints to console.&quot;</span></div>
+<div class="line">        ),</div>
+<div class="line">        <a class="code hl_class" href="classgclp_1_1basic__optional.html">gclp::optional&lt;bool&gt;</a>(</div>
+<div class="line">            {<span class="charliteral">&#39;r&#39;</span>}, {<span class="stringliteral">&quot;reverse&quot;</span>}, <span class="keyword">false</span>, <span class="stringliteral">&quot;Sort in reverse order.&quot;</span></div>
+<div class="line">        )</div>
+<div class="line">    );</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// Parse command-line arguments.</span></div>
+<div class="line">    <span class="keyword">auto</span> [inputFile, outputFile, reverseSort] = sorterParser.parse(argc, argv);</div>
+<div class="line">    <span class="keywordflow">if</span> (sorterParser.error()) {</div>
+<div class="line">        std::cerr &lt;&lt; <span class="stringliteral">&quot;Error: &quot;</span> &lt;&lt; sorterParser.error_message();</div>
+<div class="line">        <span class="keywordflow">return</span> 1;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// Perform sorting based on parsed parameters...</span></div>
 <div class="line">}</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// Perform sorting based on parsed parameters.</span></div>
-<div class="line"><span class="comment">// ...</span></div>
-<div class="ttc" id="aclassgclp_1_1basic__optional_html"><div class="ttname"><a href="classgclp_1_1basic__optional.html">gclp::basic_optional</a></div><div class="ttdoc">Represents an optional command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1134</div></div>
-<div class="ttc" id="aclassgclp_1_1basic__required_html"><div class="ttname"><a href="classgclp_1_1basic__required.html">gclp::basic_required</a></div><div class="ttdoc">Represents a required command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1168</div></div>
-<div class="ttc" id="anamespacegclp_html_ac8bc11ba11caa4212ab941bdb2245aa7"><div class="ttname"><a href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7">gclp::parser</a></div><div class="ttdeci">basic_cl_parser&lt; char, std::char_traits&lt; char &gt;, Params... &gt; parser</div><div class="ttdoc">Shortcut type alias for command-line parser with char character type.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1860</div></div>
+<div class="ttc" id="aclassgclp_1_1basic__optional_html"><div class="ttname"><a href="classgclp_1_1basic__optional.html">gclp::basic_optional</a></div><div class="ttdoc">Represents an optional command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1138</div></div>
+<div class="ttc" id="aclassgclp_1_1basic__required_html"><div class="ttname"><a href="classgclp_1_1basic__required.html">gclp::basic_required</a></div><div class="ttdoc">Represents a required command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1172</div></div>
+<div class="ttc" id="anamespacegclp_html_ac8bc11ba11caa4212ab941bdb2245aa7"><div class="ttname"><a href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7">gclp::parser</a></div><div class="ttdeci">basic_cl_parser&lt; char, std::char_traits&lt; char &gt;, Params... &gt; parser</div><div class="ttdoc">Shortcut type alias for command-line parser with char character type.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1869</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a4de0577e0f2b384c928b07cbdd40aa83" name="a4de0577e0f2b384c928b07cbdd40aa83"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4de0577e0f2b384c928b07cbdd40aa83">&#9670;&#160;</a></span>optional</h2>
