@@ -492,6 +492,9 @@ TEST(ParamTest, SetValue) {
     paramI.set_value(42);
     paramS.set_value("Hello, World!");
 
+    ASSERT_TRUE(paramI.has_value());
+    ASSERT_TRUE(paramS.has_value());
+
     EXPECT_EQ(paramI.value(), 42);
     EXPECT_EQ(paramS.value(), "Hello, World!");
 }
@@ -523,6 +526,9 @@ TEST(ParamTest, SetDefaultValue) {
     auto paramS = gclp::required<std::string>(
         {'s'}, {"string"}, "a required string parameter"
     )->defval("Hello, World!");
+
+    ASSERT_TRUE(paramI.has_defval());
+    ASSERT_TRUE(paramS.has_defval());
 
     EXPECT_EQ(paramI.get_defval(), 42);
     EXPECT_EQ(paramS.get_defval(), "Hello, World!");
