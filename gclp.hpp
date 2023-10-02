@@ -1129,18 +1129,44 @@ public:
         return is;
     }
 
+    /**
+     * @brief Sets the default value for the command-line parameter.
+     *
+     * This function sets the default value for the command-line parameter to the specified value.
+     *
+     * @param val The default value to be set for the parameter.
+     */
     void set_defval(const value_type& val) {
         defval_ = val;
     }
 
+    /**
+     * @brief Sets the default value for the command-line parameter using move semantics.
+     *
+     * This function sets the default value for the command-line parameter by moving the specified value.
+     *
+     * @param val The default value to be set for the parameter (will be moved).
+     */
     void set_defval(value_type&& val) {
         defval_ = std::move(val);
     }
 
+    /**
+     * @brief Checks if the command-line parameter has a default value set.
+     *
+     * @return true if a default value is set, false otherwise.
+     */
     bool has_defval() {
         return defval_.has_value();
     }
 
+    /**
+     * @brief Gets the default value of the command-line parameter.
+     *
+     * @pre `has_defval()` should be true.
+     *
+     * @return The default value of the parameter.
+     */
     const value_type& get_defval() const {
         assert(has_defval());
         return defval_.value();
