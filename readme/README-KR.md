@@ -47,40 +47,75 @@ int main(int argc, char** argv) {
 int main(int argc, char** argv) {
 
     auto parser = clp::parser(
-        "myCLI",
-        clp::optional<int>(
-            {'i', 'n'}, {"integer", "number"}, 0, "an optional integer parameter"
-        ),
-        clp::required<double>(
-            {'f', 'r'}, {"float", "double", "real"}, "a required double parameter, without default value"
-        ),
-        clp::optional<std::string>(
-            {'s'}, {"string"}, "Hello World!", "an optional std::string parameter"
-        ),
-        clp::required<char>(
-            {'c'}, {"char"}, "a required character parameter, without default value"
-        )
+        $<identifier>,
+        $[$[clp::optional|clp::required]<$<Type>>(
+            {$[$<Short-Keys>...]}, {$[$<Long-Keys>...]}, $[$<Default-Value>], $<Brief-Description>
+        )...]
     );
 
-    auto [parsed_int, parsed_double, parsed_string, parsed_char] = parser.parse(argc, argv);
+    auto [$<Parsed-Args>...] = parser.parse(argc, argv);
 
     if (parser.error()) {
         std::cerr << parser.error_message();
         std::terminate();
     }
 
-    std::cout << parsed_int << ", " << parsed_double << ", " << parsed_string << ", " << parsed_char << '\n';
-
 }
+```
 
-// input: myCLI -i 5 -f 6.0 -s "Bye World!" -c c
-// output: 5, 6.0, Bye World!, c
+```cpp
+// example input1: todo -t study -p 1 -d false
+// example input2: todo --task study --done
 
-// input: myCLI --integer 5 --real 6.0 --string "Bye World!" --char c
-// output: 5, 6.0, Bye World!, c
+int main(int argc, char** argv) {
+    // Create a parser for a simple todo list application
+    auto todoParser = gclp::basic_cl_parser(
+        "todo", // Command name
+        gclp::optional<std::string>{ "-t", "--task", "Specify the task name to modify,
+            or add a new task to the todo list." },
+        gclp::optional<int>{ "-p", "--priority", "Set priority for the task." },
+        gclp::optional<bool>{ "-d", "--done", "Mark the task as done." }
+    );
+    
+    auto [taskName, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
+    
+    if (todoParser.error()) {
+        std::cerr << "Error: " << todoParser.error_message() << std::endl;
+        std::terminate();
+    }
+    
+    // Process the parsed task information...
+}
+```
 
-// input: myCLI -r 6.0 -c c
-// output: 0, 6.0, Hello World!, c
+```cpp
+// example input1: sorter -i .\\ints.txt
+// example input2: sorter --in ".\\ints.txt" --out ".\\sorted_ints.txt" --reverse
+
+int main(int argc, char** argv) {
+    // Define a simple command-line parser for a fictional "file sorter" application.
+    auto sorterParser = gclp::parser(
+        "sorter",
+        gclp::required<std::filesystem::path>(
+            {'i'}, {"input", "in"}, "Input file path for sorting."
+        ),
+        gclp::optional<std::filesystem::path>(
+            {'o'}, {"output", "out"}, "Output file path. If not provided, prints to console."
+        ),
+        gclp::optional<bool>(
+            {'r'}, {"reverse"}, false, "Sort in reverse order."
+        )
+    );
+    
+    // Parse command-line arguments.
+    auto [inputFile, outputFile, reverseSort] = sorterParser.parse(argc, argv);
+    if (sorterParser.error()) {
+        std::cerr << "Error: " << sorterParser.error_message();
+        return 1;
+    }
+    
+    // Perform sorting based on parsed parameters...
+}
 ```
 
 더 자세한 사용법은 [문서화](https://woon-2.github.io/gclp/)를 참고하세요.

@@ -357,29 +357,33 @@ THE SOFTWARE.
  * 
  * Usage Example:
  * @code
- * // Define a simple command-line parser for a fictional "file sorter" application.
- * auto sorterParser = gclp::parser(
- *     "sorter",
- *     gclp::required<std::filesystem::path>(
- *         {'i'}, {"input"}, "Input file path for sorting."
- *     ),
- *     gclp::optional<std::filesystem::path>(
- *         {'o'}, {"output"}, "Output file path. If not provided, prints to console."
- *     ),
- *     gclp::optional<bool>(
- *         {'r'}, {"reverse"}, false, "Sort in reverse order."
- *     )
- * );
+ * // example input1: sorter -i .\\ints.txt
+ * // example input2: sorter --in ".\\ints.txt" --out ".\\sorted_ints.txt" --reverse
  * 
- * // Parse command-line arguments.
- * auto [inputFile, outputFile, reverseSort] = sorterParser.parse(argc, argv);
- * if (sorterParser.error()) {
- *     std::cerr << "Error: " << sorterParser.error_message();
- *     return 1;
+ * int main(int argc, char** argv) {
+ *     // Define a simple command-line parser for a fictional "file sorter" application.
+ *     auto sorterParser = gclp::parser(
+ *         "sorter",
+ *         gclp::required<std::filesystem::path>(
+ *             {'i'}, {"input", "in"}, "Input file path for sorting."
+ *         ),
+ *         gclp::optional<std::filesystem::path>(
+ *             {'o'}, {"output", "out"}, "Output file path. If not provided, prints to console."
+ *         ),
+ *         gclp::optional<bool>(
+ *             {'r'}, {"reverse"}, false, "Sort in reverse order."
+ *         )
+ *     );
+ *     
+ *     // Parse command-line arguments.
+ *     auto [inputFile, outputFile, reverseSort] = sorterParser.parse(argc, argv);
+ *     if (sorterParser.error()) {
+ *         std::cerr << "Error: " << sorterParser.error_message();
+ *         return 1;
+ *     }
+ *     
+ *     // Perform sorting based on parsed parameters...
  * }
- * 
- * // Perform sorting based on parsed parameters.
- * // ...
  * @endcode
  */
 namespace gclp {
@@ -1225,23 +1229,28 @@ DEFINE_ENUM_COMPARE_OP_ALL(error_code)
  * Example Usage:
  * 
  * @code
- * // Create a parser for a simple todo list application
- * auto todoParser = gclp::basic_cl_parser(
- *     "todo", // Command name
- *     gclp::optional<std::string>{ "-t", "--task", "Specify the task name to modify,
- *         or add a new task to the todo list." },
- *     gclp::optional<int>{ "-p", "--priority", "Set priority for the task." },
- *     gclp::optional<bool>{ "-d", "--done", "Mark the task as done." }
- * );
+ * // example input1: todo -t study -p 1 -d false
+ * // example input2: todo --task study --done
  * 
- * auto [taskName, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
- * 
- * if (todoParser.error()) {
- *     std::cerr << "Error: " << todoParser.error_message() << std::endl;
- *     std::terminate();
+ * int main(int argc, char** argv) {
+ *     // Create a parser for a simple todo list application
+ *     auto todoParser = gclp::basic_cl_parser(
+ *         "todo", // Command name
+ *         gclp::optional<std::string>{ "-t", "--task", "Specify the task name to modify,
+ *             or add a new task to the todo list." },
+ *         gclp::optional<int>{ "-p", "--priority", "Set priority for the task." },
+ *         gclp::optional<bool>{ "-d", "--done", "Mark the task as done." }
+ *     );
+ *     
+ *     auto [taskName, taskPriority, isTaskDone] = todoParser.parse(argc, argv);
+ *     
+ *     if (todoParser.error()) {
+ *         std::cerr << "Error: " << todoParser.error_message() << std::endl;
+ *         std::terminate();
+ *     }
+ *     
+ *     // Process the parsed task information...
  * }
- * 
- * // Process the parsed task information...
  * @endcode
  *
  * In the above example, the `todoParser` instance is created to handle command-line arguments for a todo list application.
