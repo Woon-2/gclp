@@ -153,15 +153,17 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a872562150e0252846e8071f1f183b56a" id="r_a872562150e0252846e8071f1f183b56a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56a">error_code</a> { <br />
-&#160;&#160;<a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c">invalid_identifier</a>
+&#160;&#160;<a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa594c31c1411068897a5fadf60c17faf2">identifier_not_given</a>
+, <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c">invalid_identifier</a>
 , <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa1d09b7bf480670160b97f4cf9c89c3d5">key_not_given</a>
 , <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa81c7d121918d0cdcac03f5aa36b2bbf9">undefined_key</a>
-, <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa8155ca09ebef7521b3167dd6389c5b07">unparsed_argument</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa7154a9c1dbe0ff555e400a7157e0f45b">incompatible_argument</a>
+&#160;&#160;<a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa8155ca09ebef7521b3167dd6389c5b07">unparsed_argument</a>
+, <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aa7154a9c1dbe0ff555e400a7157e0f45b">incompatible_argument</a>
 , <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aaf85313d7af69cdd39d74a1b7c8eb686a">wrong_complex_key</a>
 , <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aae420af013c621d3124c0b1e59f90ee64">required_key_not_given</a>
-, <a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aadb8ff5c98a0854741564c7784ef4ef60">duplicated_assignments</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacegclp.html#a872562150e0252846e8071f1f183b56aadb8ff5c98a0854741564c7784ef4ef60">duplicated_assignments</a>
 <br />
  }</td></tr>
 <tr class="memdesc:a872562150e0252846e8071f1f183b56a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration representing error codes during command-line argument parsing.  <a href="namespacegclp.html#a872562150e0252846e8071f1f183b56a">More...</a><br /></td></tr>
@@ -199,7 +201,7 @@ Enumerations</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="aclassgclp_1_1basic__optional_html"><div class="ttname"><a href="classgclp_1_1basic__optional.html">gclp::basic_optional</a></div><div class="ttdoc">Represents an optional command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1179</div></div>
 <div class="ttc" id="aclassgclp_1_1basic__required_html"><div class="ttname"><a href="classgclp_1_1basic__required.html">gclp::basic_required</a></div><div class="ttdoc">Represents a required command-line parameter.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1213</div></div>
-<div class="ttc" id="anamespacegclp_html_ac8bc11ba11caa4212ab941bdb2245aa7"><div class="ttname"><a href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7">gclp::parser</a></div><div class="ttdeci">basic_cl_parser&lt; char, std::char_traits&lt; char &gt;, Params... &gt; parser</div><div class="ttdoc">Shortcut type alias for command-line parser with char character type.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1910</div></div>
+<div class="ttc" id="anamespacegclp_html_ac8bc11ba11caa4212ab941bdb2245aa7"><div class="ttname"><a href="namespacegclp.html#ac8bc11ba11caa4212ab941bdb2245aa7">gclp::parser</a></div><div class="ttdeci">basic_cl_parser&lt; char, std::char_traits&lt; char &gt;, Params... &gt; parser</div><div class="ttdoc">Shortcut type alias for command-line parser with char character type.</div><div class="ttdef"><b>Definition</b> gclp.hpp:1934</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a4de0577e0f2b384c928b07cbdd40aa83" name="a4de0577e0f2b384c928b07cbdd40aa83"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4de0577e0f2b384c928b07cbdd40aa83">&#9670;&#160;</a></span>optional</h2>
@@ -369,7 +371,9 @@ template&lt;class ValT &gt; </div>
 <p>Enumeration representing error codes during command-line argument parsing. </p>
 <p>This enumeration defines various error states that can occur during the parsing of command-line arguments. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c" name="a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c"></a>invalid_identifier&#160;</td><td class="fielddoc"><p>The provided identifier is invalid or malformed. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a872562150e0252846e8071f1f183b56aa594c31c1411068897a5fadf60c17faf2" name="a872562150e0252846e8071f1f183b56aa594c31c1411068897a5fadf60c17faf2"></a>identifier_not_given&#160;</td><td class="fielddoc"><p>The identifier was not provided, i.e. the command line is empty. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c" name="a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c"></a>invalid_identifier&#160;</td><td class="fielddoc"><p>The provided identifier is invalid or malformed. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a872562150e0252846e8071f1f183b56aa1d09b7bf480670160b97f4cf9c89c3d5" name="a872562150e0252846e8071f1f183b56aa1d09b7bf480670160b97f4cf9c89c3d5"></a>key_not_given&#160;</td><td class="fielddoc"><p>A required key was not provided in the command-line arguments. </p>
 </td></tr>

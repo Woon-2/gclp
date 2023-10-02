@@ -12,6 +12,7 @@ var namespacegclp =
     [ "wparser", "namespacegclp.html#ab38c62048534013893adee92f7082d80", null ],
     [ "wrequired", "namespacegclp.html#abd52163364992f2ed6eb68e6be70d0ec", null ],
     [ "error_code", "namespacegclp.html#a872562150e0252846e8071f1f183b56a", [
+      [ "identifier_not_given", "namespacegclp.html#a872562150e0252846e8071f1f183b56aa594c31c1411068897a5fadf60c17faf2", null ],
       [ "invalid_identifier", "namespacegclp.html#a872562150e0252846e8071f1f183b56aa0545ba3ce9f13332aa2f09a36760d98c", null ],
       [ "key_not_given", "namespacegclp.html#a872562150e0252846e8071f1f183b56aa1d09b7bf480670160b97f4cf9c89c3d5", null ],
       [ "undefined_key", "namespacegclp.html#a872562150e0252846e8071f1f183b56aa81c7d121918d0cdcac03f5aa36b2bbf9", null ],

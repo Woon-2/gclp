@@ -1239,6 +1239,7 @@ public:
  * This enumeration defines various error states that can occur during the parsing of command-line arguments.
  */
 enum class error_code {
+    identifier_not_given,   ///< The identifier was not provided, i.e. the command line is empty.
     invalid_identifier, ///< The provided identifier is invalid or malformed.
     key_not_given,      ///< A required key was not provided in the command-line arguments.
     undefined_key,      ///< An undefined or unexpected key was provided in the command-line arguments.
@@ -1394,8 +1395,6 @@ public:
      * @return A tuple containing the parsed values.
      */
     result_tuple_type parse(string_view_type command_line)  {
-        result_tuple_type ret;
-
         // Check if parameter has been already assigned a value
         // to guarantee that the parameters will have been assigned a value
         // only once.
@@ -1440,29 +1439,40 @@ public:
         };
 
         if (error().has_value()) {
-            return ret;
+            return {};
         }
 
         auto words = detail::split_words(command_line);
+
+        if ( std::empty(words) ) {
+            log_error_identifier_not_given();
+            return {};
+        }
+
         if ( words.front() != identifier_ ) {
             log_error_invalid_identifier( words.front() );
-            return ret;
+            return {};
         }
 
         auto it_first = std::next(std::begin(words));
         auto it_last = std::end(words);
 
+        if (it_first == it_last) {
+            // there's no argument to parse.
+            return make_parsed_result();
+        }
+
         // check first word is key,
         if (!detail::is_key(*it_first)) {
             log_error_key_not_given();
-            return ret;
+            return {};
         }
 
         while (it_first != it_last) {
             if ( detail::is_complex_boolean_param(*it_first) ) {
                 if ( !parse_complex_keys(*it_first) ) {
                     log_error_wrong_complex_key(*it_first);
-                    return ret;
+                    return {};
                 }
                 if ( has_duplicated_assignments(*it_first) ) {
                     log_error_duplicated_assignments(*it_first);
@@ -1474,7 +1484,7 @@ public:
             auto param_idx = find_param_index(*it_first);
             if ( !param_idx.has_value() ) {
                 log_error_undefined_key(*it_first);
-                return ret;
+                return {};
             }
     
             auto it_next_key = std::ranges::find_if(
@@ -1492,20 +1502,30 @@ public:
             );
             if ( !assign_arg_by_idx( param_idx.value() ) ) {
                 log_error_incompatible_argument(*it_first);
-                return ret;
+                return {};
             }
 
             if ( has_duplicated_assignments(*it_first) ) {
                 log_error_duplicated_assignments(*it_first);
+                return {};
             }
 
             if ( has_unparsed_arguments() ) {
                 log_error_unparsed_arguments();
-                return ret;
+                return {};
             }
 
             it_first = it_next_key;
         }   // while (it_first != last)
+
+        // TODO: check every required arguments are passed and all constraints are met
+
+        return make_parsed_result();
+    }
+
+private:
+    result_tuple_type make_parsed_result() {
+        result_tuple_type ret;
 
         detail::tuple_conv(params_, ret, [this](const auto& p) {
             using none_qualified_t = std::remove_cvref_t<decltype(p)>;
@@ -1526,12 +1546,16 @@ public:
             return value_type{};
         });
 
-        // TODO: check every required arguments are passed and all constraints are met
-
         return ret;
     }
 
-private:
+    void log_error_identifier_not_given() {
+        err_code_ = error_code::identifier_not_given;
+        err_stream_ << __LITERAL(char_type,
+            "[gclp] error: didn't receive identifier, command-line is empty.\n"
+        );
+    }
+
     /**
      * @brief Parses complex keys in the command line arguments.
      * 
