@@ -44,21 +44,6 @@ else()
     message(WARNING "configuring with unknown compiler...")
 endif()
 
-install(TARGETS gclp_test
-    EXPORT gclp-test-export
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    INCLUDES DESTINATION include
-    EXCLUDE_FROM_ALL
-)
-
-install(EXPORT gclp-test-export
-    FILE gclp-test-config.cmake
-    DESTINATION export
-    EXCLUDE_FROM_ALL
-)
-
 # Find and setup google test
 message(STATUS "finding GTest...")
 
