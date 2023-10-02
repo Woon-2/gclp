@@ -1231,13 +1231,13 @@ public:
      * Example Usage:
      *
      * @code
-     * clp::basic_optional<int> param{'i', "integer", "An optional integer parameter"};
-     * param->defval(42); // Sets the default value of the parameter to 42 using the default value adaptor.
+     * // Sets the default value of the parameter to 42 using the default value adaptor.
+     * auto param = gclp::optional<int>{'i', "integer", "An optional integer parameter"}->defval(42);
      * @endcode
      *
      * @return A pointer to the default value adaptor for the parameter.
      */
-    defval_adaptor_type* operator->() noexcept {
+    defval_adaptor_type* operator->() && noexcept {
         return &defval_adaptor_;
     }
 
@@ -1295,13 +1295,13 @@ public:
      * Example Usage:
      *
      * @code
-     * clp::basic_optional<int> param{'i', "integer", "An optional integer parameter"};
-     * param->defval(42); // Sets the default value of the parameter to 42 using the default value adaptor.
+     * // Sets the default value of the parameter to 42 using the default value adaptor.
+     * auto param = gclp::required<int>{'i', "integer", "A required integer parameter"}->defval(42);
      * @endcode
      *
      * @return A pointer to the default value adaptor for the parameter.
      */
-    defval_adaptor_type* operator->() noexcept {
+    defval_adaptor_type* operator->() && noexcept {
         return &defval_adaptor_;
     }
 
