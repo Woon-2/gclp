@@ -448,3 +448,33 @@ TEST_F(ParsingTest, AssignDefaultValue) {
     EXPECT_EQ(ra, 3);
     EXPECT_EQ(rb, "Hello, World!");
 }
+
+TEST_F(ParsingTest, ConserveTypeWhenUsingDefaultValueAdaptor) {
+    auto parser = gclp::parser(
+        "identifier"sv,
+        gclp::required<int>(
+            {'a'}, {"aa"}, "an optional int"
+        )->defval(3),
+        gclp::optional<std::string>(
+            {'b'}, {"bb"}, "a required string"
+        )->defval("Hello, World!")
+    );
+
+    auto is_type_conserved = [&parser]() {
+        using none_qualified_t = std::remove_cvref_t<decltype(parser)>;
+        if ( !std::is_same_v<
+            none_qualified_t::param_tuple_type,
+            std::tuple<
+                gclp::required<int>,
+                gclp::optional<std::string>
+            >
+        >) {
+            return ::testing::AssertionFailure();
+        }
+        else {
+            return ::testing::AssertionSuccess();
+        }
+    };
+
+    EXPECT_TRUE(is_type_conserved());
+}
