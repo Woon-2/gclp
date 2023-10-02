@@ -855,10 +855,6 @@ public:
     using key_container = std::vector<T>;
 
 private:
-    using defval_adaptor_type = detail::default_value_adaptor<
-        basic_cl_param<value_type, char_type, traits_type>
-    >;
-    friend class defval_adaptor_type;
     using istream_type = std::basic_istream<char_type, traits_type>;
     using ostream_type = std::basic_ostream<char_type, traits_type>;
 
@@ -876,8 +872,7 @@ public:
         std::initializer_list<string_view_type> key_strs,
         string_view_type brief
     ) : key_chars_(key_chars), key_strs_(key_strs),
-        brief_(brief), defval_(), val_(),
-        defval_adaptor_(this), fail_(false) {}
+        brief_(brief), defval_(), val_(), fail_(false) {}
 
     /**
      * @brief Checks if the parameter has a value (either assigned or default).
@@ -1090,25 +1085,6 @@ public:
     }
 
     /**
-     * @brief Provides access to the default value adaptor for setting default values of the parameter.
-     *
-     * This member function allows direct access to the default value adaptor associated with the parameter. It enables
-     * setting default values for the parameter using the `defval` member functions provided by the adaptor.
-     *
-     * Example Usage:
-     *
-     * @code
-     * clp::basic_optional<int> param{'i', "integer", "An optional integer parameter"};
-     * param->defval(42); // Sets the default value of the parameter to 42 using the default value adaptor.
-     * @endcode
-     *
-     * @return A pointer to the default value adaptor for the parameter.
-     */
-    defval_adaptor_type* operator->() noexcept {
-        return &defval_adaptor_;
-    }
-
-    /**
      * @brief Outputs the parameter value or default value to the output stream.
      * 
      * @param os The output stream.
@@ -1153,20 +1129,29 @@ public:
         return is;
     }
 
-private:
     void set_defval(const value_type& val) {
         defval_ = val;
     }
+
     void set_defval(value_type&& val) {
         defval_ = std::move(val);
     }
 
+    bool has_defval() {
+        return defval_.has_value();
+    }
+
+    const value_type& get_defval() const {
+        assert(has_defval());
+        return defval_.value();
+    }
+
+private:
     key_container<char_type> key_chars_;
     key_container<string_view_type> key_strs_;
     std::optional<string_view_type> brief_;
     std::optional<value_type> defval_;
     std::optional<value_type> val_;
-    defval_adaptor_type defval_adaptor_;
     bool fail_;
 };
 
@@ -1190,6 +1175,13 @@ public:
         char_type, traits_type
     >;
 
+private:
+    using defval_adaptor_type = detail::default_value_adaptor<
+        basic_optional<value_type, char_type, traits_type>
+    >;
+    friend defval_adaptor_type;
+
+public:
     /**
      * @brief Constructs a basic_optional object with specified key characters, key strings, and brief description.
      * 
@@ -1201,7 +1193,30 @@ public:
     basic_optional(std::initializer_list<char_type> key_chars,
         std::initializer_list<string_view_type> key_strs,
         string_view_type brief
-    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief) {}
+    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief),
+        defval_adaptor_(this) {}
+
+    /**
+     * @brief Provides access to the default value adaptor for setting default values of the parameter.
+     *
+     * This member function allows direct access to the default value adaptor associated with the parameter. It enables
+     * setting default values for the parameter using the `defval` member functions provided by the adaptor.
+     *
+     * Example Usage:
+     *
+     * @code
+     * clp::basic_optional<int> param{'i', "integer", "An optional integer parameter"};
+     * param->defval(42); // Sets the default value of the parameter to 42 using the default value adaptor.
+     * @endcode
+     *
+     * @return A pointer to the default value adaptor for the parameter.
+     */
+    defval_adaptor_type* operator->() noexcept {
+        return &defval_adaptor_;
+    }
+
+private:
+    defval_adaptor_type defval_adaptor_;
 };
 
 /**
@@ -1224,6 +1239,13 @@ public:
         char_type, traits_type
     >;
 
+private:
+    using defval_adaptor_type = detail::default_value_adaptor<
+        basic_required<value_type, char_type, traits_type>
+    >;
+    friend defval_adaptor_type;
+
+public:
     /**
      * @brief Constructs a basic_required object with specified key characters, key strings, and brief description.
      * 
@@ -1235,7 +1257,30 @@ public:
     basic_required(std::initializer_list<char_type> key_chars,
         std::initializer_list<string_view_type> key_strs,
         string_view_type brief
-    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief) {}
+    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief),
+        defval_adaptor_(this) {}
+
+    /**
+     * @brief Provides access to the default value adaptor for setting default values of the parameter.
+     *
+     * This member function allows direct access to the default value adaptor associated with the parameter. It enables
+     * setting default values for the parameter using the `defval` member functions provided by the adaptor.
+     *
+     * Example Usage:
+     *
+     * @code
+     * clp::basic_optional<int> param{'i', "integer", "An optional integer parameter"};
+     * param->defval(42); // Sets the default value of the parameter to 42 using the default value adaptor.
+     * @endcode
+     *
+     * @return A pointer to the default value adaptor for the parameter.
+     */
+    defval_adaptor_type* operator->() noexcept {
+        return &defval_adaptor_;
+    }
+
+private:
+    defval_adaptor_type defval_adaptor_;
 };
 
 /**
