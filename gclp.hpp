@@ -673,7 +673,7 @@ bool is_key(StringView word) noexcept {
  * @return true if the string represents a complex boolean parameter, false otherwise.
  */
 template <class StringView>
-bool is_complex_boolean_param(StringView word) noexcept {
+bool is_complex_key(StringView word) noexcept {
     return is_single_dashed(word) && std::size(word) > 2;
 }
 
@@ -1539,7 +1539,7 @@ public:
                 );
             };
 
-            if ( detail::is_complex_boolean_param(word) ) {
+            if ( detail::is_complex_key(word) ) {
                 for (auto key : detail::remove_dash(word)) {
                     map_with_key(key);
                 }
@@ -1589,7 +1589,7 @@ public:
         }
 
         while (it_first != it_last) {
-            if ( detail::is_complex_boolean_param(*it_first) ) {
+            if ( detail::is_complex_key(*it_first) ) {
                 if ( !parse_complex_keys(*it_first) ) {
                     log_error_wrong_complex_key(*it_first);
                     return {};
