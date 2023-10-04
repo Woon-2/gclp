@@ -1,30 +1,3 @@
-/*
-The MIT License
-
-Copyright (c) 2023 Woon2
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-
-#ifndef __cl_parser
-#define __cl_parser
-
 #include <string>
 #include <string_view>
 #include <optional>
@@ -42,8 +15,8 @@ THE SOFTWARE.
 #include <limits>
 #include <cassert>
 #include <format>
-#include <unordered_set>
 #include <bitset>
+#include <ios>
 
 /**
  * @brief Macro for creating string literals with correct prefix based on character type.
@@ -1256,8 +1229,8 @@ public:
      * @brief Constructs a basic_optional object with specified key characters, key strings, and brief description.
      * 
      * Initializes a basic_optional object with the specified key characters, key strings, and brief description.
-     * @param key_chars An std::initalizer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::initalizer_list of string keys associated with the parameter.
+     * @param key_chars An std::initializer_list of single-character keys associated with the parameter.
+     * @param key_strs An std::initializer_list of string keys associated with the parameter.
      * @param brief A brief description of the parameter.
      */
     basic_optional(std::initializer_list<char_type> key_chars,
@@ -1419,7 +1392,7 @@ DEFINE_ENUM_COMPARE_OP_ALL(error_code)
  * The parser automatically deduces the parameter types, simplifying the code and enhancing readability.
  */
 template <
-    gclp_char CharT = char,
+    class CharT = char,
     class Traits = std::char_traits<CharT>,
     class ... Params
 >
@@ -1434,69 +1407,146 @@ public:
     using param_tuple_type = std::tuple<Params...>; /**< Type representing the parameter tuple. */
     using index_type = int; /**< Type representing parameter indices. */
     using stream_type = std::basic_stringstream<char_type, traits_type>;    /**< Type representing string streams. */
+    using words_type = std::vector<string_view_type>;   /**< Type representing splitted command-line words. */
 
-    /**
-     * @brief Constructs a basic_cl_parser object with the provided identifier and parameters.
-     * 
-     * Initializes a basic_cl_parser object with the specified identifier and parameters.
-     * @param identifier The identifier used to recognize the command-line arguments.
-     * @param params The parameters representing the command-line arguments to be parsed.
-     */
-    basic_cl_parser(string_view_type identifier, Params... params)
-        : arg_stream_(), err_stream_(), params_( std::move(params)... ),
-            identifier_(identifier) {}
+private:
 
-    /**
-     * @brief Retrieves the error code representing the parsing status.
-     * 
-     * This function returns the error code representing the parsing status.
-     * @return The error code indicating the parsing status.
-     */
-    std::optional<error_code> error() const noexcept {
-        return err_code_;
+class container {
+public:
+    container(Params&& ... params)
+        : data_( std::move(params)... ),
+        cached_values_() {}
+
+    param_tuple_type& data() noexcept {
+        return data_;
     }
 
-    /**
-     * @brief Retrieves the error message associated with the parsing error.
-     * 
-     * This function returns the error message associated with the parsing error.
-     * @return The error message describing the parsing error.
-     */
-    string_type error_message() const noexcept {
-        return err_stream_.str();
+    const param_tuple_type& data() const noexcept {
+        return data_;
     }
 
-    /**
-     * @brief Clears the parsing error status and streams for re-parsing.
-     * 
-     * This function clears the parsing error status and streams, allowing the parser to be used again for parsing.
-     */
+    result_tuple_type& values() {
+        if (!cached_values_.has_value()) {
+            update_cache();
+        }
+        return cached_values_.value();
+    }
+
+    const result_tuple_type& values() const {
+        if (!cached_values_.has_value()) {
+            update_cache();
+        }
+        return cached_values_.value();
+    }
+
     void clear() {
-        err_code_.reset();
-        err_stream_.clear();
-        err_stream_.ignore(
-            std::numeric_limits<std::streamsize>::max()
+        detail::tuple_for_each(data_,
+            [](auto& p) {
+                p.clear();
+            }
         );
-        arg_stream_.clear();
-        arg_stream_.ignore(
-            std::numeric_limits<std::streamsize>::max() 
-        );
-        detail::tuple_for_each( params_, [](auto& p) { p.clear(); } );
+        invalidate_cache();
     }
 
-    /**
-     * @brief Parses command-line arguments provided as an array of strings.
-     * 
-     * Parses the command-line arguments provided as an array of strings, represented by argc and argv,
-     * and returns a tuple containing the parsed values.
-     * @tparam IntType The integral type for argc.
-     * @tparam StrArrType The array type for argv.
-     * @param argc The number of command-line arguments.
-     * @param argv The array of command-line argument strings.
-     * @return A tuple containing the parsed values.
-     */
+    void invalidate_cache() {
+        cached_values_.reset();
+    }
+
+    void update_cache() {
+        cached_values_ = result_tuple_type();
+        detail::tuple_conv(data_, cached_values_.value(),
+            [this](const auto& p) {
+                using none_qualified_t
+                    = std::remove_cvref_t<decltype(p)>;
+                using value_type
+                    = typename none_qualified_t::value_type;
+
+                if (p.has_value()) {
+                    return p.value();
+                }
+
+                return value_type{};
+            }
+        );
+    }
+
+private:
+    param_tuple_type data_;
+    mutable std::optional<result_tuple_type> cached_values_;
+};  // class basic_cl_param::container
+
+class interpreter {
+public:
+    using iterator = std::ranges::iterator_t<words_type>;
+    struct token {
+        string_view_type leading;
+        words_type followings;
+    };
+
+    interpreter() = default;
+
     template <class IntType, class StrArrType>
-    result_tuple_type parse(IntType argc, StrArrType argv) {
+    interpreter( IntType argc, const StrArrType& argv )
+        : words_( detail::split_words<string_view_type>(
+                flatten_argc_argv(argc, argv)
+            )
+        ), cur_( std::begin(words_) ) {}
+
+    interpreter(string_view_type command_line)
+        : words_( detail::split_words(command_line) ),
+        cur_( std::begin(words_) ) {}
+
+    token get_token() {
+        auto ret = token();
+        if ( done() ) {
+            return ret;
+        }
+
+        ret.leading = read();
+        auto out = std::back_inserter(ret.followings);
+
+        while ( !(done() || facing_key()) ) {
+            out = read();
+        }
+        
+        return ret;
+    }
+
+    void reset() {
+        cur_ = std::begin(words_);
+    }
+
+    template <class IntType, class StrArrType>
+    void reset(IntType argc, const StrArrType& argv) {
+        reset( flatten_argc_argv(argc, argv) );
+    }
+
+    void reset(string_view_type cmd) {
+        words_ = detail::split_words(cmd);
+        cur_ = std::begin(words_);
+    }
+
+    bool done() const noexcept {
+        return cur_ == std::end(words_);
+    }
+
+    bool facing_key() const {
+        return detail::is_key(*cur_);
+    }
+
+    std::size_t remainder_count() const noexcept {
+        return std::distance( cur_, std::end(words_) );
+    }
+
+    string_view_type remove_dash(string_view_type word) const {
+        return detail::remove_dash(word);
+    }
+
+private:
+    template <class IntType, class StrArrType>
+    static string_type flatten_argc_argv(
+        IntType argc, const StrArrType& argv
+    ) {
         auto flattend = string_type();
 
         for (auto i = decltype(argc)(0); i < argc; ++i) {
@@ -1504,227 +1554,124 @@ public:
             flattend += detail::stream_delim<char_type>();
         }
 
-        return parse( string_view_type(flattend) );
+        return flattend;
     }
 
-    /**
-     * @brief Parses command-line arguments provided as a single string.
-     * 
-     * Parses the command-line arguments provided as a single string and returns a tuple containing the parsed values.
-     * @param command_line The command-line arguments as a single string.
-     * @return A tuple containing the parsed values.
-     */
-    result_tuple_type parse(string_view_type command_line)  {
-        // Check if parameter has been already assigned a value
-        // to guarantee that the parameters will have been assigned a value
-        // only once.
-        auto has_duplicated_assignments = [b_assigned
-            = std::bitset< std::tuple_size_v<result_tuple_type> >(0u),
-            this
-        ](auto word) mutable {
-            bool ret = false;
+    string_view_type read() {
+        return *cur_++;
+    }
 
-            auto map_with_key = [&](auto key) {
-                detail::tuple_for_each(
-                    this->params_,
-                    [&, i = 0](auto& p) mutable {
-                        if ( p.contains(key) ) {
-                            if (b_assigned.test(i)) {
-                                ret = true;
-                            }
-                            b_assigned.set(i);
-                        }
-                        ++i;
-                    }
+    words_type words_;
+    iterator cur_;
+};  // class basic_cl_parser::interpreter
+
+
+class verifier {
+public:
+    using bitset_type = std::bitset<
+        std::tuple_size_v<param_tuple_type>
+    >;
+
+    verifier(string_view_type identifier)
+        : identifier_(identifier), switches_(0u),
+        fail_(false), bad_(false) {}
+
+    string_view_type id() const noexcept {
+        return identifier_;
+    }
+
+    bool is_valid_identifier(string_view_type word)
+        const noexcept {
+        return word == identifier_;
+    }
+
+    bool is_duplicated_assignment(
+        char_type short_key, const container& params
+    ) const {
+        return is_duplicated_assignment_impl(short_key, params);
+    }
+
+    bool is_duplicated_assignment( string_view_type long_key,
+        const container& params
+    ) const {
+        return is_duplicated_assignment_impl(long_key, params);
+    }
+
+    bool is_duplicated_complex_assignment(
+        string_view_type keys, const container& params
+    ) const {
+        auto tmp_switches = bitset_type(0u);
+        return std::ranges::any_of(keys,
+            [&params, &tmp_switches, this](auto key) {
+                auto is = this->is_duplicated_assignment_impl(
+                    key, params, tmp_switches
                 );
-            };
 
-            if ( detail::is_complex_key(word) ) {
-                for (auto key : detail::remove_dash(word)) {
-                    map_with_key(key);
-                }
+                this->set_assigned_impl(
+                    key, params, tmp_switches
+                );
+
+                return is;
             }
-            else {
-                auto key = detail::remove_dash(word);
-                if ( std::size(key) > 1) {
-                    map_with_key(key);
-                }
-                else {  // short option must be treated as a character
-                    // rather than string.
-                    map_with_key( *std::begin(key) );
-                }
-            }
-
-            return ret;
-        };
-
-        if (error().has_value()) {
-            return {};
-        }
-
-        auto words = detail::split_words(command_line);
-
-        if ( std::empty(words) ) {
-            log_error_identifier_not_given();
-            return {};
-        }
-
-        if ( words.front() != identifier_ ) {
-            log_error_invalid_identifier( words.front() );
-            return {};
-        }
-
-        auto it_first = std::next(std::begin(words));
-        auto it_last = std::end(words);
-
-        if (it_first == it_last) {
-            // there's no argument to parse.
-            return make_parsed_result();
-        }
-
-        // check first word is key,
-        if (!detail::is_key(*it_first)) {
-            log_error_key_not_given();
-            return {};
-        }
-
-        while (it_first != it_last) {
-            if ( detail::is_complex_key(*it_first) ) {
-                if ( !parse_complex_keys(*it_first) ) {
-                    log_error_wrong_complex_key(*it_first);
-                    return {};
-                }
-                if ( has_duplicated_assignments(*it_first) ) {
-                    log_error_duplicated_assignments(*it_first);
-                }
-                ++it_first;
-                continue;
-            }
-
-            auto param_idx = find_param_index(*it_first);
-            if ( !param_idx.has_value() ) {
-                log_error_undefined_key(*it_first);
-                return {};
-            }
-    
-            auto it_next_key = std::ranges::find_if(
-                std::next(it_first), it_last,
-                detail::is_key<string_view_type>
-            );
-
-            // assign (key, next key) words to param
-            std::ranges::for_each(
-                std::next(it_first),
-                it_next_key,
-                [&, this](auto word) {
-                    arg_stream_ << word << detail::stream_delim<char_type>();
-                }
-            );
-            if ( !assign_arg_by_idx( param_idx.value() ) ) {
-                log_error_incompatible_argument(*it_first);
-                return {};
-            }
-
-            if ( has_duplicated_assignments(*it_first) ) {
-                log_error_duplicated_assignments(*it_first);
-                return {};
-            }
-
-            if ( has_unparsed_arguments() ) {
-                log_error_unparsed_arguments();
-                return {};
-            }
-
-            it_first = it_next_key;
-        }   // while (it_first != last)
-
-        // TODO: check every required arguments are passed and all constraints are met
-
-        return make_parsed_result();
-    }
-
-private:
-    /**
-     * @brief Helper function to create a tuple representing parsed results.
-     *
-     * This function constructs a tuple containing parsed values based on the specified parameter types. It iterates
-     * through the parameters and retrieves their values. If a required parameter is not provided, an error
-     * "required_key_not_given" is logged.
-     * 
-     * The parameters' values are copied rather then moved.
-     * Therefore, the parameters' values don't change after call of this function.
-     *
-     * @return A tuple representing parsed values according to the specified parameter types.
-     */
-    result_tuple_type make_parsed_result() {
-        result_tuple_type ret;
-
-        detail::tuple_conv(params_, ret, [this](const auto& p) {
-            using none_qualified_t = std::remove_cvref_t<decltype(p)>;
-            using value_type = typename none_qualified_t::value_type;
-
-            if (p.has_value()) {
-                return p.value();
-            }
-
-            if constexpr ( std::is_base_of_v<
-                    basic_required<value_type, char_type, traits_type>,
-                    none_qualified_t
-                >
-            ) {
-                log_error_required_key_not_given();
-            }
-
-            return value_type{};
-        });
-
-        return ret;
-    }
-
-    /**
-     * @brief Logs an error when the command-line identifier is not given.
-     *
-     * This function sets the error code to 'identifier_not_given' and constructs an error message indicating that the
-     * command-line identifier is missing.
-     */
-    void log_error_identifier_not_given() {
-        err_code_ = error_code::identifier_not_given;
-        err_stream_ << __LITERAL(char_type,
-            "[gclp] error: didn't receive identifier, command-line is empty.\n"
         );
     }
 
-    /**
-     * @brief Parses complex keys in the command line arguments.
-     * 
-     * Parses complex keys in the command line arguments, assigning corresponding boolean values to parameters.
-     * @param word The complex key to parse.
-     * @return False if parsing fails (at least one undefined key or incompatible argument), true otherwise.
-     */
-    bool parse_complex_keys(string_view_type word) {
-        /*
-        fail means at least one of the keys in complex param received
-        isn't defined as boolean param.
-        */ 
-        auto fail = false;
+    bool starts_with_short_key(
+        const typename interpreter::token& token
+    ) const {
+        return detail::is_key( token.leading )
+            && detail::is_single_dashed( token.leading )
+            && !detail::is_complex_key( token.leading );
+    }
 
-        for (auto key : detail::remove_dash(word)) {
-            auto key_found = false;
+    bool starts_with_long_key(
+        const typename interpreter::token& token
+    ) const {
+        return detail::is_key( token.leading )
+            && !detail::is_single_dashed( token.leading );
+    }
 
-            detail::tuple_for_each(
-                params_,
-                [ &fail, &key_found, key ](auto& p) {
-                    if (p.contains(key)) {
-                        key_found = true;
-                        p.assign(true);
-                        if (p.fail()) {
-                            fail = true;
-                        }
+    bool starts_with_complex_key(
+        const typename interpreter::token& token
+    ) const {
+        return detail::is_complex_key( token.leading );
+    }
+
+    bool is_valid_single_key(char_type short_key,
+        const container& params
+    ) const {
+        return is_valid_single_key_impl(short_key, params);
+    }
+
+    bool is_valid_single_key(string_view_type long_key,
+        const container& params
+    ) const {
+        return is_valid_single_key_impl(long_key, params);
+    }
+
+    bool is_valid_complex_key(string_view_type complex_key,
+        const container& params
+    ) const {
+        for (auto key : complex_key) {
+            auto is_valid = false;
+
+            auto is_boolean = [](const auto& p) {
+                using value_type = typename
+                    std::remove_cvref_t<decltype(p)>::value_type;
+
+                return std::is_same_v<bool, value_type>
+                    || std::is_base_of_v<bool, value_type>;
+            };
+
+            detail::tuple_for_each(params.data(),
+                [&is_valid, key, is_boolean](const auto& p) {
+                    if ( p.contains(key) && is_boolean(p) ) {
+                        is_valid = true;
                     }
                 }
             );
 
-            if (!key_found || fail) {
+            if (!is_valid) {
                 return false;
             }
         }
@@ -1732,103 +1679,266 @@ private:
         return true;
     }
 
-    /**
-     * @brief Finds the index of the parameter corresponding to the given key.
-     * 
-     * Finds the index of the parameter corresponding to the given key in the list of parameters.
-     * @param word The key to search for.
-     * @return An optional index indicating the position of the parameter, or empty if the key is undefined.
-     */
-    std::optional<index_type> find_param_index(string_view_type word) {
-        auto idx_found = std::optional<index_type>();
+    bool satisfies_required(const container& params) const {
+        auto required_switches = bitset_type(0u);
+        detail::tuple_for_each(params.data(),
+            [&required_switches, i = 0](const auto& p) mutable {
+                using none_qualified_t
+                    = std::remove_cvref_t<decltype(p)>;
+                using value_type = typename
+                    none_qualified_t::value_type;
+                using required_t = basic_required<
+                    value_type, char_type, traits_type
+                >;
 
-        detail::tuple_for_each(
-            params_,
-            [ &idx_found, this, key = word, i = 0 ](
-                const auto& p) mutable {
-                auto dash_removed_key = detail::remove_dash(key);
-                if ( detail::is_single_dashed(key) ) {
-                    // short param
-                    if ( p.contains(*std::begin(dash_removed_key)) ) {
-                        idx_found = i;
+                if constexpr ( std::is_base_of_v<
+                    required_t, none_qualified_t
+                >) {
+                    if (!p.has_defval()) {
+                        required_switches.set(i);
                     }
-                }
-                else if ( p.contains(dash_removed_key) ) {
-                    // long param
-                    idx_found = i;
                 }
                 ++i;
             }
         );
 
-        return idx_found;
+        return (required_switches & switches_)
+            == required_switches;
     }
 
-    /**
-     * @brief Assigns command-line arguments to the parameter at the given index.
-     * 
-     * Assigns command-line arguments to the parameter at the specified index using the internal argument stream.
-     * @param param_idx The index of the parameter to assign arguments to.
-     * @return True if assignment is successful, false otherwise.
-     */
-    bool assign_arg_by_idx(index_type param_idx) {
-        bool success = false;
+    void set_assigned(char_type short_key,
+        const container& params
+    ) {
+        set_assigned_impl(short_key, params);
+    }
+
+    void set_assigned(string_view_type long_key,
+        const container& params
+    ) {
+        set_assigned_impl(long_key, params);
+    }
+
+    bool assigned(char_type short_key,
+        const container& params
+    ) {
+        return assigned_impl(short_key, params);
+    }
+
+    bool assigned(string_view_type long_key,
+        const container& params
+    ) {
+        return assigned_impl(long_key, params);
+    }
+
+    void mark_fail( bool fail = true ) {
+        fail_ = fail;
+    }
+
+    void mark_bad( bool bad = true ) {
+        bad_ = bad;
+    }
+
+    bool good() const noexcept {
+        return !(bad_ || fail_);
+    }
+
+    bool bad() const noexcept {
+        return bad_;
+    }
+
+    bool fail() const noexcept {
+        return fail_;
+    }
+
+    void clear() {
+        switches_.reset();
+        mark_fail(false);
+        mark_bad(false);
+    }
+
+private:
+    template <class KeyT>
+    bool is_duplicated_assignment_impl(KeyT key,
+        const container& params
+    ) const {
+        return is_duplicated_assignment_impl(
+            key, params, this->switches_
+        );
+    }
+
+    template <class KeyT>
+    bool is_duplicated_assignment_impl(KeyT key,
+        const container& params, const bitset_type& switches
+    ) const {
+        bool is = false;
 
         detail::tuple_for_each(
-            params_,
-            [ &success, this, param_idx, i = 0 ](auto& p) mutable {
-                using value_type = typename std::remove_cvref_t<decltype(p)>
-                    ::value_type;
-
-                if (param_idx == i) {
-                    // when extracting string_type,
-                    // all characters in the stream regardless of white space should be extracted.
-                    if constexpr (std::is_base_of_v<string_type, value_type>) {
-                        auto acc = string_type();
-                        for (auto&& s : std::views::istream<string_type>(this->arg_stream_)) {
-                            acc += s;
-                            acc += detail::stream_delim<char_type>();
-                        }
-                        acc.pop_back();
-                        p.assign( std::move(acc) );
-                        this->arg_stream_.clear();
-                    }
-                    // when extracting boolean type,
-                    // omitting argument means the value is true
-                    else if constexpr (std::is_base_of_v<bool, value_type>
-                        || std::is_same_v<bool, value_type>
-                    ) {
-                        if (!has_unparsed_arguments()) {
-                            p.assign(true);
-                        }
-                        else {
-                            this->arg_stream_ >> p;
-                        }
-                    }
-                    else {
-                        this->arg_stream_ >> p;
-                    }
-                    success = !p.fail();
+            params.data(),
+            [&is, switches, key, i = 0](const auto& p) mutable {
+                if (p.contains(key)) {
+                    is = switches.test(i);
                 }
+
                 ++i;
             }
         );
 
-        return success;
+        return is;
     }
-    
-    /**
-     * @brief Generates a string representing the command-line arguments.
-     * 
-     * Generates a string representation of the command-line arguments for error messages.
-     * @return A string containing formatted command-line arguments.
-     */
-    string_type get_args_string() {
+
+    template <class KeyT>
+    bool is_valid_single_key_impl(KeyT key,
+        const container& params
+    ) const {
+        bool is = false;
+
+        detail::tuple_for_each(params.data(),
+            [&is, key](const auto& p) {
+                if (p.contains(key)) {
+                    is = true;
+                }
+            }
+        );
+
+        return is;
+    }
+
+    template <class KeyT>
+    void set_assigned_impl(KeyT key, const container& params) {
+        return set_assigned_impl(key, params, this->switches_);
+    }
+
+    template <class KeyT>
+    void set_assigned_impl(KeyT key, const container& params,
+        bitset_type& switches
+    ) const {
+        detail::tuple_for_each(
+            params.data(),
+            [&switches, key, i = 0](const auto& p) mutable {
+                if (p.contains(key)) {
+                    switches.set(i);
+                }
+                ++i;
+            }
+        );
+    }
+
+    template <class KeyT>
+    bool assigned_impl(KeyT key,
+        const container& params
+    ) {
+        bool ass = false;
+        
+        detail::tuple_for_each(
+            params.data(),
+            [&ass, this, key, i = 0](const auto& p) mutable {
+                ass = p.contains(key) &&
+                    this->switches_.test(i);
+
+                ++i;
+            }
+        );
+
+        return ass;
+    }
+
+    string_view_type identifier_;
+    bitset_type switches_;
+    bool fail_;
+    bool bad_;
+};  // class basic_cl_parser::verifier
+
+class assigner {
+public:
+    assigner(container& params)
+        : params_(params), stream_() {}
+
+    void assign_complex(
+        string_view_type complex_key, verifier& veri
+    ) {
+        /*
+        fail means at least one of the keys in complex param received
+        isn't defined as boolean param.
+        */ 
+        for (auto key : complex_key) {
+            auto key_found = false;
+
+            detail::tuple_for_each(
+                params_.data(),
+                [ &key_found, &veri, key ](auto& p) {
+                    if (p.contains(key)) {
+                        key_found = true;
+                        p.assign(true);
+                        veri.mark_fail( p.fail() );
+                    }
+                }
+            );
+
+            if (!key_found) {
+                veri.mark_fail();
+            }
+            else {
+                veri.set_assigned(key, params_);
+            }
+        }
+
+        if ( veri.good() ) {
+            params_.invalidate_cache();
+        }
+        else {
+            // do not override error source.
+            // (if fail, has_unassigned() is always true
+            // but it's just the consequence of failure)
+            veri.mark_bad( has_unassigned() );
+        }
+    }
+
+    void assign_single(char_type short_key,
+        const words_type& args, verifier& veri
+    ) {
+        assign_by_idx( getidx(short_key), args, veri );
+        veri.set_assigned(short_key, params_);
+
+        if ( veri.good() ) {
+            params_.invalidate_cache();
+        }
+        else {
+            // do not override error source.
+            // (if fail, has_unassigned() is always true
+            // but it's just the consequence of failure)
+            veri.mark_bad( has_unassigned() );
+        }
+    }
+
+    void assign_single(string_view_type long_key,
+        const words_type& args, verifier& veri
+    ) {
+        assign_by_idx( getidx(long_key), args, veri );
+        veri.set_assigned(long_key, params_);
+
+        if ( veri.good() ) {
+            params_.invalidate_cache();
+        }
+        else {
+            // do not override error source.
+            // (if fail, has_unassigned() is always true
+            // but it's just the consequence of failure)
+            veri.mark_bad( has_unassigned() );
+        }
+    }
+
+    bool has_unassigned() const {
+        // if any character rather than eof remain in stream,
+        // stream buffer size is greater than 1. (the one stands for eof.)
+        return stream_.rdbuf()->in_avail() > 1ull;
+    }
+
+    string_type get_unassigned() {
         auto args = string_type();
 
         auto view = std::ranges::basic_istream_view<
             string_type, char_type, traits_type
-        >( arg_stream_ );
+        >( stream_ );
 
         for (const auto& s : view) {
             std::format_to( std::back_inserter(args),
@@ -1841,40 +1951,155 @@ private:
             args.pop_back();
         }
 
+        clear();
+
         return args;
     }
 
+private:
+    void assign_by_idx(index_type idx,
+        const words_type& args, verifier& veri
+    ) {
+        detail::tuple_for_each(
+            params_.data(),
+            [&args, &veri, idx, this, i = 0](auto& p) mutable {
+                using value_type = typename std::remove_cvref_t<decltype(p)>
+                    ::value_type;
+
+                if (idx == i) {
+                    // when extracting string_type,
+                    // all characters in the stream regardless of white space should be extracted.
+                    if constexpr (std::is_base_of_v<string_type, value_type>) {
+                        auto acc = string_type();
+                        for (auto&& s : std::views::istream<string_type>(stream_args(args))) {
+                            acc += s;
+                            acc += detail::stream_delim<char_type>();
+                        }
+                        acc.pop_back();
+                        p.assign( std::move(acc) );
+                        stream_.clear();
+                    }
+                    // when extracting boolean type,
+                    // omitting argument means the value is true
+                    else if constexpr (std::is_base_of_v<bool, value_type>
+                        || std::is_same_v<bool, value_type>
+                    ) {
+                        if (std::empty(args)) {
+                            p.assign(true);
+                        }
+                        else {
+                            // try boolalpha and integral
+                            stream_args(args);
+                            stream_ >> std::boolalpha >> p;
+                            if (p.fail()) {
+                                p.clear();
+                                stream_ >> std::noboolalpha >> p;
+                            }
+                            stream_ >> std::noboolalpha;
+                        }
+                    }
+                    else {
+                        stream_args(args) >> p;
+                    }
+
+                    veri.mark_fail( p.fail() );
+                }
+                ++i;
+            }
+        );
+    }
+
+    index_type getidx(char_type short_key) const {
+        return getidx_impl(short_key);
+    }
+
+    index_type getidx(string_view_type long_key) const {
+        return getidx_impl(long_key);
+    }
+
+    template <class KeyT>
+    index_type getidx_impl(KeyT key) const {
+        // assume the key's validity is already checked.
+        auto ret = index_type(0);
+
+        detail::tuple_for_each(
+            params_.data(),
+            [&ret, key, i = index_type(0)](const auto& p) mutable {
+                if (p.contains(key)) {
+                    ret = i;
+                }
+                ++i;
+            }
+        );
+
+        return ret;
+    }
+
+    stream_type& stream_args(const words_type& args) {
+        std::ranges::for_each(args, [this](const auto& arg) {
+            stream_ << arg << detail::stream_delim<char_type>();
+        });
+
+        return stream_;
+    }
+
+    void clear() {
+        stream_.clear();
+        if (stream_.rdbuf()->in_avail() > 1ull) {
+            stream_.ignore(
+                std::numeric_limits<std::streamsize>::max()
+            );
+        }
+    }
+
+    container& params_;
+    stream_type stream_;
+};  // class basic_cl_parser::assigner
+
+class logger {
+public:
+    logger(const container& params)
+        : err_stream_(), params_(params),
+        err_code_() {}
+
     /**
-     * @brief Logs an error for incompatible arguments received.
-     * 
-     * Logs an error message when incompatible arguments are received for a specified key.
-     * @param key The key for which incompatible arguments were received.
+     * @brief Logs an error when the command-line identifier is not given.
+     *
+     * This function sets the error code to 'identifier_not_given' and constructs an error message indicating that the
+     * command-line identifier is missing.
      */
-    void log_error_incompatible_argument(string_view_type key) {
-        err_code_ = error_code::incompatible_argument;
+    void log_error_identifier_not_given() {
+        lock_error(error_code::identifier_not_given);
+        err_stream_ << __LITERAL(char_type,
+            "[gclp] error: didn't receive identifier, command-line is empty.\n"
+        );
+    }
+
+    template <class KeyT>
+    void log_error_incompatible_arguments(
+        KeyT key, string_view_type args_string
+    ) {
+        lock_error(error_code::incompatible_argument);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: received arguments are incompatible with"
             " the specified key \""
         ) << key << __LITERAL(char_type,
             "\".\n"
             "\treceived: ["
-        ) << get_args_string() << __LITERAL(char_type,
+        ) << args_string << __LITERAL(char_type,
             "]\n";
         );
     }
 
-    /**
-     * @brief Logs an error for an invalid identifier specified.
-     * 
-     * Logs an error message when an invalid identifier is specified.
-     * @param received_identifier The invalid identifier received in the command-line arguments.
-     */
-    void log_error_invalid_identifier(string_view_type received_identifier) {
-        err_code_ = error_code::invalid_identifier;
+    void log_error_invalid_identifier(
+        string_view_type received_identifier,
+        string_view_type correct_identifier
+    ) {
+        lock_error(error_code::invalid_identifier);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: invalid identifier specified.\n"
             "\texpected \""
-        ) << identifier_ << __LITERAL(char_type,
+        ) << correct_identifier << __LITERAL(char_type,
             "\" but received \""
         ) << received_identifier << __LITERAL(char_type,
             "\"\n"
@@ -1887,7 +2112,7 @@ private:
      * Logs an error message when a key is not given in the command-line arguments.
      */
     void log_error_key_not_given() {
-        err_code_ = error_code::key_not_given;
+        lock_error(error_code::key_not_given);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: key is not given.\n"
         );
@@ -1899,8 +2124,9 @@ private:
      * Logs an error message when an undefined key is received in the command-line arguments.
      * @param key The undefined key received in the command-line arguments.
      */
-    void log_error_undefined_key(string_view_type key) {
-        err_code_ = error_code::undefined_key;
+    template <class KeyT>
+    void log_error_undefined_key(KeyT key) {
+        lock_error(error_code::undefined_key);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: undefined key \""
         ) << key << __LITERAL(char_type,
@@ -1908,30 +2134,15 @@ private:
         );
     }
 
-    /**
-     * @brief Checks if there are unparsed arguments remaining in the input stream.
-     * 
-     * Checks if there are unparsed arguments remaining in the input stream.
-     * @return True if there are unparsed arguments, false otherwise.
-     */
-    bool has_unparsed_arguments() const {
-        // if any character rather than eof remain in stream,
-        // stream buffer size is greater than 1. (the one stands for eof.)
-        return arg_stream_.rdbuf()->in_avail() > 1;
-    }
-
-    /**
-     * @brief Logs an error for unparsed arguments detected in the input stream.
-     * 
-     * Logs an error message when unparsed arguments are detected in the input stream.
-     */
-    void log_error_unparsed_arguments() {
-        err_code_ = error_code::unparsed_argument;
+    void log_error_unparsed_arguments(
+        string_view_type args_string
+    ) {
+        lock_error(error_code::unparsed_argument);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: unparsed arguments detected.\n"
             "\tremaining tokens: "
         );
-        err_stream_ << get_args_string();
+        err_stream_ << args_string;
         err_stream_ << __LITERAL(char_type,
             "\n"
         );
@@ -1944,8 +2155,9 @@ private:
      * or at least one key in a complex parameter duplicated.
      * @param keys The keys containing at least one key which is not defined as a boolean parameter.
      */
-    void log_error_wrong_complex_key(string_view_type keys) {
-        err_code_ = error_code::incompatible_argument;
+    template <class KeyT>
+    void log_error_wrong_complex_key(KeyT keys) {
+        lock_error(error_code::incompatible_argument);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: at least one of the keys in complex param received"
             " isn't defined as boolean param"
@@ -1962,7 +2174,7 @@ private:
      * Logs an error message when required keys are not given in the command-line arguments.
      */
     void log_error_required_key_not_given() {
-        err_code_ = error_code::required_key_not_given;
+        lock_error(error_code::required_key_not_given);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: required keys are not given.\n"
             "required keys:\n"
@@ -1979,7 +2191,7 @@ private:
             err_stream_ << *std::prev(std::end(keys));
         };
 
-        detail::tuple_for_each(params_,
+        detail::tuple_for_each(params_.data(),
             [print_keys_to_err, this](const auto& p) {
                 using none_qualified_t
                     = std::remove_cvref_t<decltype(p)>;
@@ -2009,8 +2221,9 @@ private:
      * 
      * @param key The key for which duplicated assignments were detected.
      */
-    void log_error_duplicated_assignments(string_view_type key) {
-        err_code_ = error_code::duplicated_assignments;
+    template <class KeyT>
+    void log_error_duplicated_assignments(KeyT key) {
+        lock_error(error_code::duplicated_assignments);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: duplicated assignments detected when parsing \""
         ) << key << __LITERAL(char_type,
@@ -2019,12 +2232,200 @@ private:
         );
     }
 
-    stream_type arg_stream_;
+    std::optional<error_code> error() const noexcept {
+        return err_code_;
+    }
+
+    string_view_type error_message() const noexcept {
+        return err_stream_.rdbuf()->view();
+    }
+
+    void clear() {
+        err_code_.reset();
+        err_stream_.clear();
+        if (err_stream_.rdbuf()->in_avail() > 1ull) {
+            err_stream_.ignore(
+                std::numeric_limits<std::streamsize>::max()
+            );
+        }
+    }
+private:
+    void lock_error(error_code ec) {
+        if ( !error() ) {
+            err_code_ = ec;
+        }
+    }
+
     stream_type err_stream_;
-    param_tuple_type params_;
-    string_view_type identifier_;
+    const container& params_;
     std::optional<error_code> err_code_;
-};
+};  // class basic_cl_parser::logger
+
+public:
+    /**
+     * @brief Constructs a basic_cl_parser object with the provided identifier and parameters.
+     * 
+     * Initializes a
+    
+* =- basic_cl_parser object with the specified identifier and parameters.
+     * @param identifier The identifier used to recognize the command-line arguments.
+     * @param params The parameters representing the command-line arguments to be parsed.
+     */
+    basic_cl_parser(string_view_type identifier, Params... params)
+        : cont_( std::move(params)... ), veri_(identifier),
+        assi_(cont_), logg_(cont_) {}
+
+    std::optional<error_code> error() const noexcept {
+        return logg_.error();
+    }
+
+    string_view_type error_message() const noexcept {
+        return logg_.error_message();
+    }
+
+    template <class IntType, class StrArrType>
+    result_tuple_type& parse(IntType argc, StrArrType argv) {
+        // if error is not cleared, return early.
+        if ( logg_.error() ) {
+            return get();
+        }
+
+        return parse_impl( interpreter(argc, argv) );
+    }
+
+    result_tuple_type& parse(string_view_type command_line) {
+        // if error is not cleared, return early.
+        if ( logg_.error() ) {
+            return get();
+        }
+
+        return parse_impl( interpreter(command_line) );
+    }
+
+    result_tuple_type& get() {
+        return cont_.values();
+    }
+
+    const result_tuple_type& get() const {
+        return cont_.values();
+    }
+
+private:
+    result_tuple_type& parse_impl(interpreter&& ip) {
+        initialize();
+
+        if (ip.done()) {
+            logg_.log_error_identifier_not_given();
+        }
+        
+        auto [id, arg_unexpected] = ip.get_token();
+
+        if ( !veri_.is_valid_identifier(id) ) {
+            logg_.log_error_invalid_identifier(
+                id, veri_.id()
+            );
+        }
+
+        if ( !std::ranges::empty(arg_unexpected) ) {
+            logg_.log_error_key_not_given();
+        }
+
+        while (!ip.done()) {
+            if ( !ip.facing_key() ) {
+                logg_.log_error_key_not_given();
+            }
+
+            auto tok = ip.get_token();
+
+            if ( veri_.starts_with_short_key(tok) ) {
+                auto key = ip.remove_dash(tok.leading);
+                const auto& args = tok.followings;
+                // token's leading factor is string_view_type,
+                // for represent short key that is char_type,
+                // fetch the front element.
+                parse_single_key( *std::begin(key), args );
+            }
+            else if ( veri_.starts_with_long_key(tok) ) {
+                auto key = ip.remove_dash(tok.leading);
+                const auto& args = tok.followings;
+                parse_single_key(key, args);
+            }
+            else if ( veri_.starts_with_complex_key(tok) ) {
+                auto key = ip.remove_dash(tok.leading);
+                parse_complex_key(key);
+            }
+            else {
+                // this branch cannot be reached.
+                // if reached, it's pragmma fault.
+                assert(false);
+            }
+        }
+
+        if ( !veri_.satisfies_required(cont_) ) {
+            logg_.log_error_required_key_not_given();
+        }
+
+        if (!logg_.error()) {
+            cont_.update_cache();
+        }
+
+        return get();
+    }
+
+    template <class KeyT, class Args>
+    void parse_single_key(KeyT key, Args&& args) {
+        if ( !veri_.is_valid_single_key(key, cont_) ) {
+            logg_.log_error_undefined_key(key);
+        }
+        if ( veri_.is_duplicated_assignment(key, cont_) ) {
+            logg_.log_error_duplicated_assignments(key);
+        }
+
+        assi_.assign_single(key, std::forward<Args>(args), veri_);
+
+        if (veri_.fail()) {
+            logg_.log_error_incompatible_arguments(
+                key, assi_.get_unassigned()
+            );
+        }
+        if (veri_.bad()) {
+            logg_.log_error_unparsed_arguments(
+                assi_.get_unassigned()
+            );
+        }
+    }
+
+    void parse_complex_key(string_view_type keys) {
+        if ( !veri_.is_valid_complex_key(keys, cont_) ) {
+            logg_.log_error_wrong_complex_key(keys);
+        }
+        if ( veri_.is_duplicated_complex_assignment(keys, cont_) ) {
+            logg_.log_error_duplicated_assignments(keys);
+        }
+
+        assi_.assign_complex(keys, veri_);
+
+        if (veri_.fail()) {
+            logg_.log_error_wrong_complex_key(keys);
+        }
+        
+        // verifier's bad bit connot be set,
+        // complex key is tokenized without arguments.
+        // so if bad bit is set, it's pragmma fault.
+        assert( !veri_.bad() );
+    }
+
+    void initialize() {
+        cont_.clear();
+        veri_.clear();
+        logg_.clear();
+    }
+
+    container cont_;
+    verifier veri_;
+    assigner assi_;
+    logger logg_;
+};  // class basic_cl_parser
 
 /**
  * @brief Shortcut type alias for optional command-line parameter with char character type.
@@ -2081,17 +2482,3 @@ template <class ... Params>
 using wparser = basic_cl_parser<wchar_t, std::char_traits<wchar_t>, Params...>;
 
 }   // namespace gclp
-
-#undef __LITERAL
-#undef DEFINE_ENUM_LOGICAL_OP_ALL
-#undef DEFINE_ENUM_COMPARE_OP_ALL
-#undef DEFINE_ENUM_INT_LOGICAL_OP
-#undef DEFINE_ENUM_BINARY_LOGICAL_OP
-#undef DEFINE_ENUM_INT_COMPARE_OP
-#undef DEFINE_ENUM_BINARY_COMPARE_OP
-#undef DEFINE_ENUM_BINARY_OP
-#undef DEFINE_ENUM_INT_OP
-#undef DEFINE_BINARY_OP
-#undef DEFINE_UNARY_OP
-
-#endif  // __cl_parser
