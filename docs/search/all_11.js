@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['woptional_0',['woptional',['../namespacegclp.html#a78ac096210575c74f0e237593648a6b2',1,'gclp']]],
-  ['wparser_1',['wparser',['../namespacegclp.html#ab38c62048534013893adee92f7082d80',1,'gclp']]],
-  ['wrequired_2',['wrequired',['../namespacegclp.html#abd52163364992f2ed6eb68e6be70d0ec',1,'gclp']]],
-  ['wrong_5fcomplex_5fkey_3',['wrong_complex_key',['../namespacegclp.html#a872562150e0252846e8071f1f183b56aaf85313d7af69cdd39d74a1b7c8eb686a',1,'gclp']]]
+  ['value_0',['value',['../classgclp_1_1basic__cl__param.html#a77ff4104994dc5616a0ab02f618c77cd',1,'gclp::basic_cl_param::value() noexcept'],['../classgclp_1_1basic__cl__param.html#a5899f44e9f61d6b5b85d454d7c5b9d04',1,'gclp::basic_cl_param::value() const noexcept']]]
 ];
