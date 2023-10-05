@@ -35,8 +35,8 @@ TEST(ParamTest, SetValue) {
         {'s'}, {"string"}, "a required string parameter"
     );
 
-    paramI.set_value(42);
-    paramS.set_value("Hello, World!");
+    paramI.assign(42);
+    paramS.assign("Hello, World!");
 
     ASSERT_TRUE(paramI.has_value());
     ASSERT_TRUE(paramS.has_value());
@@ -54,8 +54,8 @@ TEST(ParamTest, RemoveValue) {
         {'s'}, {"string"}, "a required string parameter"
     );
 
-    paramI.set_value(42);
-    paramS.set_value("Hello, World!");
+    paramI.assign(42);
+    paramS.assign("Hello, World!");
 
     paramI.remove_value();
     paramS.remove_value();
