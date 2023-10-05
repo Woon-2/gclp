@@ -38,7 +38,7 @@ endif()
 
 project(pgclp
     LANGUAGES CXX
-    VERSION 2023.10.02
+    VERSION 2023.10.06
     DESCRIPTION "a lightweight header-only generic command line parser"
 )
 
