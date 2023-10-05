@@ -2500,6 +2500,20 @@ public:
         return args;
     }
 
+    /**
+     * @brief Clears the internal input stream.
+     * 
+     * This function clears the internal input stream, discarding any remaining characters.
+     */
+    void clear() {
+        stream_.clear();
+        if (stream_.rdbuf()->in_avail() > 1ull) {
+            stream_.ignore(
+                std::numeric_limits<std::streamsize>::max()
+            );
+        }
+    }
+
 private:
     /**
      * @brief Assigns values to parameters based on the specified index and arguments.
@@ -2615,20 +2629,6 @@ private:
         });
 
         return stream_;
-    }
-
-    /**
-     * @brief Clears the internal input stream.
-     * 
-     * This function clears the internal input stream, discarding any remaining characters.
-     */
-    void clear() {
-        stream_.clear();
-        if (stream_.rdbuf()->in_avail() > 1ull) {
-            stream_.ignore(
-                std::numeric_limits<std::streamsize>::max()
-            );
-        }
     }
 
     container& params_; /**< Reference to the container of parameters. */
