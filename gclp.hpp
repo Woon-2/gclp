@@ -428,13 +428,29 @@ template <class From, class To>
 concept not_convertible_to = !std::is_convertible_v<From, To>;
 
 /**
- * @brief Applies a function to each argument in a parameter pack.
- * 
- * This function applies the provided function `func` to each argument in the parameter pack `args`.
- * @tparam Func The function type to be applied.
- * @tparam Args Variadic template arguments representing the arguments to be passed to the function.
- * @param func The function to be applied to each argument.
- * @param args The arguments to be passed to the function.
+ * @brief Applies a given function to each argument in a parameter pack.
+ *
+ * This function template applies the provided function to each argument in the parameter pack,
+ * forwarding the arguments to the function. It uses fold expression (C++17) to achieve the iteration.
+ *
+ * @tparam Func A callable object type.
+ * @tparam Args Variadic template parameter pack.
+ * @param func A function or callable object to be applied to each argument.
+ * @param args Arguments to be passed to the function.
+ *
+ * @code{.cpp}
+ * // Example usage of for_each_args:
+ * void print(int num, const std::string& str) {
+ *     std::cout << num << ": " << str << std::endl;
+ * }
+ *
+ * int main() {
+ *     for_each_args(print, 1, "hello", 2, "world");
+ *     return 0;
+ * }
+ * // Output: 1: hello
+ * //         2: world
+ * @endcode
  */
 template <class Func, class ... Args>
 void for_each_args(Func func, Args&& ... args) {
@@ -449,13 +465,30 @@ void tuple_for_each_helper(
 }
 
 /**
- * @brief Applies a function to each element in a tuple-like object.
- * 
- * This function applies the provided function `func` to each element in the tuple-like object `t`.
- * @tparam Func The function type to be applied.
- * @tparam TupleLike The tuple-like object type.
- * @param t The tuple-like object.
- * @param func The function to be applied to each element.
+ * @brief Applies a given function to each element in a tuple-like object.
+ *
+ * This function template applies the provided function to each element in the tuple-like object,
+ * such as std::tuple, std::pair, or user-defined classes with tuple-like behavior.
+ *
+ * @tparam Func A callable object type.
+ * @tparam TupleLike Type of the tuple-like object.
+ * @param t The tuple-like object to iterate over.
+ * @param func A function or callable object to be applied to each element.
+ *
+ * @code{.cpp}
+ * // Example usage of tuple_for_each:
+ * void print(const std::string& str) {
+ *     std::cout << str << std::endl;
+ * }
+ *
+ * int main() {
+ *     std::tuple<std::string, int, double> myTuple = {"hello", 42, 3.14};
+ *     tuple_for_each(myTuple, print); // Output: hello
+ *                                    //         42
+ *                                    //         3.14
+ *     return 0;
+ * }
+ * @endcode
  */
 template <class Func, class TupleLike>
 void tuple_for_each(TupleLike&& t, Func func) {
@@ -484,16 +517,36 @@ void tuple_conv_helper(
 }
 
 /**
- * @brief Converts elements from an input tuple to an output tuple using a specified function.
- * 
- * This function applies the provided function `func` to each element in the input tuple `tuple_in`
- * and assigns the results to the corresponding elements in the output tuple `tuple_out`.
- * @tparam InTupleLike The type of the input tuple-like object.
- * @tparam OutTupleLike The type of the output tuple-like object.
- * @tparam Func The function type to be applied.
- * @param tuple_in The input tuple-like object.
- * @param tuple_out The output tuple-like object.
- * @param func The function to be applied to each element.
+ * @brief Converts elements of an input tuple-like object to an output tuple-like object using a given function.
+ *
+ * This function template applies the provided function to each element in the input tuple-like object
+ * and stores the results in the corresponding positions of the output tuple-like object.
+ * Both input and output tuple-like objects must have the same number of elements.
+ *
+ * @tparam InTupleLike Type of the input tuple-like object.
+ * @tparam OutTupleLike Type of the output tuple-like object.
+ * @tparam Func A callable object type.
+ * @param tuple_in The input tuple-like object to be converted.
+ * @param tuple_out The output tuple-like object where converted elements will be stored.
+ * @param func A function or callable object to transform each input element.
+ *
+ * @code{.cpp}
+ * // Example usage of tuple_conv:
+ * std::string add_hello(const std::string& str) {
+ *     return "hello " + str;
+ * }
+ *
+ * int main() {
+ *     std::tuple<std::string, std::string, std::string> inputTuple = {"world", "there", "everyone"};
+ *     std::tuple<std::string, std::string, std::string> outputTuple;
+ *     
+ *     tuple_conv(inputTuple, outputTuple, add_hello);
+ *     
+ *     // Output tuple: {"hello world", "hello there", "hello everyone"}
+ *     
+ *     return 0;
+ * }
+ * @endcode
  */
 template <class InTupleLike, class OutTupleLike, class Func>
     requires requires {
@@ -596,12 +649,13 @@ constexpr CharT double_quote() {
 }
 
 /**
- * @brief Checks if a string view starts with a single dash character.
- * 
- * This function checks if the provided string view `word` starts with a single dash character and is not followed by another dash.
- * @tparam StringView The string view type.
- * @param word The string view to be checked.
- * @return true if the string starts with a single dash character, false otherwise.
+ * @brief Checks if the input string represents a single dashed option (e.g., "-x").
+ *
+ * A single dashed option consists of a dash followed by a non-dash character.
+ *
+ * @tparam StringView Type of the input string view.
+ * @param word The input string view to be checked.
+ * @return `true` if the input string represents a single dashed option, `false` otherwise.
  */
 template <class StringView>
 bool is_single_dashed(StringView word) noexcept {
@@ -613,12 +667,14 @@ bool is_single_dashed(StringView word) noexcept {
 }
 
 /**
- * @brief Checks if a string view represents a key (starts with a dash and not followed by another dash).
- * 
- * This function checks if the provided string view `word` represents a key, which starts with a dash character and is not followed by another dash.
- * @tparam StringView The string view type.
- * @param word The string view to be checked.
- * @return true if the string represents a key, false otherwise.
+ * @brief Checks if the input string represents a key (e.g., "-k" or "--key").
+ *
+ * A key can be either a short key (a dash followed by a non-dash character) or a long key
+ * (two dashes followed by one or more non-dash characters).
+ *
+ * @tparam StringView Type of the input string view.
+ * @param word The input string view to be checked.
+ * @return `true` if the input string represents a key, `false` otherwise.
  */
 template <class StringView>
 bool is_key(StringView word) noexcept {
@@ -638,12 +694,11 @@ bool is_key(StringView word) noexcept {
 }
 
 /**
- * @brief Checks if a string view represents a complex boolean parameter (starts with a single dash and has length greater than 2).
- * 
- * This function checks if the provided string view `word` starts with a single dash character and has a length greater than 2.
- * @tparam StringView The string view type.
- * @param word The string view to be checked.
- * @return true if the string represents a complex boolean parameter, false otherwise.
+ * @brief Checks if the input string represents a complex key, which means the concatenation of short keys. (e.g., "-abc").
+ *
+ * @tparam StringView Type of the input string view.
+ * @param word The input string view to be checked.
+ * @return `true` if the input string represents a complex key, `false` otherwise.
  */
 template <class StringView>
 bool is_complex_key(StringView word) noexcept {
@@ -651,12 +706,15 @@ bool is_complex_key(StringView word) noexcept {
 }
 
 /**
- * @brief Removes leading dash characters from a string view.
- * 
- * This function removes the leading dash characters from the provided string view `s`.
- * @tparam StringView The string view type.
- * @param s The input string view.
- * @return A new string view with leading dash characters removed.
+ * @brief Removes leading dashes from the input string view.
+ *
+ * This function removes any leading dashes from the input string view and returns the modified view.
+ * If once faced other characters, following dashes are not removed.
+ * It means, if the input appears to be dash-other characters-dash, only the front dashes will be removed.
+ *
+ * @tparam StringView Type of the input string view.
+ * @param s The input string view from which leading dashes will be removed.
+ * @return The input string view without leading dashes.
  */
 template <class StringView>
 StringView remove_dash(StringView s) noexcept {
@@ -667,12 +725,22 @@ StringView remove_dash(StringView s) noexcept {
 }
 
 /**
- * @brief Splits a string view into words based on specified delimiters.
- * 
- * This function splits the provided string view `s` into words using delimiters, including handling quotes and escape characters.
- * @tparam StringView The string view type.
- * @param s The input string view to be split.
- * @return A vector of string views representing individual words.
+ * @brief Splits a string view into words using a delimiter.
+ *
+ * This function splits the input string view into words based on the delimiter,
+ * handling escape sequences within quotes. It recognizes single and double quotes as
+ * quoting characters and supports escape sequences for the delimiter within quotes.
+ *
+ * @tparam StringView Type of the input string view.
+ * @param s The input string view to be split into words.
+ * @return A vector of string views containing the split words.
+ *
+ * @code{.cpp}
+ * // Example usage of split_words:
+ * std::string input = "word1 'quoted word2' word3";
+ * auto words = split_words(input);
+ * // Resulting words: {"word1", "quoted word2", "word3"}
+ * @endcode
  */
 template <class StringView>
 std::vector<StringView> split_words(StringView s) {
@@ -800,21 +868,24 @@ private:
 #endif   // DOXYGEN_IGNORE_DETAIL
 
 /**
- * @brief Concept representing character types suitable for command-line parameters.
+ * @brief Concept representing character types suitable for command-line.
  * 
- * This concept checks if the provided type T satisfies the requirements for a command-line parameter character.
+ * This concept checks if the provided type T satisfies the requirements for a command-line character.
  * @tparam T The character type to be checked.
  */
 template <class T>
 concept gclp_char = detail::is_char_v<T>;
 
 /**
- * @brief Represents a basic command-line parameter with specified key characters and brief description.
- * 
- * This class provides functionality to handle command-line parameters with specific key characters and brief descriptions.
- * @tparam ValT The type of the parameter value.
- * @tparam CharT The character type used for keys (default is char).
- * @tparam Traits The character traits type (default is std::char_traits<CharT>).
+ * @brief Represents a command line parameter with specified short keys, long keys, and a brief description.
+ *
+ * This class template represents a command line parameter that can be identified by a set of short keys,
+ * long keys, and a brief description. It allows setting a value, default value, and provides functionality
+ * to check for key presence, assign values, and retrieve brief descriptions.
+ *
+ * @tparam ValT Type of the parameter value.
+ * @tparam CharT Character type for keys (default is char).
+ * @tparam Traits Character traits type for keys (default is std::char_traits<CharT>).
  */
 template <
     class ValT, gclp_char CharT = char,
@@ -837,55 +908,32 @@ private:
 
 public:
     /**
-     * @brief Constructs a basic_cl_param object with specified key characters and brief description.
-     * 
-     * Initializes a basic_cl_param object with the specified key characters, key strings, and brief description.
-     * @param key_chars An std::intializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::intializer_list of string keys associated with the parameter.
-     * @param brief A brief description of the parameter.
+     * @brief Constructs a basic_cl_param object with specified short keys, long keys, and a brief description.
+     *
+     * @param short_keys Set of short keys representing the parameter.
+     * @param long_keys Set of long keys representing the parameter.
+     * @param brief Brief description of the parameter.
      */
     basic_cl_param(
-        std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
+        std::initializer_list<char_type> short_keys,
+        std::initializer_list<string_view_type> long_keys,
         string_view_type brief
-    ) : key_chars_(key_chars), key_strs_(key_strs),
+    ) : short_keys_(short_keys), long_keys_(long_keys),
         brief_(brief), defval_(), val_(), fail_(false) {}
 
     /**
-     * @brief Checks if the parameter has a value (either assigned or default).
-     * 
-     * @return true if the parameter has a value, false otherwise.
+     * @brief Checks if the parameter has a value (either set or default).
+     *
+     * @return `true` if the parameter has a value, `false` otherwise.
      */
     bool has_value() const noexcept {
         return val_.has_value() || defval_.has_value();
     }
 
     /**
-     * @brief Sets the value of the command-line parameter.
+     * @brief Retrieves the value of the parameter.
      *
-     * This function sets the value of the command-line parameter to the provided value.
-     * @param val The new value to be assigned to the command-line parameter.
-     */
-    void set_value(const value_type& val) {
-        val_ = val;
-    }
-
-    /**
-     * @brief Sets the value of the command-line parameter using move semantics.
-     *
-     * This function sets the value of the command-line parameter by moving the provided value.
-     * @param val The new value to be moved and assigned to the command-line parameter.
-     */
-    void set_value(value_type&& val) {
-        val_ = std::move(val);
-    }
-
-    /**
-     * @brief Returns a reference to the parameter value or default value.
-     * 
-     * This function returns a reference to the parameter value if it is assigned, or the default value otherwise.
-     * @return A reference to the parameter value or default value.
-     * @pre The parameter has a value (either assigned or default).
+     * @return Reference to the value of the parameter.
      */
     value_type& value() noexcept {
         assert(has_value());
@@ -897,11 +945,9 @@ public:
     }
 
     /**
-     * @brief Returns a const reference to the parameter value or default value.
-     * 
-     * This function returns a const reference to the parameter value if it is assigned, or the default value otherwise.
-     * @return A const reference to the parameter value or default value.
-     * @pre The parameter has a value (either assigned or default).
+     * @brief Retrieves the value of the parameter (const version).
+     *
+     * @return Const reference to the value of the parameter.
      */
     const value_type& value() const noexcept {
         assert(has_value());
@@ -913,45 +959,41 @@ public:
     }
 
     /**
-     * @brief Removes the current value of the command-line parameter.
-     *
-     * This function resets the stored value of the command-line parameter, making it empty.
-     * After calling this function, the parameter does not have a valid value.
+     * @brief Removes the value of the parameter.
+     * 
+     * if it has no value before, this function does nothing.
      */
     void remove_value() noexcept {
         val_.reset();
     }
 
     /**
-     * @brief Checks if the parameter contains the specified single-character key.
-     * 
-     * This function checks if the parameter contains the specified single-character key.
-     * @param key_char The single-character key to check for.
-     * @return true if the key is found, false otherwise.
+     * @brief Checks if the parameter contains a specific short key character.
+     *
+     * @param short_key Short key character to check for.
+     * @return `true` if the parameter contains the short key character, `false` otherwise.
      */
-    bool contains(char_type key_char) const {
-        return std::ranges::find(key_chars_, key_char) != std::end(key_chars_);
+    bool contains(char_type short_key) const {
+        return std::ranges::find(short_keys_, short_key) != std::end(short_keys_);
     }
     
     /**
-     * @brief Checks if the parameter contains the specified string key.
-     * 
-     * This function checks if the parameter contains the specified string key.
-     * @param key_string The string key to check for.
-     * @return true if the key is found, false otherwise.
+     * @brief Checks if the parameter contains a specific long key string.
+     *
+     * @param long_key Long key string to check for.
+     * @return `true` if the parameter contains the long key string, `false` otherwise.
      */
-    bool contains(string_view_type key_string) const {
-        return std::ranges::find(key_strs_, key_string) != std::end(key_strs_);
+    bool contains(string_view_type long_key) const {
+        return std::ranges::find(long_keys_, long_key) != std::end(long_keys_);
     }
     
     /**
-     * @brief Checks if the parameter contains the specified key range.
-     * 
-     * This function checks if the parameter contains the specified key range defined by iterators `first` and `last`.
-     * @tparam It An input iterator type.
-     * @param first The beginning of the key range.
-     * @param last The end of the key range.
-     * @return true if the key range is found, false otherwise.
+     * @brief Checks if the parameter contains a long key specified by a range of characters.
+     *
+     * @tparam It Iterator type representing the range of characters.
+     * @param first Iterator pointing to the start of the character range.
+     * @param last Iterator pointing to the end of the character range.
+     * @return `true` if the parameter contains the specified key, `false` otherwise.
      */
     template <std::input_iterator It>
         requires requires(It a, It b) {
@@ -959,17 +1001,16 @@ public:
         }
     bool contains(It first, It last) const {
         return std::ranges::find(
-                key_strs_, string_view_type(first, last)
-            ) != std::end(key_strs_);
+                long_keys_, string_view_type(first, last)
+            ) != std::end(long_keys_);
     }
     
     /**
-     * @brief Checks if the parameter contains the specified key range from a range object.
-     * 
-     * This function checks if the parameter contains the specified key range obtained from the input range object `r`.
-     * @tparam R A range type.
-     * @param r The input range object.
-     * @return true if the key range is found, false otherwise.
+     * @brief Checks if the parameter contains a long key specified by a range.
+     *
+     * @tparam R Range representing the key.
+     * @param r Range to check for.
+     * @return `true` if the parameter contains the specified key, `false` otherwise.
      */
     template <std::ranges::range R>
        requires std::convertible_to<R, string_view_type>
@@ -980,41 +1021,37 @@ public:
     }
 
     /**
-     * @brief Returns a const reference to the list of single-character keys associated with the parameter.
-     * 
-     * This function returns a const reference to the list of single-character keys associated with the parameter.
-     * @return A const reference to the list of single-character keys.
+     * @brief Retrieves the short keys associated with the parameter.
+     *
+     * @return Reference to the container containing short keys.
      */
-    const key_container<char_type>& key_chars() const noexcept {
-        return key_chars_;
+    const key_container<char_type>& short_keys() const noexcept {
+        return short_keys_;
     }
 
     /**
-     * @brief Returns a const reference to the list of string keys associated with the parameter.
-     * 
-     * This function returns a const reference to the list of string keys associated with the parameter.
-     * @return A const reference to the list of string keys.
+     * @brief Retrieves the long keys associated with the parameter.
+     *
+     * @return Reference to the container containing long keys.
      */
-    const key_container<string_view_type>& key_strs() const noexcept {
-        return key_strs_;
+    const key_container<string_view_type>& long_keys() const noexcept {
+        return long_keys_;
     }
 
     /**
      * @brief Checks if the parameter has a brief description message.
-     * 
-     * This function checks if the parameter has a brief description message.
-     * @return true if the parameter has a brief description, false otherwise.
+     *
+     * @return `true` if the parameter has a brief description, `false` otherwise.
      */
     bool has_brief_message() const noexcept {
         return brief_.has_value();
     }
 
     /**
-     * @brief Returns the brief description message associated with the parameter.
-     * 
-     * This function returns the brief description message associated with the parameter.
-     * @return The brief description message.
-     * @pre The parameter has a brief description.
+     * @brief Retrieves the brief description of the parameter.
+     *
+     * @pre has_brief_message() should be true.
+     * @return Const reference to the brief description of the parameter.
      */
     const string_view_type brief_message() const noexcept {
         assert(has_brief_message());
@@ -1022,13 +1059,11 @@ public:
     }
 
     /**
-     * @brief Assigns a value to the parameter, marking the parameter as failed if the assignment is not possible.
-     * 
-     * Attempts to assign the provided value to the parameter. If the assignment is not possible due to type incompatibility,
-     * the parameter is marked as failed, and the function returns false.
-     * @tparam InCompatible The type of the value to be assigned.
-     * @param arg The value to be assigned.
-     * @return true if the assignment is successful, false otherwise.
+     * @brief fail assigning incompatible argument. fail bit is set.
+     *
+     * @tparam InCompatible Type of the input value.
+     * @param arg Input value to be assigned.
+     * @return `false` (type mismatch).
      */
     template <class InCompatible>
         requires detail::not_convertible_to< 
@@ -1041,12 +1076,10 @@ public:
     }
 
     /**
-     * @brief Assigns a const reference value to the parameter if no previous failures occurred.
-     * 
-     * Attempts to assign the provided const reference value to the parameter. If there were no previous failures, 
-     * the assignment is successful, and the function returns true. Otherwise, the function returns false.
-     * @param val The const reference value to be assigned.
-     * @return true if the assignment is successful, false otherwise.
+     * @brief Assigns a value to the parameter (const lvalue reference version).
+     *
+     * @param val Input value to be assigned (const lvalue reference).
+     * @return `false` if fail bit is already set, otherwise `true`
      */
     bool assign(const value_type& val) {
         if (fail()) {
@@ -1057,12 +1090,10 @@ public:
     }
 
     /**
-     * @brief Assigns an rvalue reference value to the parameter if no previous failures occurred.
-     * 
-     * Attempts to assign the provided rvalue reference value to the parameter. If there were no previous failures, 
-     * the assignment is successful, and the function returns true. Otherwise, the function returns false.
-     * @param val The rvalue reference value to be assigned.
-     * @return true if the assignment is successful, false otherwise.
+     * @brief Assigns a value to the parameter (rvalue reference version).
+     *
+     * @param val Input value to be assigned (rvalue reference).
+     * @return `false` if fail bit is already set, otherwise `true`
      */
     bool assign(value_type&& val) {
         if (fail()) {
@@ -1073,30 +1104,30 @@ public:
     }
 
     /**
-     * @brief Checks if the parameter has encountered a failure during assignment.
-     * 
-     * This function checks if the parameter has encountered a failure during assignment.
-     * @return true if a failure occurred, false otherwise.
+     * @brief Checks if a type mismatch occurred during assignment.
+     *
+     * @return `true` if a type mismatch occurred, `false` otherwise.
      */
     bool fail() const noexcept {
         return fail_;
     }
 
     /**
-     * @brief Resets the failure status of the parameter.
-     * 
-     * This function resets the failure status of the parameter, allowing subsequent assignments to be attempted.
+     * @brief Clears the fail flag.
      */
     void clear() noexcept {
         fail_ = false;
     }
 
     /**
-     * @brief Outputs the parameter value or default value to the output stream.
-     * 
-     * @param os The output stream.
-     * @param p The basic_cl_param object.
-     * @return The output stream.
+     * @brief Output stream operator overload for the parameter.
+     *
+     * Outputs the parameter's value or default value if set.
+     * if the parameter has neither value nor default value, this function does nothing.
+     *
+     * @param os Output stream.
+     * @param p Reference to the basic_cl_param object.
+     * @return Reference to the output stream after the operation.
      */
     friend ostream_type& operator<<(
         ostream_type& os, const basic_cl_param& p
@@ -1115,11 +1146,14 @@ public:
     }
 
     /**
-     * @brief Reads a parameter value from the input stream.
-     * 
-     * @param is The input stream.
-     * @param p The basic_cl_param object.
-     * @return The input stream.
+     * @brief Input stream operator overload for the parameter.
+     *
+     * Reads and tries assigning a value to the parameter from the input stream.
+     * Sets the fail flag if the value is incompatible.
+     *
+     * @param is Input stream.
+     * @param p Reference to the basic_cl_param object.
+     * @return Reference to the input stream after the operation.
      */
     friend istream_type& operator>>(
         istream_type& is, basic_cl_param& p
@@ -1137,42 +1171,36 @@ public:
     }
 
     /**
-     * @brief Sets the default value for the command-line parameter.
+     * @brief Sets the default value of the parameter.
      *
-     * This function sets the default value for the command-line parameter to the specified value.
-     *
-     * @param val The default value to be set for the parameter.
+     * @param val Default value to be set for the parameter.
      */
     void set_defval(const value_type& val) {
         defval_ = val;
     }
 
     /**
-     * @brief Sets the default value for the command-line parameter using move semantics.
+     * @brief Sets the default value of the parameter (move version).
      *
-     * This function sets the default value for the command-line parameter by moving the specified value.
-     *
-     * @param val The default value to be set for the parameter (will be moved).
+     * @param val Default value to be set for the parameter (rvalue reference).
      */
     void set_defval(value_type&& val) {
         defval_ = std::move(val);
     }
 
     /**
-     * @brief Checks if the command-line parameter has a default value set.
+     * @brief Checks if the parameter has a default value.
      *
-     * @return true if a default value is set, false otherwise.
+     * @return `true` if the parameter has a default value, `false` otherwise.
      */
     bool has_defval() const noexcept {
         return defval_.has_value();
     }
 
     /**
-     * @brief Gets the default value of the command-line parameter.
+     * @brief Retrieves the default value of the parameter.
      *
-     * @pre `has_defval()` should be true.
-     *
-     * @return The default value of the parameter.
+     * @return Const reference to the default value of the parameter.
      */
     const value_type& get_defval() const {
         assert(has_defval());
@@ -1180,18 +1208,15 @@ public:
     }
 
     /**
-     * @brief Removes the default value of the command-line parameter.
-     *
-     * This function resets the stored default value of the command-line parameter, making it empty.
-     * After calling this function, the parameter does not have a default value.
+     * @brief Removes the default value of the parameter.
      */
     void remove_defval() noexcept {
         defval_.reset();
     }
 
 private:
-    key_container<char_type> key_chars_;
-    key_container<string_view_type> key_strs_;
+    key_container<char_type> short_keys_;
+    key_container<string_view_type> long_keys_;
     std::optional<string_view_type> brief_;
     std::optional<value_type> defval_;
     std::optional<value_type> val_;
@@ -1199,12 +1224,60 @@ private:
 };
 
 /**
- * @brief Represents an optional command-line parameter.
+ * @brief Represents an optional command line parameter with specified short keys, long keys, and a brief description.
+ *
+ * This class template represents an optional command line parameter that can be identified by a set of short keys,
+ * long keys, and a brief description. It allows setting a value, default value, and provides functionality
+ * to check for key presence, assign values, and retrieve brief descriptions. Additionally, it provides a default
+ * value adaptor for setting default parameter values.
+ *
+ * Example Usage:
+ * @code
+ * // Define an optional integer parameter with short key 'i' and long key "integer".
+ * auto optionalParam = gclp::optional<int>{'i', "integer", "An optional integer parameter"};
+ *
+ * // Check if the parameter was provided in the command line arguments.
+ * if (optionalParam.contains("i")) {
+ *     // Attempt to assign the parameter value from command line arguments.
+ *     if (optionalParam.assign(argv[2])) {
+ *         // Assignment was successful; retrieve the assigned value.
+ *         int value = optionalParam.value();
+ *         // Use the parameter value...
+ *     } else {
+ *         // Assignment failed; parameter value was not valid.
+ *         // Handle accordingly...
+ *     }
+ * } else {
+ *     // Parameter was not provided in command line arguments.
+ *     // Handle accordingly...
+ * }
+ * @endcode
  * 
- * This class extends basic_cl_param to handle optional command-line parameters with specific key characters, key strings, and a brief description.
- * @tparam ValT The type of the parameter value.
- * @tparam CharT The character type used for keys (default is char).
- * @tparam Traits The character traits type (default is std::char_traits<CharT>).
+ * @code
+ * // Define an optional boolean parameter with short key 'v' and long key "verbose".
+ * auto booleanParam = gclp::optional<bool>{
+ *     'v', "verbose", "An optional verbose flag"
+ * }->defval(false);
+ *
+ * // Check if the boolean parameter was provided in the command line arguments.
+ * if (booleanParam.contains("v")) {
+ *     // Assign the boolean parameter's value (true) since its presence indicates true.
+ *     booleanParam.assign(true);
+ *     if ( booleanParam.fail() ) {
+ *         // Handle assignment failure...
+ *     }
+ *     else {
+ *     // Use the parameter value...
+ *     }
+ * } else {
+ *     // Parameter was not provided in command line arguments; it defaults to false.
+ *     // Use the parameter value...
+ * }
+ * @endcode
+ *
+ * @tparam ValT Type of the parameter value.
+ * @tparam CharT Character type for keys (default is char).
+ * @tparam Traits Character traits type for keys (default is std::char_traits<CharT>).
  */
 template <class ValT, gclp_char CharT = char,
     class Traits = std::char_traits<CharT>
@@ -1226,17 +1299,17 @@ private:
 
 public:
     /**
-     * @brief Constructs a basic_optional object with specified key characters, key strings, and brief description.
+     * @brief Constructs a basic_optional object with specified short keys, long keys, and brief description.
      * 
-     * Initializes a basic_optional object with the specified key characters, key strings, and brief description.
-     * @param key_chars An std::initializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::initializer_list of string keys associated with the parameter.
+     * Initializes a basic_optional object with the specified short keys, long keys, and brief description.
+     * @param short_keys An std::initializer_list of short keys associated with the parameter.
+     * @param long_keys An std::initializer_list of long keys associated with the parameter.
      * @param brief A brief description of the parameter.
      */
-    basic_optional(std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
+    basic_optional(std::initializer_list<char_type> short_keys,
+        std::initializer_list<string_view_type> long_keys,
         string_view_type brief
-    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief),
+    ) : basic_cl_param<ValT, CharT, Traits>(short_keys, long_keys, brief),
         defval_adaptor_(this) {}
 
     /**
@@ -1263,12 +1336,34 @@ private:
 };
 
 /**
- * @brief Represents a required command-line parameter.
- * 
- * This class extends basic_cl_param to handle required command-line parameters with specific key characters, key strings, and a brief description.
- * @tparam ValT The type of the parameter value.
- * @tparam CharT The character type used for keys (default is char).
- * @tparam Traits The character traits type (default is std::char_traits<CharT>).
+ * @brief Represents a required command line parameter with specified short keys, long keys, and a brief description.
+ *
+ * This class template represents a required command line parameter that must be identified by a set of short keys,
+ * long keys, and a brief description. It allows setting a value, default value, and provides functionality
+ * to check for key presence, assign values, and retrieve brief descriptions. Additionally, it provides a default
+ * value adaptor for setting default parameter values.
+ *
+ * Example Usage:
+ * @code
+ * // Define a required path parameter with short key 'f' and long key "file".
+ * auto requiredParam = gclp::required<std::filesystem::path>{
+ *     'f', "file", "A required file parameter"
+ * };
+ *
+ * // Attempt to assign the parameter value from command line arguments.
+ * if (requiredParam.assign(argv[2])) {
+ *     // Assignment was successful; retrieve the assigned value.
+ *     std::filesystem::path filename = requiredParam.value();
+ *     // Use the parameter value...
+ * } else {
+ *     // Assignment failed; parameter value was not valid.
+ *     // Handle accordingly...
+ * }
+ * @endcode
+ *
+ * @tparam ValT Type of the parameter value.
+ * @tparam CharT Character type for keys (default is char).
+ * @tparam Traits Character traits type for keys (default is std::char_traits<CharT>).
  */
 template <class ValT, gclp_char CharT = char,
     class Traits = std::char_traits<CharT>
@@ -1290,17 +1385,17 @@ private:
 
 public:
     /**
-     * @brief Constructs a basic_required object with specified key characters, key strings, and brief description.
+     * @brief Constructs a basic_required object with specified short keys, long keys, and brief description.
      * 
-     * Initializes a basic_required object with the specified key characters, key strings, and brief description.
-     * @param key_chars An std::initializer_list of single-character keys associated with the parameter.
-     * @param key_strs An std::initializer_list of string keys associated with the parameter.
+     * Initializes a basic_required object with the specified short keys, long keys, and brief description.
+     * @param short_keys An std::initializer_list of short keys associated with the parameter.
+     * @param long_keys An std::initializer_list of long keys associated with the parameter.
      * @param brief A brief description of the parameter.
      */
-    basic_required(std::initializer_list<char_type> key_chars,
-        std::initializer_list<string_view_type> key_strs,
+    basic_required(std::initializer_list<char_type> short_keys,
+        std::initializer_list<string_view_type> long_keys,
         string_view_type brief
-    ) : basic_cl_param<ValT, CharT, Traits>(key_chars, key_strs, brief),
+    ) : basic_cl_param<ValT, CharT, Traits>(short_keys, long_keys, brief),
         defval_adaptor_(this) {}
 
     /**
@@ -1349,7 +1444,7 @@ DEFINE_ENUM_COMPARE_OP_ALL(error_code)
 /**
  * @brief A generic command-line parser template for processing command-line arguments.
  *
- * @tparam CharT The character type used in the command-line arguments (e.g., char or wchar_t).
+ * @tparam CharT The character type used in the command-line arguments (defaulted to char).
  * @tparam Traits The character traits type (defaulted to std::char_traits<CharT>).
  * @tparam Params Parameter types that define the expected command-line arguments.
  * 
@@ -1411,20 +1506,53 @@ public:
 
 private:
 
+/**
+ * @brief Internal container class for managing parsed parameter data.
+ *
+ * The `container` class is responsible for storing and managing the parsed parameter data. It maintains the parameter
+ * tuple (`data_`) containing instances of parameter objects, and a cached result tuple (`cached_values_`) representing
+ * the parsed values of the parameters. The container class provides methods to access and manipulate the parameter data
+ * and ensures efficient caching of parsed values.
+ */
 class container {
 public:
+    /**
+     * @brief Constructs a container with the specified parameter objects.
+     *
+     * Initializes the container with the provided parameter objects. The parameter objects are moved into the container.
+     *
+     * @param params Parameter objects representing the expected command-line arguments.
+     */
     container(Params&& ... params)
         : data_( std::move(params)... ),
         cached_values_() {}
 
+    /**
+     * @brief Retrieves a mutable reference to the parameter tuple.
+     *
+     * @return A mutable reference to the parameter tuple containing parameter objects.
+     */
     param_tuple_type& data() noexcept {
         return data_;
     }
 
+    /**
+     * @brief Retrieves a constant reference to the parameter tuple.
+     *
+     * @return A constant reference to the parameter tuple containing parameter objects.
+     */
     const param_tuple_type& data() const noexcept {
         return data_;
     }
 
+    /**
+     * @brief Retrieves a mutable reference to the cached parsed values.
+     *
+     * If the cached values are not available, this method triggers an update of the cache and returns the mutable
+     * reference to the cached parsed values.
+     *
+     * @return A mutable reference to the parsed values obtained from the parameters.
+     */
     result_tuple_type& values() {
         if (!cached_values_.has_value()) {
             update_cache();
@@ -1432,6 +1560,14 @@ public:
         return cached_values_.value();
     }
 
+    /**
+     * @brief Retrieves a constant reference to the cached parsed values.
+     *
+     * If the cached values are not available, this method triggers an update of the cache and returns the constant
+     * reference to the cached parsed values.
+     *
+     * @return A constant reference to the parsed values obtained from the parameters.
+     */
     const result_tuple_type& values() const {
         if (!cached_values_.has_value()) {
             update_cache();
@@ -1439,6 +1575,12 @@ public:
         return cached_values_.value();
     }
 
+    /**
+     * @brief Clears the parameter data and invalidates the cached values.
+     *
+     * This method clears the parameter objects and resets the cached parsed values. It prepares the container for
+     * fresh parsing and assignment of new command-line arguments.
+     */
     void clear() {
         detail::tuple_for_each(data_,
             [](auto& p) {
@@ -1448,10 +1590,23 @@ public:
         invalidate_cache();
     }
 
+    /**
+     * @brief Invalidates the cached parsed values.
+     *
+     * This method resets the cached parsed values, indicating that the cached values are no longer valid. Subsequent
+     * access to the cached values will trigger an update.
+     */
     void invalidate_cache() {
         cached_values_.reset();
     }
 
+    /**
+     * @brief Updates the cached parsed values from the parameter data.
+     *
+     * This method updates the cached parsed values by invoking the `tuple_conv` function to convert parameter objects
+     * to the corresponding parsed values. It is called internally when accessing the cached values if the cache is not
+     * already available.
+     */
     void update_cache() {
         cached_values_ = result_tuple_type();
         detail::tuple_conv(data_, cached_values_.value(),
@@ -1471,20 +1626,42 @@ public:
     }
 
 private:
-    param_tuple_type data_;
-    mutable std::optional<result_tuple_type> cached_values_;
+    param_tuple_type data_; /**< The tuple storing parameter objects representing command-line arguments. */
+    mutable std::optional<result_tuple_type> cached_values_; /**< Optional container for cached parsed values. */
 };  // class basic_cl_param::container
 
+/**
+ * @brief Interpreter class for processing command-line arguments.
+ * The `interpreter` class is responsible for interpreting and tokenizing the command-line arguments. It breaks down the
+ * command line into segmented tokens, where each token comprises an initial word (identifier or key) and a collection of
+ * following words (arguments) associated with it.
+ */
 class interpreter {
 public:
-    using iterator = std::ranges::iterator_t<words_type>;
+    using iterator = std::ranges::iterator_t<words_type>;   /**< Type representing iterator for command-line words. */
+
+    /**
+     * @brief Structure representing a tokenized segment of the command-line arguments.
+     *
+     * The `token` struct represents a segmented portion of the command-line arguments. It consists of an initial word
+     * (identifier or key) and a collection of following words (arguments) associated with it.
+     */
     struct token {
-        string_view_type leading;
-        words_type followings;
+        string_view_type leading; /**< The initial word (identifier or key) extracted from the command line. */
+        words_type followings; /**< Collection of following words (arguments) associated with the initial word. */
     };
 
     interpreter() = default;
 
+    /**
+     * @brief Constructor for the interpreter with argc and argv input.
+     *
+     * Initializes the interpreter by flattening the `argc` and `argv` into a single command line and splitting it into
+     * words for processing.
+     *
+     * @param argc Number of command-line arguments.
+     * @param argv Array of strings representing the command-line arguments.
+     */
     template <class IntType, class StrArrType>
     interpreter( IntType argc, const StrArrType& argv )
         : words_( detail::split_words<string_view_type>(
@@ -1492,10 +1669,25 @@ public:
             )
         ), cur_( std::begin(words_) ) {}
 
+    /**
+     * @brief Constructor for the interpreter with a command line input.
+     *
+     * Initializes the interpreter by splitting the provided `command_line` into words for processing.
+     *
+     * @param command_line Command-line input as a string view.
+     */
     interpreter(string_view_type command_line)
         : words_( detail::split_words(command_line) ),
         cur_( std::begin(words_) ) {}
 
+    /**
+     * @brief Retrieves the next token from the command-line arguments.
+     *
+     * This function retrieves the next token from the command-line arguments, where a token is a segmented portion
+     * comprising an initial word (identifier or key) and a collection of following words (arguments) associated with it.
+     *
+     * @return A `token` struct representing the next segmented portion of the command-line arguments.
+     */
     token get_token() {
         auto ret = token();
         if ( done() ) {
@@ -1512,37 +1704,87 @@ public:
         return ret;
     }
 
+    /**
+     * @brief Resets the interpreter's internal state, allowing parsing from the beginning.
+     */
     void reset() {
         cur_ = std::begin(words_);
     }
 
+    /**
+     * @brief Resets the interpreter's internal state with new command-line arguments.
+     *
+     * Resets the interpreter's internal state with new command-line arguments provided as `argc` and `argv`.
+     *
+     * @param argc Number of command-line arguments.
+     * @param argv Array of strings representing the command-line arguments.
+     */
     template <class IntType, class StrArrType>
     void reset(IntType argc, const StrArrType& argv) {
         reset( flatten_argc_argv(argc, argv) );
     }
 
+    /**
+     * @brief Resets the interpreter's internal state with a new command line string.
+     *
+     * Resets the interpreter's internal state with a new command line string provided as `cmd`.
+     *
+     * @param cmd The new input command line string.
+     */
     void reset(string_view_type cmd) {
         words_ = detail::split_words(cmd);
         cur_ = std::begin(words_);
     }
 
+    /**
+     * @brief Checks if parsing of command-line arguments is complete.
+     *
+     * @return `true` if all command-line arguments have been parsed, `false` otherwise.
+     */
     bool done() const noexcept {
         return cur_ == std::end(words_);
     }
 
+    /**
+     * @brief Checks if the interpreter is currently facing a key in the command line.
+     *
+     * @return `true` if a key is encountered, `false` otherwise.
+     */
     bool facing_key() const {
         return detail::is_key(*cur_);
     }
 
+    /**
+     * @brief Returns the number of remaining words in the command-line arguments.
+     *
+     * @return The number of remaining words in the command-line arguments.
+     */
     std::size_t remainder_count() const noexcept {
         return std::distance( cur_, std::end(words_) );
     }
 
+    /**
+     * @brief Removes leading dashes from a word and returns the modified view.
+     *
+     * @param word The input string view from which leading dashes will be removed.
+     * @return The input string view without leading dashes.
+     */
     string_view_type remove_dash(string_view_type word) const {
         return detail::remove_dash(word);
     }
 
 private:
+    /**
+     * @brief Flattens the command-line arguments into a single string.
+     *
+     * Flattens the command-line arguments into a single string, separating words using a delimiter.
+     *
+     * @tparam IntType Type representing the number of command-line arguments.
+     * @tparam StrArrType Type representing the array of strings representing the command-line arguments.
+     * @param argc Number of command-line arguments.
+     * @param argv Array of strings representing the command-line arguments.
+     * @return A string containing all flattened command-line arguments.
+     */
     template <class IntType, class StrArrType>
     static string_type flatten_argc_argv(
         IntType argc, const StrArrType& argv
@@ -1557,6 +1799,13 @@ private:
         return flattend;
     }
 
+    /**
+     * @brief Reads and returns the next word from the command-line arguments.
+     *
+     * Reads and returns the next word from the command-line arguments, advancing the iterator.
+     *
+     * @return The next word from the command-line arguments.
+     */
     string_view_type read() {
         return *cur_++;
     }
@@ -1565,26 +1814,62 @@ private:
     iterator cur_;
 };  // class basic_cl_parser::interpreter
 
-
+/**
+ * @brief A class responsible for verifying the correctness of parsed command-line arguments.
+ *
+ * The `verifier` class ensures that the parsed command-line arguments are valid, considering required keys,
+ * duplicate assignments, correct key formats, and more. It provides methods to check the validity of individual
+ * keys, complex keys, and identifiers. It also tracks the state of switches to prevent duplicate assignments and
+ * verifies whether all required keys are provided.
+ */
 class verifier {
 public:
     using bitset_type = std::bitset<
         std::tuple_size_v<param_tuple_type>
-    >;
+    >;  /**< Type representing a set of switches for parameters. */
 
+    /**
+     * @brief Constructs a `verifier` object with the specified identifier.
+     *
+     * Initializes the `verifier` object with the given command-line identifier, setting switches and flags to default states.
+     *
+     * @param identifier The identifier associated with the command-line arguments.
+     */
     verifier(string_view_type identifier)
         : identifier_(identifier), switches_(0u),
         fail_(false), bad_(false) {}
 
+    /**
+     * @brief Retrieves the identifier associated with the command-line arguments.
+     *
+     * @return The identifier associated with the command-line arguments.
+     */
     string_view_type id() const noexcept {
         return identifier_;
     }
 
+    /**
+     * @brief Checks if a given word matches the command-line identifier.
+     *
+     * This function verifies whether the provided word matches the command-line identifier.
+     *
+     * @param word The word to be checked.
+     * @return `true` if the word matches the identifier, otherwise `false`.
+     */
     bool is_valid_identifier(string_view_type word)
         const noexcept {
         return word == identifier_;
     }
 
+    /**
+     * @brief Checks if a short key has a duplicated assignment among parameters.
+     *
+     * This function verifies if the provided short key has a duplicated assignment among the parameters.
+     *
+     * @param short_key The short key to be checked.
+     * @param params The container of parameters to be verified.
+     * @return `true` if the short key has a duplicated assignment, otherwise `false`.
+     */
     bool is_duplicated_assignment(
         char_type short_key, const container& params
     ) const {
@@ -1597,6 +1882,15 @@ public:
         return is_duplicated_assignment_impl(long_key, params);
     }
 
+    /**
+     * @brief Checks if a complex key has duplicated assignments among parameters.
+     *
+     * This function verifies if the provided complex key has duplicated assignments among the parameters.
+     *
+     * @param keys The complex key to be checked.
+     * @param params The container of parameters to be verified.
+     * @return `true` if the complex key has duplicated assignments, otherwise `false`.
+     */
     bool is_duplicated_complex_assignment(
         string_view_type keys, const container& params
     ) const {
@@ -1616,6 +1910,14 @@ public:
         );
     }
 
+    /**
+     * @brief Checks if a token starts with a valid short key format.
+     *
+     * This function verifies if the leading token of a command-line argument starts with a valid short key format.
+     *
+     * @param token The token to be checked.
+     * @return `true` if the token starts with a valid short key, otherwise `false`.
+     */
     bool starts_with_short_key(
         const typename interpreter::token& token
     ) const {
@@ -1624,6 +1926,14 @@ public:
             && !detail::is_complex_key( token.leading );
     }
 
+    /**
+     * @brief Checks if a token starts with a valid long key format.
+     *
+     * This function verifies if the leading token of a command-line argument starts with a valid long key format.
+     *
+     * @param token The token to be checked.
+     * @return `true` if the token starts with a valid long key, otherwise `false`.
+     */
     bool starts_with_long_key(
         const typename interpreter::token& token
     ) const {
@@ -1631,24 +1941,59 @@ public:
             && !detail::is_single_dashed( token.leading );
     }
 
+    /**
+     * @brief Checks if a token starts with a valid complex key format.
+     *
+     * This function verifies if the leading token of a command-line argument starts with a valid complex key format.
+     *
+     * @param token The token to be checked.
+     * @return `true` if the token starts with a valid complex key, otherwise `false`.
+     */
     bool starts_with_complex_key(
         const typename interpreter::token& token
     ) const {
         return detail::is_complex_key( token.leading );
     }
 
+    /**
+     * @brief Checks if a single short key is valid among parameters.
+     *
+     * This function verifies if the provided short key is valid among the parameters.
+     *
+     * @param short_key The short key to be checked.
+     * @param params The container of parameters to be verified.
+     * @return `true` if the short key is valid, otherwise `false`.
+     */
     bool is_valid_single_key(char_type short_key,
         const container& params
     ) const {
         return is_valid_single_key_impl(short_key, params);
     }
 
+    /**
+     * @brief Checks if the given long key is valid and assigned in the provided parameters.
+     *
+     * This function verifies if the specified long key is valid and assigned in the given parameters.
+     *
+     * @param long_key The long key to be checked.
+     * @param params The container of parameters to be verified.
+     * @return `true` if the long key is valid and assigned, `false` otherwise.
+     */
     bool is_valid_single_key(string_view_type long_key,
         const container& params
     ) const {
         return is_valid_single_key_impl(long_key, params);
     }
 
+    /**
+     * @brief Checks if a complex key is valid among parameters.
+     *
+     * This function verifies if the provided complex key is valid among the parameters.
+     *
+     * @param complex_key The complex key to be checked.
+     * @param params The container of parameters to be verified.
+     * @return `true` if the complex key is valid, otherwise `false`.
+     */
     bool is_valid_complex_key(string_view_type complex_key,
         const container& params
     ) const {
@@ -1679,6 +2024,14 @@ public:
         return true;
     }
 
+    /**
+     * @brief Checks if all required keys are provided among parameters.
+     *
+     * This function verifies if all required keys are provided among the parameters.
+     *
+     * @param params The container of parameters to be verified.
+     * @return `true` if all required keys are provided, otherwise `false`.
+     */
     bool satisfies_required(const container& params) const {
         auto required_switches = bitset_type(0u);
         detail::tuple_for_each(params.data(),
@@ -1706,50 +2059,127 @@ public:
             == required_switches;
     }
 
+    /**
+     * @brief Sets a switch for the specified short key among parameters.
+     *
+     * This function sets a switch for the specified short key among the parameters, indicating it has been assigned.
+     *
+     * @param short_key The short key to set the switch for.
+     * @param params The container of parameters to update.
+     */
     void set_assigned(char_type short_key,
         const container& params
     ) {
         set_assigned_impl(short_key, params);
     }
 
+    /**
+     * @brief Marks the specified long key as assigned in the switches.
+     *
+     * This function marks the specified long key as assigned in the switches, indicating that the key has been used in the command line.
+     *
+     * @param long_key The long key to be marked as assigned.
+     * @param params The container of parameters where the assignment occurs.
+     */
     void set_assigned(string_view_type long_key,
         const container& params
     ) {
         set_assigned_impl(long_key, params);
     }
 
+    /**
+     * @brief Checks if a switch is set for the specified short key among parameters.
+     *
+     * This function checks if a switch is set for the specified short key among the parameters, indicating it has been assigned.
+     *
+     * @param short_key The short key to check the switch for.
+     * @param params The container of parameters to check.
+     * @return `true` if the switch is set, indicating the key is assigned, otherwise `false`.
+     */
     bool assigned(char_type short_key,
         const container& params
     ) {
         return assigned_impl(short_key, params);
     }
 
+    /**
+     * @brief Checks if the specified long key is assigned in the switches.
+     *
+     * This function checks if the specified long key is assigned in the switches, indicating that the key has been used in the command line.
+     *
+     * @param long_key The long key to be checked for assignment.
+     * @param params The container of parameters where the assignment occurs.
+     * @return `true` if the long key is assigned, `false` otherwise.
+     */
     bool assigned(string_view_type long_key,
         const container& params
     ) {
         return assigned_impl(long_key, params);
     }
 
+    /**
+     * @brief Marks the parsing process as a failure due to assignment of incompatible type.
+     *
+     * This function marks the parsing process as a failure due to assignment of incompatible types,
+     * indicating that the provided command-line arguments have type mismatches with the associated parameters.
+     *
+     * @param fail If set to `true`, marks the parsing process as a failure due to type incompatibility, otherwise resets the fail status.
+     */
     void mark_fail( bool fail = true ) {
         fail_ = fail;
     }
 
+    /**
+     * @brief Marks the parsing process as bad input due to argument lack or surplus.
+     *
+     * This function marks the parsing process as bad input due to arguments lacking or having surpluses,
+     * indicating that the provided command-line arguments do not match the expected number of arguments for parameters.
+     *
+     * @param bad If set to `true`, marks the parsing process as bad input due to argument lack or surplus, otherwise resets the bad input status.
+     */
     void mark_bad( bool bad = true ) {
         bad_ = bad;
     }
 
+    /**
+     * @brief Checks if the parsing process is in a good state.
+     *
+     * This function checks if the parsing process is in a good state, meaning neither bad bit nor fail bit is set.
+     *
+     * @return `true` if the parsing process is in a good state, otherwise `false`.
+     */
     bool good() const noexcept {
         return !(bad_ || fail_);
     }
 
+    /**
+     * @brief Checks if the parsing failed due to arguments lacking or surplus.
+     *
+     * This function checks if the parsing failed due to the lack or surplus of arguments
+     * (i.e., incorrect number of arguments provided for the corresponding keys).
+     *
+     * @return `true` if parsing failed due to arguments lack/surplus, `false` otherwise.
+     */
     bool bad() const noexcept {
         return bad_;
     }
 
+    /**
+     * @brief Checks if the parsing process failed.
+     *
+     * This function checks if the parsing process failed, meaning the provided command-line arguments are not valid.
+     *
+     * @return `true` if the parsing process failed, otherwise `false`.
+     */
     bool fail() const noexcept {
         return fail_;
     }
 
+    /**
+     * @brief Clears the internal states, resets switches, and marks the parsing process as successful.
+     *
+     * This function clears the internal states, resets switches for parameters, and marks the parsing process as successful.
+     */
     void clear() {
         switches_.reset();
         mark_fail(false);
@@ -1757,6 +2187,16 @@ public:
     }
 
 private:
+    /**
+     * @brief Checks if the specified key has a duplicated assignment in the provided parameters.
+     *
+     * checks if the specified key has a duplicated assignment in the given parameters. It uses the switches bitset to track assigned parameters to prevent duplication.
+     *
+     * @tparam KeyT The type of the key (char_type or string_view_type).
+     * @param key The key to be checked for duplicated assignment.
+     * @param params The container of parameters to be checked.
+     * @return `true` if the key has a duplicated assignment, `false` otherwise.
+     */
     template <class KeyT>
     bool is_duplicated_assignment_impl(KeyT key,
         const container& params
@@ -1766,6 +2206,17 @@ private:
         );
     }
 
+    /**
+     * @brief Checks if the specified key has a duplicated assignment in the provided parameters with custom switches.
+     *
+     * checks if the specified key has a duplicated assignment in the given parameters using custom switches. It prevents duplication based on the provided switches bitset.
+     *
+     * @tparam KeyT The type of the key (char_type or string_view_type).
+     * @param key The key to be checked for duplicated assignment.
+     * @param params The container of parameters to be checked.
+     * @param switches The custom switches bitset to track assigned parameters.
+     * @return `true` if the key has a duplicated assignment, `false` otherwise.
+     */
     template <class KeyT>
     bool is_duplicated_assignment_impl(KeyT key,
         const container& params, const bitset_type& switches
@@ -1786,6 +2237,16 @@ private:
         return is;
     }
 
+    /**
+     * @brief Checks if the specified single key is valid in the provided parameters.
+     *
+     * checks if the specified single key is valid in the given parameters.
+     *
+     * @tparam KeyT The type of the key (char_type or string_view_type).
+     * @param key The single key to be checked for validity.
+     * @param params The container of parameters to be checked.
+     * @return `true` if the single key is valid, `false` otherwise.
+     */
     template <class KeyT>
     bool is_valid_single_key_impl(KeyT key,
         const container& params
@@ -1803,11 +2264,30 @@ private:
         return is;
     }
 
+    /**
+     * @brief Sets the switch corresponding to the specified key in the switches bitset.
+     *
+     * sets the switch corresponding to the specified key in the switches bitset.
+     *
+     * @tparam KeyT The type of the key (char_type or string_view_type).
+     * @param key The key for which the switch needs to be set.
+     * @param params The container of parameters containing the key.
+     */
     template <class KeyT>
     void set_assigned_impl(KeyT key, const container& params) {
         return set_assigned_impl(key, params, this->switches_);
     }
 
+    /**
+     * @brief Sets the switch corresponding to the specified key in the custom switches bitset.
+     *
+     * sets the switch corresponding to the specified key in the custom switches bitset.
+     *
+     * @tparam KeyT The type of the key (char_type or string_view_type).
+     * @param key The key for which the switch needs to be set.
+     * @param params The container of parameters containing the key.
+     * @param switches The custom switches bitset where the switch will be set.
+     */
     template <class KeyT>
     void set_assigned_impl(KeyT key, const container& params,
         bitset_type& switches
@@ -1823,6 +2303,16 @@ private:
         );
     }
 
+    /**
+     * @brief Checks if the specified key is assigned in the provided parameters.
+     *
+     * checks if the specified key is assigned in the given parameters. It uses the switches bitset to determine assignment status.
+     *
+     * @tparam KeyT The type of the key (char_type or string_view_type).
+     * @param key The key to be checked for assignment.
+     * @param params The container of parameters to be checked.
+     * @return `true` if the key is assigned, `false` otherwise.
+     */
     template <class KeyT>
     bool assigned_impl(KeyT key,
         const container& params
@@ -1848,11 +2338,33 @@ private:
     bool bad_;
 };  // class basic_cl_parser::verifier
 
+/**
+ * @brief The `assigner` class handles the assignment of command-line arguments to corresponding parameters.
+ * 
+ * The `assigner` class is responsible for processing complex keys, short keys, and long keys along with their associated arguments.
+ * It assigns values to parameters based on the provided keys and arguments. If an assignment fails due to type incompatibility
+ * or lack/surplus of arguments, the `assigner` marks the associated verifier's fail or bad flag, indicating the cause of the failure.
+ * Unassigned arguments should be retrieved using the `get_unassigned()` function, or cleaned using `clear()` after a failure.
+ */
 class assigner {
 public:
+    /**
+     * @brief Constructs an `assigner` object with the specified container of parameters.
+     * 
+     * @param params The container of parameters to which the command-line arguments will be assigned.
+     */
     assigner(container& params)
         : params_(params), stream_() {}
 
+    /**
+     * @brief Assigns values based on a complex key to the associated parameters.
+     * 
+     * This function processes a complex key, assigns values to the corresponding parameters,
+     * and updates the verifier's fail and bad flags accordingly.
+     * 
+     * @param complex_key The complex key to be processed (e.g., "-abc").
+     * @param veri The verifier object associated with the assignment operation.
+     */
     void assign_complex(
         string_view_type complex_key, verifier& veri
     ) {
@@ -1893,6 +2405,16 @@ public:
         }
     }
 
+    /**
+     * @brief Assigns a value based on a short key and arguments to the associated parameters.
+     * 
+     * This function processes a short key and its associated arguments, assigns the value to the
+     * corresponding parameter, and updates the verifier's fail and bad flags accordingly.
+     * 
+     * @param short_key The short key for which the assignment is made.
+     * @param args The arguments associated with the short key.
+     * @param veri The verifier object associated with the assignment operation.
+     */
     void assign_single(char_type short_key,
         const words_type& args, verifier& veri
     ) {
@@ -1910,6 +2432,16 @@ public:
         }
     }
 
+    /**
+     * @brief Assigns a value based on a long key and arguments to the associated parameters.
+     * 
+     * This function processes a long key and its associated arguments, assigns the value to the
+     * corresponding parameter, and updates the verifier's fail and bad flags accordingly.
+     * 
+     * @param long_key The long key for which the assignment is made.
+     * @param args The arguments associated with the long key.
+     * @param veri The verifier object associated with the assignment operation.
+     */
     void assign_single(string_view_type long_key,
         const words_type& args, verifier& veri
     ) {
@@ -1927,12 +2459,24 @@ public:
         }
     }
 
+    /**
+     * @brief Checks if there are unassigned arguments in the internal stream.
+     * 
+     * @return `true` if there are unassigned arguments; `false` otherwise.
+     */
     bool has_unassigned() const {
         // if any character rather than eof remain in stream,
         // stream buffer size is greater than 1. (the one stands for eof.)
         return stream_.rdbuf()->in_avail() > 1ull;
     }
 
+    /**
+     * @brief Retrieves unassigned arguments from the internal stream.
+     * 
+     * This function retrieves unassigned arguments from the internal stream and clears the stream.
+     * 
+     * @return Unassigned arguments as a string.
+     */
     string_type get_unassigned() {
         auto args = string_type();
 
@@ -1957,6 +2501,16 @@ public:
     }
 
 private:
+    /**
+     * @brief Assigns values to parameters based on the specified index and arguments.
+     * 
+     * This function assigns values to parameters based on the specified index and arguments.
+     * It updates the verifier's fail and bad flags accordingly.
+     * 
+     * @param idx The index of the parameter to which the assignment is made.
+     * @param args The arguments associated with the parameter.
+     * @param veri The verifier object associated with the assignment operation.
+     */
     void assign_by_idx(index_type idx,
         const words_type& args, verifier& veri
     ) {
@@ -2009,10 +2563,22 @@ private:
         );
     }
 
+    /**
+     * @brief Retrieves the index of the parameter associated with the specified short key.
+     * 
+     * @param short_key The short key for which the index needs to be retrieved.
+     * @return The index of the parameter associated with the short key.
+     */
     index_type getidx(char_type short_key) const {
         return getidx_impl(short_key);
     }
 
+    /**
+     * @brief Retrieves the index of the parameter associated with the specified long key.
+     * 
+     * @param long_key The long key for which the index needs to be retrieved.
+     * @return The index of the parameter associated with the long key.
+     */
     index_type getidx(string_view_type long_key) const {
         return getidx_impl(long_key);
     }
@@ -2035,6 +2601,14 @@ private:
         return ret;
     }
 
+    /**
+     * @brief Writes arguments to the internal stream for processing.
+     * 
+     * This function writes arguments to the internal stream for processing.
+     * 
+     * @param args The arguments to be written to the stream.
+     * @return A reference to the internal input stream after writing the arguments.
+     */
     stream_type& stream_args(const words_type& args) {
         std::ranges::for_each(args, [this](const auto& arg) {
             stream_ << arg << detail::stream_delim<char_type>();
@@ -2043,6 +2617,11 @@ private:
         return stream_;
     }
 
+    /**
+     * @brief Clears the internal input stream.
+     * 
+     * This function clears the internal input stream, discarding any remaining characters.
+     */
     void clear() {
         stream_.clear();
         if (stream_.rdbuf()->in_avail() > 1ull) {
@@ -2052,21 +2631,37 @@ private:
         }
     }
 
-    container& params_;
-    stream_type stream_;
+    container& params_; /**< Reference to the container of parameters. */
+    stream_type stream_; /**< Internal input stream used for processing arguments. */
 };  // class basic_cl_parser::assigner
 
+/**
+ * @brief The `logger` class provides error logging functionality for the command-line parser.
+ * 
+ * The `logger` class is responsible for logging various error messages related to command-line parsing.
+ * It includes functions to log specific error scenarios, such as incompatible arguments, missing keys,
+ * unparsed arguments, and duplicated assignments. The error messages are streamed to an internal error
+ * stream, and the error code associated with the first encountered error is set and locked.
+ * The difference between behavior of error code and error source arises from the fact that
+ * both tracking the exact error source(the first error encountered) and providing all information of
+ * other possible error sources are important.
+ * 
+ * After the error handled, the internal state of `logger` object should be cleared
+ * using `clear()` after processing the error.
+ */
 class logger {
 public:
+    /**
+     * @brief Constructs a logger object associated with the specified parameter container.
+     * 
+     * @param params The parameter container used for error reporting and validation.
+     */
     logger(const container& params)
         : err_stream_(), params_(params),
         err_code_() {}
 
     /**
-     * @brief Logs an error when the command-line identifier is not given.
-     *
-     * This function sets the error code to 'identifier_not_given' and constructs an error message indicating that the
-     * command-line identifier is missing.
+     * @brief Logs an error when the identifier is not given in the command-line input.
      */
     void log_error_identifier_not_given() {
         lock_error(error_code::identifier_not_given);
@@ -2075,6 +2670,12 @@ public:
         );
     }
 
+    /**
+     * @brief Logs an error when incompatible arguments are provided for a specific key.
+     * 
+     * @param key The key for which incompatible arguments are provided.
+     * @param args_string The string representation of the incompatible arguments.
+     */
     template <class KeyT>
     void log_error_incompatible_arguments(
         KeyT key, string_view_type args_string
@@ -2091,6 +2692,12 @@ public:
         );
     }
 
+    /**
+     * @brief Logs an error when an invalid identifier is specified.
+     * 
+     * @param received_identifier The received invalid identifier.
+     * @param correct_identifier The correct expected identifier.
+     */
     void log_error_invalid_identifier(
         string_view_type received_identifier,
         string_view_type correct_identifier
@@ -2107,9 +2714,7 @@ public:
     }
 
     /**
-     * @brief Logs an error for a key not given in the command-line arguments.
-     * 
-     * Logs an error message when a key is not given in the command-line arguments.
+     * @brief Logs an error when a key is not given in the command-line input.
      */
     void log_error_key_not_given() {
         lock_error(error_code::key_not_given);
@@ -2119,10 +2724,9 @@ public:
     }
 
     /**
-     * @brief Logs an error for an undefined key received in the command-line arguments.
+     * @brief Logs an error when an undefined key is received in the command-line input.
      * 
-     * Logs an error message when an undefined key is received in the command-line arguments.
-     * @param key The undefined key received in the command-line arguments.
+     * @param key The undefined key received.
      */
     template <class KeyT>
     void log_error_undefined_key(KeyT key) {
@@ -2134,6 +2738,11 @@ public:
         );
     }
 
+    /**
+     * @brief Logs an error when unparsed arguments are detected in the command-line input.
+     * 
+     * @param args_string The string representation of unparsed arguments.
+     */
     void log_error_unparsed_arguments(
         string_view_type args_string
     ) {
@@ -2149,11 +2758,11 @@ public:
     }
 
     /**
-     * @brief Logs an error for complex keys with undefined boolean parameters.
+     * @brief Logs an error when a wrong complex key is received.
      * 
-     * Logs an error message when at least one key in a complex parameter is not defined as a boolean parameter
-     * or at least one key in a complex parameter duplicated.
-     * @param keys The keys containing at least one key which is not defined as a boolean parameter.
+     * If at least one of the keys in complex param received isn't defined as boolean param
+     * or at least one key in a complex param duplicated, it's wrong complex key error.
+     * @param keys The wrong complex key received.
      */
     template <class KeyT>
     void log_error_wrong_complex_key(KeyT keys) {
@@ -2169,9 +2778,7 @@ public:
     }
 
     /**
-     * @brief Logs an error for required keys not given in the command-line arguments.
-     * 
-     * Logs an error message when required keys are not given in the command-line arguments.
+     * @brief Logs an error when required keys are not given in the command-line input.
      */
     void log_error_required_key_not_given() {
         lock_error(error_code::required_key_not_given);
@@ -2203,9 +2810,9 @@ public:
                     >
                 ) {
                     err_stream_ << __LITERAL(char_type, "\t[");
-                    print_keys_to_err(p.key_chars());
+                    print_keys_to_err(p.short_keys());
                     err_stream_ << __LITERAL(char_type, "|");
-                    print_keys_to_err(p.key_strs());
+                    print_keys_to_err(p.long_keys());
                     err_stream_ << __LITERAL(char_type, "]: ")
                         << p.brief_message() << __LITERAL(char_type, "\n");
                 }
@@ -2214,12 +2821,9 @@ public:
     }
 
     /**
-     * @brief Log an error for duplicated assignments.
+     * @brief Logs an error when duplicated assignments are detected for a specific key.
      * 
-     * Logs an error indicating that duplicated assignments were detected while parsing the specified key.
-     * Duplicated assignments occur when more than one key assigns its value to the same parameter.
-     * 
-     * @param key The key for which duplicated assignments were detected.
+     * @param key The key for which duplicated assignments are detected.
      */
     template <class KeyT>
     void log_error_duplicated_assignments(KeyT key) {
@@ -2232,14 +2836,27 @@ public:
         );
     }
 
+    /**
+     * @brief Retrieves the error code associated with the first encountered error.
+     * 
+     * @return The error code, if an error occurred; otherwise, std::nullopt.
+     */
     std::optional<error_code> error() const noexcept {
         return err_code_;
     }
 
+    /**
+     * @brief Retrieves the full error message string containing all encountered errors.
+     * 
+     * @return The full error message string. If no errors have occurred, an empty string is returned.
+     */
     string_view_type error_message() const noexcept {
         return err_stream_.rdbuf()->view();
     }
 
+    /**
+     * @brief Clears the internal state of the logger, including error code and error message stream.
+     */
     void clear() {
         err_code_.reset();
         err_stream_.clear();
@@ -2250,39 +2867,66 @@ public:
         }
     }
 private:
+    /**
+     * @brief Locks the error code if it is not already set.
+     * 
+     * @param ec The error code to be set if it is not already set.
+     */
     void lock_error(error_code ec) {
         if ( !error() ) {
             err_code_ = ec;
         }
     }
 
-    stream_type err_stream_;
-    const container& params_;
-    std::optional<error_code> err_code_;
+    stream_type err_stream_; /**< Internal error message stream for logging error messages. */
+    const container& params_; /**< Reference to the container of parameters used for validation and reporting. */
+    std::optional<error_code> err_code_; /**< Optional error code associated with the first encountered error. */
 };  // class basic_cl_parser::logger
 
 public:
     /**
-     * @brief Constructs a basic_cl_parser object with the provided identifier and parameters.
+     * @brief Constructs a basic_cl_parser object, specifying the expected command-line identifier and parameters to be parsed.
      * 
-     * Initializes a
-    
-* =- basic_cl_parser object with the specified identifier and parameters.
-     * @param identifier The identifier used to recognize the command-line arguments.
-     * @param params The parameters representing the command-line arguments to be parsed.
+     * @param identifier The expected command-line identifier (e.g., program name).
+     * @param params Parameter objects representing the options and arguments to be parsed.
      */
     basic_cl_parser(string_view_type identifier, Params... params)
         : cont_( std::move(params)... ), veri_(identifier),
         assi_(cont_), logg_(cont_) {}
 
+    /**
+     * @brief Gets the error code if any parsing errors occurred.
+     * 
+     * @return An optional error code if errors occurred during parsing, otherwise std::nullopt.
+     */
     std::optional<error_code> error() const noexcept {
         return logg_.error();
     }
 
+    /**
+     * @brief Gets the full error message containing all encountered errors during parsing.
+     * 
+     * @return The full error message string. If no errors have occurred, an empty string is returned.
+     */
     string_view_type error_message() const noexcept {
         return logg_.error_message();
     }
 
+    /**
+     * @brief Parses command-line arguments from an array of strings.
+     * 
+     * @tparam IntType The type of the argument count.
+     * @tparam StrArrType The type of the argument array.
+     * @param argc The number of command-line arguments.
+     * @param argv An array of command-line argument strings.
+     * @return A reference to a tuple containing parsed parameter values.
+     * 
+     * @details This function processes the command-line arguments passed as an array of strings, 
+     * interprets the options and values, and returns a tuple containing the parsed parameter values.
+     * If errors occur during parsing, they are recorded internally and can be retrieved using the error() and error_message() functions.
+     * 
+     * @note The function modifies the internal state of the parser and should not be called again after errors occur unless the internal state is reset.
+     */
     template <class IntType, class StrArrType>
     result_tuple_type& parse(IntType argc, StrArrType argv) {
         // if error is not cleared, return early.
@@ -2293,6 +2937,18 @@ public:
         return parse_impl( interpreter(argc, argv) );
     }
 
+    /**
+     * @brief Parses command-line arguments from a single string.
+     * 
+     * @param command_line The command-line string to parse.
+     * @return A reference to a tuple containing parsed parameter values.
+     * 
+     * @details This function processes the command-line arguments passed as a single string, 
+     * interprets the options and values, and returns a tuple containing the parsed parameter values.
+     * If errors occur during parsing, they are recorded internally and can be retrieved using the error() and error_message() functions.
+     * 
+     * @note The function modifies the internal state of the parser and should not be called again after errors occur unless the internal state is reset.
+     */
     result_tuple_type& parse(string_view_type command_line) {
         // if error is not cleared, return early.
         if ( logg_.error() ) {
@@ -2302,17 +2958,58 @@ public:
         return parse_impl( interpreter(command_line) );
     }
 
+    /**
+     * @brief Gets the parsed parameter values.
+     * 
+     * @return A reference to a tuple containing parsed parameter values.
+     * 
+     * @details This function returns a reference to the tuple containing the parsed parameter values.
+     * The user can access the individual parameters' values from the returned tuple.
+     */
     result_tuple_type& get() {
         return cont_.values();
     }
 
+    /**
+     * @brief Gets the parsed parameter values (const version).
+     * 
+     * @return A const reference to a tuple containing parsed parameter values.
+     * 
+     * @details This function returns a const reference to the tuple containing the parsed parameter values.
+     * The user can access the individual parameters' values from the returned tuple.
+     */
     const result_tuple_type& get() const {
         return cont_.values();
     }
 
+    /**
+     * @brief Initializes the internal state of the parser, clearing any previous parsing results and errors.
+     * 
+     * @details This function resets the internal state of the parser, clearing any previous parsing results and errors.
+     * It prepares the parser for a fresh parsing operation.
+     */
+    void clear() {
+        cont_.clear();
+        veri_.clear();
+        logg_.clear();
+    }
+
 private:
+    /**
+     * @brief Implementation of the parsing process using an interpreter.
+     * 
+     * @param ip An interpreter for tokenizing the command-line.
+     * @return A reference to a tuple containing parsed parameter values.
+     * 
+     * @details This function is an internal implementation used by the public parse functions.
+     * It takes an interpreter object, which tokenizes the command-line and processes the options and arguments.
+     * The function interprets the tokens, validates the parameters, and records any errors encountered during parsing.
+     * If errors occur, they are logged internally and can be retrieved using the error() and error_message() functions.
+     * 
+     * @note The function modifies the internal state of the parser and should not be called directly by users.
+     */
     result_tuple_type& parse_impl(interpreter&& ip) {
-        initialize();
+        clear();
 
         if (ip.done()) {
             logg_.log_error_identifier_not_given();
@@ -2372,6 +3069,19 @@ private:
         return get();
     }
 
+    /**
+     * @brief Parses a single key-value pair from the command-line arguments.
+     * 
+     * @tparam KeyT The type of the key (character or string).
+     * @tparam Args The type of the arguments associated with the key.
+     * @param key The key to be parsed (either short or long key).
+     * @param args The arguments associated with the key.
+     * 
+     * @details This function parses a single key and its associated arguments from the command-line input.
+     * It validates the key's existence and uniqueness, assigns the provided arguments to the corresponding parameter,
+     * and checks for compatibility issues (such as type mismatch). If errors occur during parsing, appropriate error
+     * messages are logged for further reference. The parsing results are stored internally in the parser's state.
+     */
     template <class KeyT, class Args>
     void parse_single_key(KeyT key, Args&& args) {
         if ( !veri_.is_valid_single_key(key, cont_) ) {
@@ -2395,6 +3105,20 @@ private:
         }
     }
 
+    /**
+     * @brief Parses a complex key (combination of multiple keys) from the command-line arguments.
+     * 
+     * @param keys The complex key represented as a string_view_type.
+     * 
+     * @details This function parses a complex key, which is a combination of multiple individual keys, from the command-line input.
+     * It validates the existence and uniqueness of each key within the complex key, assigns the appropriate boolean values to the
+     * corresponding parameters, and ensures that no assignment conflicts occur. If errors are detected, appropriate error messages
+     * are logged. Complex keys do not have associated arguments, so they are tokenized without arguments. Any parsing issues
+     * detected during complex key parsing are flagged as errors. The parser's state is updated accordingly.
+     * 
+     * @note If the verifier's bad bit is set after parsing a complex key, it indicates a programming error since complex keys
+     * should not have associated arguments. An assertion failure occurs in such cases.
+     */
     void parse_complex_key(string_view_type keys) {
         if ( !veri_.is_valid_complex_key(keys, cont_) ) {
             logg_.log_error_wrong_complex_key(keys);
@@ -2413,12 +3137,6 @@ private:
         // complex key is tokenized without arguments.
         // so if bad bit is set, it's pragmma fault.
         assert( !veri_.bad() );
-    }
-
-    void initialize() {
-        cont_.clear();
-        veri_.clear();
-        logg_.clear();
     }
 
     container cont_;
