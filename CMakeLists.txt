@@ -88,6 +88,12 @@ if(DOXYGEN_FOUND)
         ON
     )
 
+    if (DOXYGEN_EXTRACT_ALL)
+        set(DOXYGEN_EXTRACT_ALL_VALUE YES)
+    else()
+        set(DOXYGEN_EXTRACT_ALL_VALUE NO)
+    endif()
+
     if (DOXYGEN_RECURSIVE)
         set(DOXYGEN_RECURSIVE_VALUE YES)
     else()
