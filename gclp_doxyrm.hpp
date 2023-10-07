@@ -407,15 +407,14 @@ std::vector<StringView> split_words(StringView s) {
     return ret;
 }
 
-
 template <class Param>
-class default_value_adaptor {
+class param_ctor_proxy {
 public:
     using parent_type = Param;  ///< Alias for the parent parameter type.
     using value_type = typename parent_type::value_type;    ///< Alias for the value type of the parent parameter.
 
     
-    default_value_adaptor(parent_type* parent)
+    param_ctor_proxy(parent_type* parent)
         : parent_(parent) {}
 
     
@@ -672,7 +671,7 @@ public:
     >;
 
 private:
-    using defval_adaptor_type = detail::default_value_adaptor<
+    using defval_adaptor_type = detail::param_ctor_proxy<
         basic_optional<value_type, char_type, traits_type>
     >;
     friend defval_adaptor_type;
@@ -708,7 +707,7 @@ public:
     >;
 
 private:
-    using defval_adaptor_type = detail::default_value_adaptor<
+    using defval_adaptor_type = detail::param_ctor_proxy<
         basic_required<value_type, char_type, traits_type>
     >;
     friend defval_adaptor_type;
