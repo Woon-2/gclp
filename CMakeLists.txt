@@ -46,6 +46,20 @@ add_library(gclp INTERFACE gclp.hpp)
 
 target_compile_features(gclp INTERFACE cxx_std_20)
 
+find_package(Python COMPONENTS Interpreter)
+
+if(Python_FOUND)
+    set(Doxyrm_PATH "${PROJECT_SOURCE_DIR}/extern/doxyrm" CACHE PATH "Path to doxyrm script")
+
+    message(STATUS "${PROJECT_SOURCE_DIR}/gclp.hpp")
+
+    add_custom_target(doxyrm ALL
+        COMMENT "custom target for generating code copy without doxygen"
+        COMMAND "${Python_EXECUTABLE}" "${Doxyrm_PATH}/doxyrm.py"
+            -i "${PROJECT_SOURCE_DIR}/gclp.hpp"
+            -o "${PROJECT_SOURCE_DIR}/gclp_doxyrm.hpp"
+    )
+endif()
 
 set(Doxygen_ROOT "" CACHE PATH
     "The path to directory where doxygen is installed
