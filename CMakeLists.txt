@@ -42,99 +42,16 @@ project(pgclp
     DESCRIPTION "a lightweight header-only generic command line parser"
 )
 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
 add_library(gclp INTERFACE gclp.hpp)
 
 target_compile_features(gclp INTERFACE cxx_std_20)
 
-find_package(Python COMPONENTS Interpreter)
-
-if(Python_FOUND)
-    set(Doxyrm_PATH "${PROJECT_SOURCE_DIR}/extern/doxyrm" CACHE PATH "Path to doxyrm script")
-
-    message(STATUS "${PROJECT_SOURCE_DIR}/gclp.hpp")
-
-    add_custom_target(doxyrm ALL
-        COMMENT "custom target for generating code copy without doxygen"
-        COMMAND "${Python_EXECUTABLE}" "${Doxyrm_PATH}/doxyrm.py"
-            -i "${PROJECT_SOURCE_DIR}/gclp.hpp"
-            -o "${PROJECT_SOURCE_DIR}/gclp_doxyrm.hpp"
-    )
-endif()
-
-set(Doxygen_ROOT "" CACHE PATH
-    "The path to directory where doxygen is installed
-    used in find_package(Doxygen),
-    This path is used prior to any other paths."
-)
-
-find_package(Doxygen)
-
-if(DOXYGEN_FOUND)
-    set(DOXYGEN_INPUT_DIR "${PROJECT_SOURCE_DIR}" CACHE
-        STRING "the input directory for doxygen")
-    set(DOXYGEN_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/docs" CACHE
-        STRING "the output directory for doxygen"
-    )
-    option(DOXYGEN_RECURSIVE "doxygen recursive option" OFF)
-
-    option(DOXYGEN_EXTRACT_ALL
-        "extract all entities including even enitites not documented.
-        (turn this option on when you need develop-documentation.)"
-        OFF
-    )
-    option(DOXYGEN_EXCLUDE_DETAIL 
-        "ignore clp::detail namespace when documenting with doxygen.
-        (turn this option off when you need develop-documentation.)"
-        ON
-    )
-
-    if (DOXYGEN_EXTRACT_ALL)
-        set(DOXYGEN_EXTRACT_ALL_VALUE YES)
-    else()
-        set(DOXYGEN_EXTRACT_ALL_VALUE NO)
-    endif()
-
-    if (DOXYGEN_RECURSIVE)
-        set(DOXYGEN_RECURSIVE_VALUE YES)
-    else()
-        set(DOXYGEN_RECURSIVE_VALUE NO)
-    endif()
-
-    if (DOXYGEN_EXCLUDE_DETAIL)
-        list(APPEND DOXYGEN_PREDEFINITIONS
-            "DOXYGEN_IGNORE_DETAIL"
-        )
-    endif()
-
-    configure_file(
-            "${DOXYGEN_INPUT_DIR}/Doxyfile.in"
-            "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
-            @ONLY
-    )
-
-    option(BUILD_DOXYGEN
-        "enable if you want to document with doxygen 
-        each time you build the project."
-        OFF
-    )
-
-    if(BUILD_DOXYGEN)
-        set(DOXYGEN_ALL ALL)
-    endif()
-
-    doxygen_add_docs(doxygen
-        "${DOXYGEN_INPUT_DIR}"
-        WORKING_DIRECTORY "${DOXYGEN_INPUT_DIR}"
-        ${DOXYGEN_ALL}
-        COMMENT "custom target for automatic documentation"
-        CONFIG_FILE "${DOXYGEN_OUTPUT_DIR}/Doxyfile"
-    )
-
-    if(BUILD_DOXYGEN)
-        add_dependencies(doxygen gclp)
-    endif()
-endif()
-
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     add_subdirectory(test)
 endif()
+
+include(doxy)
+copy_doxyrm("${PROJECT_SOURCE_DIR}/gclp.hpp" "${PROJECT_SOURCE_DIR}/gclp_doxyrm.hpp")
+add_doxygen("${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}/docs")
