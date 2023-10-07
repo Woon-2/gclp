@@ -27,171 +27,9 @@ THE SOFTWARE.
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <type_traits>
 
 using namespace std::literals;
-
-TEST(RemoveDashTest, RemoveSingleDash) {
-    auto src = "-abcdefg"sv;
-
-    EXPECT_EQ(gclp::detail::remove_dash(src), "abcdefg"sv);
-}
-
-TEST(RemoveDashTest, RemoveDoubleDash) {
-    auto src = "--abcdefg"sv;
-
-    EXPECT_EQ(gclp::detail::remove_dash(src), "abcdefg"sv);
-}
-
-TEST(SplitWordsTest, SplitWords) {
-    auto splitted = gclp::detail::split_words(
-        "TestCLI -a 1 -b 3.14 -c c -d Hello -e World! -f 1.6 -g 1"sv
-    );
-
-    auto expected = decltype(splitted){
-        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
-        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
-        "1.6"sv, "-g"sv, "1"sv
-    };
-
-    EXPECT_EQ(splitted, expected);
-}
-
-TEST(SplitWordsTest, SplitWordsWithQuotes) {
-    auto splitted = gclp::detail::split_words(
-        "TestCLI -a 1 -b 3.14 -c c -d \"Hello\" -e \"World!\" -f 1.6 -g 1"sv
-    );
-
-    auto expected = decltype(splitted){
-        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
-        "c"sv, "-d"sv, "Hello"sv, "-e"sv, "World!"sv, "-f"sv,
-        "1.6"sv, "-g"sv, "1"sv
-    };
-
-    EXPECT_EQ(splitted, expected);
-}
-
-TEST(SplitWordsTest, SplitWordsWithQuotesContainingSpaces) {
-    auto splitted = gclp::detail::split_words(
-        "TestCLI -a 1 -b 3.14 -c c -d \"Hello World!\" -e \"Bye World!\" -f 1.6 -g 1"sv
-    );
-
-    auto expected = decltype(splitted){
-        "TestCLI"sv, "-a"sv, "1"sv, "-b"sv, "3.14"sv, "-c"sv,
-        "c"sv, "-d"sv, "Hello World!"sv, "-e"sv, "Bye World!"sv, "-f"sv,
-        "1.6"sv, "-g"sv, "1"sv
-    };
-
-    EXPECT_EQ(splitted, expected);
-}
-
-TEST(BasicParsingTest, ParseSingleOptional) {
-    auto parser = gclp::parser(
-        "identifier"sv,
-        gclp::optional<int>(
-            {'a'}, {"aa"}, "an optional int"
-        )
-    );
-
-    auto [a] = parser.parse("identifier -a 3"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_EQ(a, 3);
-    auto [aa] = parser.parse("identifier --aa 4"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_EQ(aa, 4);
-}
-
-TEST(BasicParsingTest, ParseSingleRequired) {
-    auto parser = gclp::parser(
-        "identifier"sv,
-        gclp::required<int>(
-            {'a'}, {"aa"}, "a required int"
-        )
-    );
-
-    auto [a] = parser.parse("identifier -a 3"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_EQ(a, 3);
-    auto [aa] = parser.parse("identifier --aa 4"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_EQ(aa, 4);
-}
-
-TEST(BasicParsingTest, ParseSingleBoolean) {
-    auto parser = gclp::parser(
-        "identifier"sv,
-        gclp::optional<bool>(
-            {'a'}, {"aa"}, "an optional boolean"
-        )
-    );
-    auto [a1] = parser.parse("identifier -a 1"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_TRUE(a1) << "parser doesn't recognize 1 as true.\n";
-    auto [a2] = parser.parse("identifier -a true"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_TRUE(a2) << "parser doesn't recognize \'true\' from command-line arguments.\n";
-    auto [a3] = parser.parse("identifier -a"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    EXPECT_TRUE(a3) << "parser doesn't recognize a boolean option with no argument as true.\n";
-}
-
-TEST(BasicParsingTest, ParseComplexBoolean) {
-    auto parser = gclp::parser(
-        "identifier"sv,
-        gclp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
-        gclp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
-        gclp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
-    );
-
-    auto [ra1, rb1, rc1] = parser.parse("identifier -abc"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-
-    EXPECT_TRUE(ra1);
-    EXPECT_TRUE(rb1);
-    EXPECT_TRUE(rc1);
-}
-
-TEST(BasicParsingTest, ParseComplexBooleanWithTwistedOrder) {
-    auto parser = gclp::parser(
-        "identifier"sv,
-        gclp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
-        gclp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
-        gclp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
-    );
-
-    auto [ra1, rb1, rc1] = parser.parse("identifier --bb -ac"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    auto [ra2, rb2, rc2] = parser.parse("identifier -cba"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-    auto [ra3, rb3, rc3] = parser.parse("identifier -c -ba"sv);
-    ASSERT_FALSE(parser.error()) << parser.error_message();
-
-    EXPECT_TRUE(ra1);
-    EXPECT_TRUE(rb1);
-    EXPECT_TRUE(rc1);
-    EXPECT_TRUE(ra2);
-    EXPECT_TRUE(rb2);
-    EXPECT_TRUE(rc2);
-    EXPECT_TRUE(ra3);
-    EXPECT_TRUE(rb3);
-    EXPECT_TRUE(rc3);
-}
-
-TEST(BasicParsingTest, FailWithParsingComplexBooleanContainingDuplication) {
-    auto parser = gclp::parser(
-        "identifier"sv,
-        gclp::optional<bool>( {'a'}, {"aa"}, "an optional boolean" ),
-        gclp::required<bool>( {'b'}, {"bb"}, "a required boolean" ),
-        gclp::optional<bool>( {'c'}, {"cc"}, "an optional boolean" )
-    );
-
-    parser.parse("identifier -abcabc"sv);
-    ASSERT_FALSE(parser.error() && parser.error()
-        != gclp::error_code::duplicated_assignments
-    ) << parser.error_message();
-    EXPECT_TRUE(parser.error() && parser.error()
-        == gclp::error_code::duplicated_assignments
-    ) << "parser doesn't detect duplicated assignments occured within complex boolean params\n";
-}
 
 class ParsingTest : public ::testing::Test {
 protected:
@@ -422,4 +260,51 @@ TEST_F(ParsingTest, FailWithAssignmentDuplicationOfDifferentKeys) {
     EXPECT_TRUE(parser.error() && parser.error()
         == gclp::error_code::duplicated_assignments
     ) << parser.error_message() << "\nparser doesn't detect assignment duplication of different keys.\n";
+}
+
+TEST_F(ParsingTest, AssignDefaultValue) {
+    auto parser = gclp::parser(
+        "identifier"sv,
+        gclp::optional<int>(
+            {'a'}, {"aa"}, "an optional int"
+        )->defval(3),
+        gclp::required<std::string>(
+            {'b'}, {"bb"}, "a required string"
+        )->defval("Hello, World!")
+    );
+
+    auto [ra, rb] = parser.parse("identifier"sv);
+    ASSERT_FALSE(parser.error()) << parser.error_message();
+    EXPECT_EQ(ra, 3);
+    EXPECT_EQ(rb, "Hello, World!");
+}
+
+TEST_F(ParsingTest, ConserveTypeWhenUsingDefaultValueAdaptor) {
+    auto parser = gclp::parser(
+        "identifier"sv,
+        gclp::required<int>(
+            {'a'}, {"aa"}, "an optional int"
+        )->defval(3),
+        gclp::optional<std::string>(
+            {'b'}, {"bb"}, "a required string"
+        )->defval("Hello, World!")
+    );
+
+    auto is_type_conserved = [&parser]() {
+        using none_qualified_t = std::remove_cvref_t<decltype(parser)>;
+        if ( !std::is_same_v<
+            none_qualified_t::param_tuple_type,
+            std::tuple<
+                gclp::required<int>,
+                gclp::optional<std::string>
+            >
+        >) {
+            return ::testing::AssertionFailure();
+        }
+        else {
+            return ::testing::AssertionSuccess();
+        }
+    };
+
+    EXPECT_TRUE(is_type_conserved());
 }

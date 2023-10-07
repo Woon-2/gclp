@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['undefined_5fkey_0',['undefined_key',['../namespacegclp.html#a872562150e0252846e8071f1f183b56aa81c7d121918d0cdcac03f5aa36b2bbf9',1,'gclp']]],
-  ['unparsed_5fargument_1',['unparsed_argument',['../namespacegclp.html#a872562150e0252846e8071f1f183b56aa8155ca09ebef7521b3167dd6389c5b07',1,'gclp']]]
+  ['token_0',['token',['../structgclp_1_1basic__cl__parser_1_1interpreter_1_1token.html',1,'gclp::basic_cl_parser::interpreter']]],
+  ['traits_5ftype_1',['traits_type',['../classgclp_1_1basic__cl__parser.html#abe4d4d186a58295ec03cba184e36825d',1,'gclp::basic_cl_parser']]]
 ];
