@@ -1,3 +1,6 @@
+#ifndef __GCLP
+#define __GCLP
+
 #include <string>
 #include <string_view>
 #include <optional>
@@ -1851,3 +1854,5 @@ template <class ... Params>
 using wparser = basic_cl_parser<wchar_t, std::char_traits<wchar_t>, Params...>;
 
 }   // namespace gclp
+
+#endif  // __GCLP
