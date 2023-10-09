@@ -745,60 +745,50 @@ StringView remove_dash(StringView s) noexcept {
  * // Resulting words: {"word1", "quoted word2", "word3"}
  * @endcode
  */
-template <class StringView>
-std::vector<StringView> split_words(StringView s) {
+template <class StringView, class String
+    = std::basic_string<
+        typename StringView::value_type,
+        typename StringView::traits_type
+    >
+>
+std::vector<StringView> split_words(StringView s,
+    const StringView delims = String{
+        stream_delim< typename StringView::value_type >()
+    },
+    const StringView quotes = String{
+        single_quote<typename StringView::value_type>(),
+        double_quote<typename StringView::value_type>()
+    }
+) {
     using char_type = typename StringView::value_type;
 
     auto ret = std::vector<StringView>{};
-
-    auto is_double_quoted = false;
-    auto is_single_quoted = false;
-    auto has_escaped = false;
-    auto has_valid_char = false;
 
     auto it_first = std::begin(s);
     auto it_last = std::end(s);
     auto it_out = std::back_inserter(ret);
 
-    auto pred = std::equal_to<char_type>();
-    auto delim = stream_delim<char_type>();
-    auto is_delim = [&delim](auto ch) {
-            return ch == delim;
+    auto cur_delims = delims;
+
+    auto is_delim = [&cur_delims](auto args) {
+            return cur_delims.find_first_of(args) != StringView::npos;
     };
-    auto new_delim = [](auto ch) {
-        if ( ch == single_quote<char_type>() ) {
-            return single_quote<char_type>();
-        }
-        else if ( ch == double_quote<char_type>() ) {
-            return double_quote<char_type>();
+    auto new_delim = [delims, quotes](auto ch)
+        -> StringView {
+        if ( quotes.find_first_of(ch) != StringView::npos ) {
+            return String{ ch };
         }
         else {
-            return stream_delim<char_type>();
+            return delims;
         }
     };
 
-
     for (; it_first != it_last; ++it_first) {
-        // jump escape sequence
-        if (has_escaped) {
-            has_escaped = false;
-            continue;
-        }
-        
-        // check escape sequence
-        if (
-            has_escaped = pred(
-                *it_first, char_escape<char_type>()
-            )
-        ) {
-            continue;
-        }
-        
         it_first = std::ranges::find_if_not(it_first, it_last, is_delim);
         if (it_first == it_last) {
             break;
         }
-        delim = new_delim(*it_first);
+        cur_delims = new_delim(*it_first);
         
         it_first = std::ranges::find_if_not(it_first, it_last, is_delim);
         if (it_first == it_last) {
@@ -812,7 +802,7 @@ std::vector<StringView> split_words(StringView s) {
         if (it_split_last == it_last) {
             break;
         }
-        delim = new_delim(*it_first);
+        cur_delims = new_delim(*it_first);
         it_first = it_split_last;
     }
 
@@ -1853,7 +1843,11 @@ public:
      */
     bool is_valid_identifier(string_view_type word)
         const noexcept {
-        return word == identifier_;
+        auto splitted = detail::split_words(word,
+            string_view_type(__LITERAL(char_type, "/\\ "))
+        );
+
+        return splitted.back() == identifier_;
     }
 
     /**
@@ -2700,7 +2694,7 @@ public:
         lock_error(error_code::invalid_identifier);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: invalid identifier specified.\n"
-            "\texpected \""
+            "\texpected \"*\\\\"
         ) << correct_identifier << __LITERAL(char_type,
             "\" but received \""
         ) << received_identifier << __LITERAL(char_type,
