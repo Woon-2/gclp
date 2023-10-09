@@ -848,14 +848,13 @@ public:
     
     template <class IntType, class StrArrType>
     interpreter( IntType argc, const StrArrType& argv )
-        : words_( detail::split_words<string_view_type>(
-                flatten_argc_argv(argc, argv)
-            )
-        ), cur_( std::begin(words_) ) {}
+        : src_( flatten_argc_argv(argc, argv) ),
+        words_( detail::split_words<string_view_type>(src_.value()) ),
+        cur_( std::begin(words_) ) {}
 
     
     interpreter(string_view_type command_line)
-        : words_( detail::split_words(command_line) ),
+        : src_(), words_( detail::split_words(command_line) ),
         cur_( std::begin(words_) ) {}
 
     
@@ -883,7 +882,8 @@ public:
     
     template <class IntType, class StrArrType>
     void reset(IntType argc, const StrArrType& argv) {
-        reset( flatten_argc_argv(argc, argv) );
+        src_ = flatten_argc_argv(argc, argv);
+        reset( src_.value() );
     }
 
     
@@ -921,7 +921,7 @@ private:
         auto flattend = string_type();
 
         // quote identifier(which is argv[0]) to handle space in the path.
-        if (argc > 0) {
+        if (argc > decltype(argc)(0)) {
             auto quoted_identifier = string_type{
                 detail::double_quote<char_type>()
             };
@@ -929,6 +929,7 @@ private:
             quoted_identifier += detail::double_quote<char_type>();
 
             flattend += std::move(quoted_identifier);
+            flattend += detail::stream_delim<char_type>();
         }
 
         for (auto i = decltype(argc)(1); i < argc; ++i) {
@@ -944,6 +945,7 @@ private:
         return *cur_++;
     }
 
+    std::optional<string_type> src_;
     words_type words_;
     iterator cur_;
 };  // class basic_cl_parser::interpreter
