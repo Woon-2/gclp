@@ -161,7 +161,7 @@ TEST_F(ParsingTest, IgnoreSpaceInQuoted) {
 
 TEST_F(ParsingTest, CompareOverloadings) {
     int argc = 19;
-    const char* argv[] = {"TestCLI", "-a", "1", "-b",
+    const char* const argv[] = {"TestCLI", "-a", "1", "-b",
         "3.14", "-c", "c", "-d", "Hello", "-e", "World!",
         "-f", "1.6", "-g", "1", "-h", "-i", "-j", "-k"
     };
