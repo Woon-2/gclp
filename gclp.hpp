@@ -1785,6 +1785,7 @@ private:
             quoted_identifier += detail::double_quote<char_type>();
 
             flattend += std::move(quoted_identifier);
+            flattend += detail::stream_delim<char_type>();
         }
 
         for (auto i = decltype(argc)(1); i < argc; ++i) {
