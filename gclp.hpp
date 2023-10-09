@@ -1776,7 +1776,18 @@ private:
     ) {
         auto flattend = string_type();
 
-        for (auto i = decltype(argc)(0); i < argc; ++i) {
+        // quote identifier(which is argv[0]) to handle space in the path.
+        if (argc > 0) {
+            auto quoted_identifier = string_type{
+                detail::double_quote<char_type>()
+            };
+            quoted_identifier += string_view_type(argv[0]);
+            quoted_identifier += detail::double_quote<char_type>();
+
+            flattend += std::move(quoted_identifier);
+        }
+
+        for (auto i = decltype(argc)(1); i < argc; ++i) {
             flattend += string_view_type(argv[i]);
             flattend += detail::stream_delim<char_type>();
         }
