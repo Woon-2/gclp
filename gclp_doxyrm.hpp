@@ -367,7 +367,7 @@ std::vector<StringView> split_words(StringView s,
     auto new_delim = [delims, quotes](auto ch)
         -> StringView {
         if ( quotes.find_first_of(ch) != StringView::npos ) {
-            return quotes;
+            return String{ ch };
         }
         else {
             return delims;
