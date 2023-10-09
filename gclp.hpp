@@ -1853,7 +1853,8 @@ public:
      */
     bool is_valid_identifier(string_view_type word)
         const noexcept {
-        return word == identifier_;
+        return std::ranges::size(word) - word.rfind(identifier_)
+            == std::ranges::size(identifier_);
     }
 
     /**
@@ -2700,7 +2701,7 @@ public:
         lock_error(error_code::invalid_identifier);
         err_stream_ << __LITERAL(char_type,
             "[gclp] error: invalid identifier specified.\n"
-            "\texpected \""
+            "\texpected \"*\\\\"
         ) << correct_identifier << __LITERAL(char_type,
             "\" but received \""
         ) << received_identifier << __LITERAL(char_type,
