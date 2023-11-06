@@ -90,14 +90,11 @@ target_include_directories(gclp_test PRIVATE "${PROJECT_SOURCE_DIR}" "${gtest_SO
 
 gtest_discover_tests(gclp_test)
 
-set(TEST_CONFIG Release CACHE STRING "configuration for testing")
-set_property(CACHE TEST_CONFIG PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
-
 # TODO: separate paths for build interface/install interface
 add_custom_target(
     test
     COMMENT "test features"
-    COMMAND ctest -C ${TEST_CONFIG} --test-dir "${PROJECT_BINARY_DIR}/test" --output-on-failure
+    COMMAND ctest -C $<CONFIG> --test-dir "${PROJECT_BINARY_DIR}/test" --output-on-failure
 )
 
 option(BUILD_TESTING
